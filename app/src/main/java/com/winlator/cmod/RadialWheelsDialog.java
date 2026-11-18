@@ -47,13 +47,13 @@ public class RadialWheelsDialog {
         if (wheels.isEmpty()) {
             RadialWheelConfig defaultWheel = new RadialWheelConfig(1);
             defaultWheel.enabled = false;
-            defaultWheel.name = "Weapon Wheel";
+            defaultWheel.name = context.getString(R.string.default_weapon_wheel);
             defaultWheel.triggerBinding = Binding.NONE;
             wheels.add(defaultWheel);
         }
 
         ContentDialog dialog = new ContentDialog(context, R.layout.radial_wheels_dialog);
-        dialog.setTitle(profile != null ? "Radial Wheels (" + profile.getName() + ")" : "Radial Wheels (Controller)");
+        dialog.setTitle(profile != null ? context.getString(R.string.profile_radial_wheels, profile.getName()) : context.getString(R.string.controller_radial_wheels));
         dialog.setIcon(R.drawable.icon_radial_wheel);
 
         ThemeManager.applyThemeToView(dialog.getContentView(), context);
@@ -86,7 +86,7 @@ public class RadialWheelsDialog {
         Binding[] allBindings = availableBindingsList.toArray(new Binding[0]);
         String[] bindingNames = new String[allBindings.length];
         for (int i = 0; i < allBindings.length; i++) {
-            bindingNames[i] = allBindings[i].toString();
+            bindingNames[i] = allBindings[i].getDisplayLabel(context);
         }
 
         ArrayAdapter<String> triggerAdapter = createThemedAdapter(context, bindingNames);
@@ -98,7 +98,7 @@ public class RadialWheelsDialog {
         sbWheelIconScale.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(android.widget.SeekBar seekBar, int progress, boolean fromUser) {
-                tvWheelIconScale.setText(progress + "%");
+                tvWheelIconScale.setText(context.getString(R.string.progress_percentage, progress));
             }
             @Override public void onStartTrackingTouch(android.widget.SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(android.widget.SeekBar seekBar) {}
@@ -161,7 +161,7 @@ public class RadialWheelsDialog {
             List<String> wheelLabels = new ArrayList<>();
             for (int i = 0; i < wheels.size(); i++) {
                 RadialWheelConfig w = wheels.get(i);
-                wheelLabels.add((i + 1) + ". " + (w.name != null && !w.name.isEmpty() ? w.name : "Wheel " + (i + 1)));
+                wheelLabels.add((i + 1) + ". " + (w.name != null && !w.name.isEmpty() ? w.name : context.getString(R.string.radial_wheel_display_number, i + 1)));
             }
             ArrayAdapter<String> adapter = createThemedAdapter(context, wheelLabels.toArray(new String[0]));
             spWheelSelect.setAdapter(adapter);
@@ -180,7 +180,7 @@ public class RadialWheelsDialog {
 
             int scalePct = (int)((cfg.iconScale > 0 ? cfg.iconScale : 1.0f) * 100);
             sbWheelIconScale.setProgress(scalePct);
-            tvWheelIconScale.setText(scalePct + "%");
+            tvWheelIconScale.setText(context.getString(R.string.progress_percentage, scalePct));
 
             // Set trigger 1 binding selection
             int triggerIdx = 0;
@@ -298,13 +298,13 @@ public class RadialWheelsDialog {
 
         btAddWheel.setOnClickListener(v -> {
             if (wheels.size() >= MAX_WHEELS) {
-                AppUtils.showToast(context, "Maximum 4 radial wheels per profile");
+                AppUtils.showToast(context, R.string.max_radial_wheels_per_profile);
                 return;
             }
             saveCurrentWheelFromUI.run();
             RadialWheelConfig newWheel = new RadialWheelConfig(wheels.size() + 1);
             newWheel.enabled = false;
-            newWheel.name = "Wheel " + (wheels.size() + 1);
+            newWheel.name = context.getString(R.string.new_radial_wheel_name, wheels.size() + 1);
             newWheel.triggerBinding = Binding.NONE;
             wheels.add(newWheel);
             currentWheelIndex[0] = wheels.size() - 1;
@@ -314,7 +314,7 @@ public class RadialWheelsDialog {
 
         btRemoveWheel.setOnClickListener(v -> {
             if (wheels.size() <= 1) {
-                AppUtils.showToast(context, "Must have at least one radial wheel");
+                AppUtils.showToast(context, R.string.min_radial_wheels_per_profile);
                 return;
             }
             wheels.remove(currentWheelIndex[0]);
@@ -333,7 +333,7 @@ public class RadialWheelsDialog {
             } else {
                 RadialWheelConfig.saveGlobal(context, wheels);
             }
-            AppUtils.showToast(context, "Radial Wheels Saved");
+            AppUtils.showToast(context, R.string.radial_wheels_saved);
             if (onSaveCallback != null) onSaveCallback.run();
         });
 

@@ -1,5 +1,6 @@
 package com.winlator.cmod.inputcontrols;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.graphics.Typeface;
 
 import androidx.core.graphics.ColorUtils;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.core.CubicBezierInterpolator;
 import com.winlator.cmod.math.Mathf;
 import com.winlator.cmod.widget.InputControlsView;
@@ -35,12 +37,26 @@ public class ControlElement {
     public static final byte TRACKPAD_ACCELERATION_THRESHOLD = 4;
     public static final short BUTTON_MIN_TIME_TO_KEEP_PRESSED = 300;
     public enum Type {
-        BUTTON, D_PAD, RANGE_BUTTON, STICK, TRACKPAD, DYNAMIC_STICK, MOUSE_AREA, BUTTON_GRID, EXPANDABLE_BUTTON;
+        BUTTON(R.string.control_type_button),
+        D_PAD(R.string.control_type_d_pad),
+        RANGE_BUTTON(R.string.control_type_range_button),
+        STICK(R.string.control_type_stick),
+        TRACKPAD(R.string.control_type_trackpad),
+        DYNAMIC_STICK(R.string.control_type_dynamic_stick),
+        MOUSE_AREA(R.string.control_type_mouse_area),
+        BUTTON_GRID(R.string.control_type_button_grid),
+        EXPANDABLE_BUTTON(R.string.control_type_expandable_button);
 
-        public static String[] names() {
+        private final int labelRes;
+
+        Type(int labelRes) {
+            this.labelRes = labelRes;
+        }
+
+        public static String[] names(Context context) {
             Type[] types = values();
             String[] names = new String[types.length];
-            for (int i = 0; i < types.length; i++) names[i] = types[i].name().replace("_", "-");
+            for (int i = 0; i < types.length; i++) names[i] = context.getString(types[i].labelRes);
             return names;
         }
 
@@ -61,12 +77,26 @@ public class ControlElement {
         }
     }
     public enum Shape {
-        CIRCLE, CAPSULE, OVAL, ROUND_RECT, RECT, SQUARE, HEXAGON, DIAMOND, OCTAGON;
+        CIRCLE(R.string.control_shape_circle),
+        CAPSULE(R.string.control_shape_capsule),
+        OVAL(R.string.control_shape_oval),
+        ROUND_RECT(R.string.control_shape_round_rect),
+        RECT(R.string.control_shape_rect),
+        SQUARE(R.string.control_shape_square),
+        HEXAGON(R.string.control_shape_hexagon),
+        DIAMOND(R.string.control_shape_diamond),
+        OCTAGON(R.string.control_shape_octagon);
 
-        public static String[] names() {
+        private final int labelRes;
+
+        Shape(int labelRes) {
+            this.labelRes = labelRes;
+        }
+
+        public static String[] names(Context context) {
             Shape[] shapes = values();
             String[] names = new String[shapes.length];
-            for (int i = 0; i < shapes.length; i++) names[i] = shapes[i].name().replace("_", " ");
+            for (int i = 0; i < shapes.length; i++) names[i] = context.getString(shapes[i].labelRes);
             return names;
         }
 
@@ -80,17 +110,22 @@ public class ControlElement {
         }
     }
     public enum Range {
-        FROM_A_TO_Z(26), FROM_0_TO_9(10), FROM_F1_TO_F12(12), FROM_NP0_TO_NP9(10);
+        FROM_A_TO_Z(26, R.string.control_range_letters),
+        FROM_0_TO_9(10, R.string.control_range_digits),
+        FROM_F1_TO_F12(12, R.string.control_range_function_keys),
+        FROM_NP0_TO_NP9(10, R.string.control_range_numpad);
         public final byte max;
+        private final int labelRes;
 
-        Range(int max) {
+        Range(int max, int labelRes) {
             this.max = (byte)max;
+            this.labelRes = labelRes;
         }
 
-        public static String[] names() {
+        public static String[] names(Context context) {
             Range[] ranges = values();
             String[] names = new String[ranges.length];
-            for (int i = 0; i < ranges.length; i++) names[i] = ranges[i].name().replace("_", " ");
+            for (int i = 0; i < ranges.length; i++) names[i] = context.getString(ranges[i].labelRes);
             return names;
         }
 

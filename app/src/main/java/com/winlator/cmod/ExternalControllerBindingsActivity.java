@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,7 +30,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.winlator.cmod.R;
-import com.winlator.cmod.core.AppUtils;
 import com.winlator.cmod.contentdialog.ContentDialog;
 import com.winlator.cmod.inputcontrols.Binding;
 import com.winlator.cmod.inputcontrols.ControlsProfile;
@@ -39,6 +37,10 @@ import com.winlator.cmod.inputcontrols.ExternalController;
 import com.winlator.cmod.inputcontrols.ExternalControllerBinding;
 import com.winlator.cmod.inputcontrols.InputControlsManager;
 import com.winlator.cmod.math.Mathf;
+import com.winlator.cmod.widget.LabeledSpinnerAdapter;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ExternalControllerBindingsActivity extends AppCompatActivity {
     private TextView emptyTextView;
@@ -314,25 +316,17 @@ public class ExternalControllerBindingsActivity extends AppCompatActivity {
         }
 
         private void loadBindingSpinner(ViewHolder holder, final ExternalControllerBinding item) {
-            final Context $this = ExternalControllerBindingsActivity.this;
-
+            Context context = ExternalControllerBindingsActivity.this;
             Runnable update = () -> {
-                String[] bindingEntries = null;
-                switch (holder.bindingType.getSelectedItemPosition()) {
-                    case 0:
-                        bindingEntries = Binding.keyboardBindingLabels();
-                        break;
-                    case 1:
-                        bindingEntries = Binding.mouseBindingLabels();
-                        break;
-                    case 2:
-                        bindingEntries = Binding.gamepadBindingLabels();
-                        break;
-                }
-
-                holder.binding.setAdapter(
-                        new ArrayAdapter<>($this, android.R.layout.simple_spinner_dropdown_item, bindingEntries));
-                AppUtils.setSpinnerSelectionFromValue(holder.binding, item.getBinding().toString());
+                Binding[] values = switch (holder.bindingType.getSelectedItemPosition()) {
+                    case 1 -> Binding.mouseBindingValues();
+                    case 2 -> Binding.gamepadBindingValues();
+                    default -> Binding.keyboardBindingValues();
+                };
+                List<Binding> entries = Arrays.asList(values);
+                holder.binding.setAdapter(new LabeledSpinnerAdapter<>(context,
+                        android.R.layout.simple_spinner_dropdown_item, entries, binding -> binding.getDisplayLabel(context)));
+                holder.binding.setSelection(Math.max(0, entries.indexOf(item.getBinding())), false);
             };
 
             holder.bindingType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -358,20 +352,8 @@ public class ExternalControllerBindingsActivity extends AppCompatActivity {
             holder.binding.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Binding binding = Binding.NONE;
-                    switch (holder.bindingType.getSelectedItemPosition()) {
-                        case 0:
-                            binding = Binding.keyboardBindingValues()[position];
-                            break;
-                        case 1:
-                            binding = Binding.mouseBindingValues()[position];
-                            break;
-                        case 2:
-                            binding = Binding.gamepadBindingValues()[position];
-                            break;
-                    }
-
-                    if (binding != item.getBinding()) {
+                    Binding binding = (Binding) parent.getItemAtPosition(position);
+                    if (binding != null && binding != item.getBinding()) {
                         item.setBinding(binding);
                         profile.save();
                     }

@@ -33,7 +33,7 @@
             android:layout_marginStart="4dp"
             android:padding="3dp"
             android:background="@drawable/button_neutral"
-            android:contentDescription="Slice Icon"
+            android:contentDescription="@string/radial_wheel_slice_icon"
             android:scaleType="fitCenter" />
 
         <!-- Slice Label Input -->
@@ -47,7 +47,7 @@
             android:paddingEnd="6dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
-            android:hint="Label"
+            android:hint="@string/control_label"
             android:singleLine="true"
             android:textSize="12sp" />
 
@@ -69,7 +69,7 @@
             android:layout_marginStart="2dp"
             android:src="@drawable/icon_add"
             android:padding="4dp"
-            android:contentDescription="Add Combo Key"
+            android:contentDescription="@string/add_combo_key"
             android:background="?selectableItemBackgroundBorderless"
             app:tint="@color/colorAccent" />
     </LinearLayout>

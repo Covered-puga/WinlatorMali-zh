@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
+import com.winlator.cmod.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,7 +116,7 @@ public class RadialWheelConfig {
         if (list.isEmpty()) {
             RadialWheelConfig defaultWheel = new RadialWheelConfig(1);
             defaultWheel.enabled = false;
-            defaultWheel.name = "Quick Actions";
+            defaultWheel.name = context.getString(R.string.default_quick_actions_wheel);
             defaultWheel.triggerBinding = Binding.NONE;
             list.add(defaultWheel);
         }

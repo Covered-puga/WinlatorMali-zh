@@ -67,6 +67,7 @@ import com.winlator.cmod.midi.MidiManager;
 import com.winlator.cmod.widget.CPUListView;
 import com.winlator.cmod.widget.ColorPickerView;
 import com.winlator.cmod.widget.EnvVarsView;
+import com.winlator.cmod.widget.LabeledSpinnerAdapter;
 import com.winlator.cmod.widget.ImagePickerView;
 import com.winlator.cmod.winhandler.WinHandler;
 import com.winlator.cmod.xenvironment.ImageFs;
@@ -85,6 +86,7 @@ import java.util.Locale;
 public class ContainerDetailFragment extends Fragment {
 
     private static final String TAG = "FileUtils";
+    private static final String NO_WINE_INSTALLED = "(No Wine Installed - Tap Download)";
 
     private ContainerManager manager;
     private ContentsManager contentsManager;
@@ -215,7 +217,7 @@ public class ContainerDetailFragment extends Fragment {
                         openDirectoryCallback.call(path);
                     }
                 } else {
-                    Toast.makeText(getContext(), "Invalid directory selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.invalid_directory_selected, Toast.LENGTH_SHORT).show();
                 }
             }
             openDirectoryCallback = null;
@@ -253,20 +255,11 @@ public class ContainerDetailFragment extends Fragment {
 
         view.findViewById(R.id.BTHelpRamBooster).setOnClickListener(v -> {
             ContentDialog dialog = new ContentDialog(getContext(), R.layout.bcn_info_dialog);
-            dialog.setTitle("RAM Booster (LMK Trigger)");
+            dialog.setTitle(R.string.ram_booster);
             dialog.setIcon(R.drawable.ic_driver_info);
 
             TextView tvMessage = dialog.findViewById(R.id.TVInfoMessage);
-            String message = "<b>RAM Booster (Guide):</b><br/><br/>" +
-                    "This tool manages Android's memory by intentionally creating pressure to trigger the <b>Low Memory Killer (LMK)</b>. This helps prevent crashes and stuttering in heavy games.<br/><br/>" +
-                    "&#8226; <b>Crisis Threshold:</b> This is the 'Emergency' limit. When RAM usage hits this point (e.g., 90%), a heavy boost is applied. <b>How to use:</b> Set this to the level where your device usually feels unstable.<br/><br/>" +
-                    "&#8226; <b>Pre-Crisis Level:</b> This is the 'Preventive' limit. It applies a lighter pulse <i>before</i> RAM gets critical. <b>How to use:</b> Set this 5-10% lower than Crisis.<br/><br/>" +
-                    "&#8226; <b>Boost Intensity:</b> Defines how much 'fake' RAM demand is created. Higher intensity (e.g., 60%) clears more background apps but may cause a momentary system lag.<br/><br/>" +
-                    "&#8226; <b>Smart Auto:</b> (Recommended) Automatically adjusts thresholds based on your device and learns from results.<br/><br/>" +
-                    "&#8226; <b>Safety Floor:</b> Protects the emulator by stopping pressure if free RAM is too low.<br/><br/>" +
-                    "<b>Expert Warning (Manual Mode):</b><br/>" +
-                    "&#8226; <b>High Thresholds:</b> Setting Crisis > 95% or Pre-Crisis > 90% may trigger too late to prevent a crash.<br/>" +
-                    "&#8226; <b>High Intensities:</b> Values > 50% create massive pressure (up to 4GB). This effectively kills everything in the background but may cause significant system stutter or even crash the app if the OS decides it is a memory hog. Use with extreme caution!";
+            String message = getString(R.string.ram_booster_help);
             tvMessage.setText(android.text.Html.fromHtml(message, android.text.Html.FROM_HTML_MODE_LEGACY));
             dialog.findViewById(R.id.BTCancel).setVisibility(View.GONE);
             dialog.show();
@@ -416,7 +409,8 @@ public class ContainerDetailFragment extends Fragment {
         cbRamBoosterToast.setChecked(!isEditMode() || container.isRamBoosterToastEnabled());
 
         final String[] ramBoosterProfileValues = getResources().getStringArray(R.array.ram_booster_profile_values);
-        AppUtils.setSpinnerSelectionFromValue(sRamBoosterProfile, isEditMode() ? container.getRamBoosterProfile() : "smart");
+        AppUtils.setSpinnerSelectionFromValues(sRamBoosterProfile, ramBoosterProfileValues,
+                isEditMode() ? container.getRamBoosterProfile() : "smart");
 
         llRamBoosterThresholds.setVisibility(sRamBoosterProfile.getSelectedItemPosition() == 6 ? View.VISIBLE : View.GONE);
         sRamBoosterProfile.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
@@ -436,7 +430,7 @@ public class ContainerDetailFragment extends Fragment {
                 int threshold = progress + 50;
                 tvRamBoosterCrisis.setText(threshold + "%");
                 if (fromUser && threshold > 95) {
-                    AppUtils.showToast(getContext(), "Expert: Setting threshold > 95% may trigger too late!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_crisis_threshold_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -452,7 +446,7 @@ public class ContainerDetailFragment extends Fragment {
                 int threshold = progress + 50;
                 tvRamBoosterPreCrisis.setText(threshold + "%");
                 if (fromUser && threshold > 90) {
-                    AppUtils.showToast(getContext(), "Expert: High pre-crisis level may overlap with Crisis threshold!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_pre_crisis_overlap_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -465,9 +459,9 @@ public class ContainerDetailFragment extends Fragment {
         sbRamBoosterCrisisIntensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvRamBoosterCrisisIntensity.setText(progress + "%");
+                tvRamBoosterCrisisIntensity.setText(getString(R.string.progress_percentage, progress));
                 if (fromUser && progress > 50) {
-                    AppUtils.showToast(getContext(), "Warning: High intensity may cause system instability!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_high_intensity_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -480,9 +474,9 @@ public class ContainerDetailFragment extends Fragment {
         sbRamBoosterPreCrisisIntensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvRamBoosterPreCrisisIntensity.setText(progress + "%");
+                tvRamBoosterPreCrisisIntensity.setText(getString(R.string.progress_percentage, progress));
                 if (fromUser && progress > 35) {
-                    AppUtils.showToast(getContext(), "Note: High pre-crisis intensity clears more background RAM.");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_pre_crisis_intensity_note);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -495,7 +489,7 @@ public class ContainerDetailFragment extends Fragment {
                 int threshold = progress + 50;
                 tvRamBoosterCrisis.setText(threshold + "%");
                 if (fromUser && threshold > 95) {
-                    AppUtils.showToast(getContext(), "Expert: Setting threshold > 95% may trigger too late!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_crisis_threshold_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -641,7 +635,7 @@ public class ContainerDetailFragment extends Fragment {
                     data.put("ramBoosterPreCrisisIntensity", ramBoosterPreCrisisIntensity);
                     String selectedWine = sWineVersion.getSelectedItem() != null ? sWineVersion.getSelectedItem().toString() : "";
                     if (selectedWine.isEmpty() || selectedWine.contains("No Wine Installed")) {
-                        AppUtils.showToast(context, "Please download a Wine runtime first.");
+                        AppUtils.showToast(context, R.string.download_wine_runtime_first);
                         com.winlator.cmod.contents.WineDownloader.showDownloadDialog(getActivity(), () -> {
                             loadWineVersionSpinner(view, sWineVersion, sBox64Version);
                         });
@@ -686,7 +680,7 @@ public class ContainerDetailFragment extends Fragment {
         try (WineRegistryEditor registryEditor = new WineRegistryEditor(userRegFile)) {
             Spinner sMouseWarpOverride = view.findViewById(R.id.SMouseWarpOverride);
             if (sMouseWarpOverride != null && sMouseWarpOverride.getSelectedItem() != null) {
-                registryEditor.setStringValue("Software\\Wine\\DirectInput", "MouseWarpOverride", sMouseWarpOverride.getSelectedItem().toString().toLowerCase(Locale.ENGLISH));
+                registryEditor.setStringValue("Software\\Wine\\DirectInput", "MouseWarpOverride", sMouseWarpOverride.getSelectedItem().toString());
             }
         } catch (Exception e) {
             Log.w("ContainerDetailFragment", "Failed to save user.reg keys: " + e.getMessage());
@@ -728,9 +722,13 @@ public class ContainerDetailFragment extends Fragment {
         File userRegFile = new File(containerDir, ".wine/user.reg");
 
         try (WineRegistryEditor registryEditor = new WineRegistryEditor(userRegFile)) {
-            List<String> mouseWarpOverrideList = Arrays.asList(context.getString(R.string.disable), context.getString(R.string.enable), context.getString(R.string.force));
             Spinner sMouseWarpOverride = view.findViewById(R.id.SMouseWarpOverride);
-            sMouseWarpOverride.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, mouseWarpOverrideList));
+            sMouseWarpOverride.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                    Arrays.asList("disable", "enable", "force"), value -> context.getString(switch (value) {
+                        case "enable" -> R.string.enable;
+                        case "force" -> R.string.force;
+                        default -> R.string.disable;
+                    })));
             AppUtils.setSpinnerSelectionFromValue(sMouseWarpOverride, registryEditor.getStringValue("Software\\Wine\\DirectInput", "MouseWarpOverride", "disable"));
         }
     }
@@ -785,6 +783,10 @@ public class ContainerDetailFragment extends Fragment {
 
     public static void loadScreenSizeSpinner(View view, String selectedValue) {
         final Spinner sScreenSize = view.findViewById(R.id.SScreenSize);
+        Context context = sScreenSize.getContext();
+        String[] sizes = context.getResources().getStringArray(R.array.screen_size_entries);
+        sScreenSize.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_item,
+                Arrays.asList(sizes), value -> value.equals("Custom") ? context.getString(R.string.custom_option) : value));
 
         final LinearLayout llCustomScreenSize = view.findViewById(R.id.LLCustomScreenSize);
         sScreenSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1090,9 +1092,11 @@ public class ContainerDetailFragment extends Fragment {
 
         List<String> wineVersions = com.winlator.cmod.contents.WineDownloader.getInstalledWineVersions(context);
         if (wineVersions.isEmpty()) {
-            wineVersions.add("(No Wine Installed - Tap Download)");
+            wineVersions.add(NO_WINE_INSTALLED);
         }
-        sWineVersion.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, wineVersions));
+        sWineVersion.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                wineVersions, value -> NO_WINE_INSTALLED.equals(value)
+                        ? context.getString(R.string.no_wine_installed_option) : value));
         if (isEditMode()) AppUtils.setSpinnerSelectionFromValue(sWineVersion, container.getWineVersion());
     }
 
@@ -1116,9 +1120,9 @@ public class ContainerDetailFragment extends Fragment {
         TextView header = root.findViewById(R.id.TVBox64);
         TextView version = root.findViewById(R.id.TVBox64VersionLabel);
         TextView preset = root.findViewById(R.id.TVBox64PresetLabel);
-        if (header != null) header.setText(isArm64EC ? "WOWBox64 (32-bit programs, optional; FEXCore can do this too)" : "Box64");
-        if (version != null) version.setText(isArm64EC ? "WOWBox64 Version" : "Box64 Version");
-        if (preset != null) preset.setText(isArm64EC ? "WOWBox64 Preset" : "Box64 Preset");
+        if (header != null) header.setText(isArm64EC ? R.string.wowbox64_32bit_help : R.string.box64);
+        if (version != null) version.setText(isArm64EC ? R.string.wowbox64_version : R.string.box64_version);
+        if (preset != null) preset.setText(isArm64EC ? R.string.wowbox64_preset : R.string.box64_preset);
     }
 
     public static void loadBox64VersionSpinner(Context context, Container container, ContentsManager manager, Spinner spinner, boolean isArm64EC) {

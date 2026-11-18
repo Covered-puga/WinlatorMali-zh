@@ -85,7 +85,7 @@
         android:src="@drawable/ic_nav_close"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        android:contentDescription="Remove folder"
+        android:contentDescription="@string/remove_save_folder"
         android:visibility="gone" />
 
 </LinearLayout>

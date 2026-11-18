@@ -237,20 +237,11 @@ public class ShortcutSettingsDialog extends ContentDialog {
 
         findViewById(R.id.BTHelpRamBooster).setOnClickListener(v -> {
             ContentDialog dialog = new ContentDialog(getContext(), R.layout.bcn_info_dialog);
-            dialog.setTitle("RAM Booster (LMK Trigger)");
+            dialog.setTitle(R.string.ram_booster);
             dialog.setIcon(R.drawable.ic_driver_info);
 
             TextView tvMessage = dialog.findViewById(R.id.TVInfoMessage);
-            String message = "<b>RAM Booster (Guide):</b><br/><br/>" +
-                    "This tool manages Android's memory by intentionally creating pressure to trigger the <b>Low Memory Killer (LMK)</b>. This helps prevent crashes and stuttering in heavy games.<br/><br/>" +
-                    "&#8226; <b>Crisis Threshold:</b> This is the 'Emergency' limit. When RAM usage hits this point (e.g., 90%), a heavy boost is applied. <b>How to use:</b> Set this to the level where your device usually feels unstable.<br/><br/>" +
-                    "&#8226; <b>Pre-Crisis Level:</b> This is the 'Preventive' limit. It applies a lighter pulse <i>before</i> RAM gets critical. <b>How to use:</b> Set this 5-10% lower than Crisis.<br/><br/>" +
-                    "&#8226; <b>Boost Intensity:</b> Defines how much 'fake' RAM demand is created. Higher intensity (e.g., 60%) clears more background apps but may cause a momentary system lag.<br/><br/>" +
-                    "&#8226; <b>Smart Auto:</b> (Recommended) Automatically adjusts thresholds based on your device and learns from results.<br/><br/>" +
-                    "&#8226; <b>Safety Floor:</b> Protects the emulator by stopping pressure if free RAM is too low.<br/><br/>" +
-                    "<b>Expert Warning (Manual Mode):</b><br/>" +
-                    "&#8226; <b>High Thresholds:</b> Setting Crisis > 95% or Pre-Crisis > 90% may trigger too late to prevent a crash.<br/>" +
-                    "&#8226; <b>High Intensities:</b> Values > 50% create massive pressure (up to 4GB). This effectively kills everything in the background but may cause significant system stutter or even crash the app if the OS decides it is a memory hog. Use with extreme caution!";
+            String message = getContext().getString(R.string.ram_booster_help);
             tvMessage.setText(android.text.Html.fromHtml(message, android.text.Html.FROM_HTML_MODE_LEGACY));
             dialog.findViewById(R.id.BTCancel).setVisibility(View.GONE);
             dialog.show();
@@ -260,7 +251,8 @@ public class ShortcutSettingsDialog extends ContentDialog {
         cbRamBoosterToast.setChecked(shortcut.getExtra("ramBoosterToastEnabled", shortcut.container.isRamBoosterToastEnabled() ? "1" : "0").equals("1"));
 
         final String[] ramBoosterProfileValues = getContext().getResources().getStringArray(R.array.ram_booster_profile_values);
-        AppUtils.setSpinnerSelectionFromValue(sRamBoosterProfile, shortcut.getExtra("ramBoosterProfile", shortcut.container.getRamBoosterProfile()));
+        AppUtils.setSpinnerSelectionFromValues(sRamBoosterProfile, ramBoosterProfileValues,
+                shortcut.getExtra("ramBoosterProfile", shortcut.container.getRamBoosterProfile()));
 
         llRamBoosterThresholds.setVisibility(sRamBoosterProfile.getSelectedItemPosition() == 6 ? View.VISIBLE : View.GONE);
         sRamBoosterProfile.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
@@ -280,7 +272,7 @@ public class ShortcutSettingsDialog extends ContentDialog {
                 int threshold = progress + 50;
                 tvRamBoosterCrisis.setText(threshold + "%");
                 if (fromUser && threshold > 95) {
-                    AppUtils.showToast(getContext(), "Expert: Setting threshold > 95% may trigger too late!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_crisis_threshold_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -296,7 +288,7 @@ public class ShortcutSettingsDialog extends ContentDialog {
                 int threshold = progress + 50;
                 tvRamBoosterPreCrisis.setText(threshold + "%");
                 if (fromUser && threshold > 90) {
-                    AppUtils.showToast(getContext(), "Expert: High pre-crisis level may overlap with Crisis threshold!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_pre_crisis_overlap_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -309,9 +301,9 @@ public class ShortcutSettingsDialog extends ContentDialog {
         sbRamBoosterCrisisIntensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvRamBoosterCrisisIntensity.setText(progress + "%");
+                tvRamBoosterCrisisIntensity.setText(getContext().getString(R.string.progress_percentage, progress));
                 if (fromUser && progress > 50) {
-                    AppUtils.showToast(getContext(), "Warning: High intensity may cause system instability!");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_high_intensity_warning);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -324,9 +316,9 @@ public class ShortcutSettingsDialog extends ContentDialog {
         sbRamBoosterPreCrisisIntensity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvRamBoosterPreCrisisIntensity.setText(progress + "%");
+                tvRamBoosterPreCrisisIntensity.setText(getContext().getString(R.string.progress_percentage, progress));
                 if (fromUser && progress > 35) {
-                    AppUtils.showToast(getContext(), "Note: High pre-crisis intensity clears more background RAM.");
+                    AppUtils.showToast(getContext(), R.string.ram_booster_pre_crisis_intensity_note);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -484,30 +476,9 @@ public class ShortcutSettingsDialog extends ContentDialog {
     }
 
     public static void loadScreenSizeSpinner(View view, String selectedValue, boolean isDarkMode) {
-        final Spinner sScreenSize = view.findViewById(R.id.SScreenSize);
-        final LinearLayout llCustomScreenSize = view.findViewById(R.id.LLCustomScreenSize);
-
         com.winlator.cmod.ThemeManager.applyThemeToView(view.findViewById(R.id.ETScreenWidth), view.getContext());
         com.winlator.cmod.ThemeManager.applyThemeToView(view.findViewById(R.id.ETScreenHeight), view.getContext());
-
-        sScreenSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String value = sScreenSize.getItemAtPosition(position).toString();
-                llCustomScreenSize.setVisibility(value.equalsIgnoreCase("custom") ? View.VISIBLE : View.GONE);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        boolean found = AppUtils.setSpinnerSelectionFromIdentifier(sScreenSize, selectedValue);
-        if (!found) {
-            AppUtils.setSpinnerSelectionFromValue(sScreenSize, "custom");
-            String[] screenSize = selectedValue.split("x");
-            ((EditText)view.findViewById(R.id.ETScreenWidth)).setText(screenSize[0]);
-            ((EditText)view.findViewById(R.id.ETScreenHeight)).setText(screenSize[1]);
-        }
+        ContainerDetailFragment.loadScreenSizeSpinner(view, selectedValue);
     }
 
     private void updateExtra(String extraName, String containerValue, String newValue) {
@@ -642,7 +613,8 @@ public class ShortcutSettingsDialog extends ContentDialog {
             String graphicsDriver = StringUtils.parseIdentifier(sGraphicsDriver.getSelectedItem());
             String graphicsDriverConfig = vGraphicsDriverConfig.getTag().toString();
 
-            tvGraphicsDriverVersion.setText(GraphicsDriverConfigDialog.getVersion(graphicsDriverConfig));
+            String version = GraphicsDriverConfigDialog.getVersion(graphicsDriverConfig);
+            tvGraphicsDriverVersion.setText(GraphicsDriverConfigDialog.getVersionLabel(context, version));
 
             vGraphicsDriverConfig.setOnClickListener((v) -> {
                 new GraphicsDriverConfigDialog(vGraphicsDriverConfig, graphicsDriver, tvGraphicsDriverVersion).show();

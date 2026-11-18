@@ -42,7 +42,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:text="0 CONFIGS"
+                android:text="@string/community_config_count_empty"
                 android:visibility="gone"/>
 
             <LinearLayout
@@ -95,7 +95,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:minLines="2"
-                android:text="Game Name" />
+                android:text="@string/community_game_name" />
 
             <TextView
                 android:id="@+id/TVSteamId"
@@ -104,7 +104,7 @@
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:alpha="0.7"
-                android:text="Steam ID: 12345" />
+                android:text="@string/community_steam_id_example" />
 
         </LinearLayout>
 

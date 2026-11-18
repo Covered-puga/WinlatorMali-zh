@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Display labels in the order used by the corresponding settings. -->
+    <string-array name="hud_position_entries">
+        <item>Custom</item>
+        <item>Top Left</item>
+        <item>Top Center</item>
+        <item>Top Right</item>
+        <item>Middle Left</item>
+        <item>Center</item>
+        <item>Middle Right</item>
+        <item>Bottom Left</item>
+        <item>Bottom Center</item>
+        <item>Bottom Right</item>
+    </string-array>
+    <string-array name="hud_style_entries">
+        <item>Classic (Multi-Color)</item>
+        <item>Classic Monochrome</item>
+        <item>Modular Glass Tiles</item>
+        <item>Adaptive (Theme Dynamic)</item>
+        <item>Glass (WinMali Default)</item>
+    </string-array>
+    <string-array name="gyro_activation_mode_entries">
+        <item>Always</item>
+        <item>Touch Screen / Touchpad</item>
+        <item>Left Trigger (LT / ADS)</item>
+        <item>Right Trigger (RT)</item>
+        <item>Right Stick (RS)</item>
+    </string-array>
+    <string-array name="gyro_target_entries">
+        <item>Mouse Look</item>
+        <item>Right Stick (Camera)</item>
+        <item>Left Stick (Steering)</item>
+        <item>Arrow Keys</item>
+    </string-array>
+    <string-array name="gyro_curve_entries">
+        <item>Linear (1:1)</item>
+        <item>Enhanced (Exponential)</item>
+        <item>Sigmoid (S-Curve)</item>
+    </string-array>
+    <string-array name="upscaler_entries">
+        <item>Off (Default)</item>
+        <item>Nearest (Pixel Perfect)</item>
+        <item>Lanczos2</item>
+        <item>SGSR</item>
+        <item>FSR</item>
+    </string-array>
+    <string-array name="sharpen_mode_entries">
+        <item>Off</item>
+        <item>RCAS</item>
+        <item>RCAS + Vibrance</item>
+        <item>CAS Lite</item>
+        <item>Adaptive Sharpen</item>
+    </string-array>
+    <string-array name="color_preset_entries">
+        <item>Off</item>
+        <item>Vivid</item>
+        <item>Cinematic</item>
+        <item>Game Clarity</item>
+        <item>Competitive</item>
+        <item>Filmic</item>
+        <item>Arcade</item>
+        <item>Color Boost</item>
+        <item>Retro CRT</item>
+        <item>Anime Edge</item>
+        <item>Upscale Sharp</item>
+        <item>Pixel Clean</item>
+        <item>Natural</item>
+        <item>Vibrance</item>
+        <item>Curves</item>
+        <item>Technicolor</item>
+        <item>Levels</item>
+        <item>DLS</item>
+    </string-array>
+    <string-array name="frame_generation_quality_entries">
+        <item>Balanced (faster)</item>
+        <item>Quality (better motion, ~40% more GPU)</item>
+    </string-array>
+</resources>

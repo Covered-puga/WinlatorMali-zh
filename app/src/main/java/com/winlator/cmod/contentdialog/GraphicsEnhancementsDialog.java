@@ -44,8 +44,6 @@ public class GraphicsEnhancementsDialog extends ContentDialog {
     private final Spinner sColorPreset;
     private final Spinner sFrameGenTarget;
     private final Spinner sFrameGenQuality;
-    private static final String[] FG_QUALITY_NAMES = {"Balanced (faster)", "Quality (better motion, ~40% more GPU)"};
-    private static final String[] FG_TARGET_NAMES = {"2x (fixed)", "Auto - target 60 fps", "Auto - target 90 fps", "Auto - target 120 fps"};
     private static final int[] FG_TARGETS = {0, 60, 90, 120};
     private final View llPresetStrength;
     private final SeekBar sbPresetStrength;
@@ -111,11 +109,16 @@ public class GraphicsEnhancementsDialog extends ContentDialog {
         for (Spinner spinner : new Spinner[]{sUpscaler, sColorPreset, sSharpenMode, sFPSLimit, sFrameGenTarget, sFrameGenQuality}) {
             spinner.setPopupBackgroundResource(isDarkMode ? R.drawable.content_dialog_background_dark : R.drawable.content_dialog_background);
         }
-        sUpscaler.setAdapter(createAdapter(activity, PostProcessing.UPSCALERS));
-        sColorPreset.setAdapter(createAdapter(activity, PostProcessing.PRESET_NAMES));
-        sFrameGenTarget.setAdapter(createAdapter(activity, FG_TARGET_NAMES));
-        sFrameGenQuality.setAdapter(createAdapter(activity, FG_QUALITY_NAMES));
-        sSharpenMode.setAdapter(createAdapter(activity, PostProcessing.SHARPEN_MODES));
+        sUpscaler.setAdapter(createAdapter(activity, activity.getResources().getStringArray(R.array.upscaler_entries)));
+        sColorPreset.setAdapter(createAdapter(activity, activity.getResources().getStringArray(R.array.color_preset_entries)));
+        String[] frameGenTargets = new String[FG_TARGETS.length];
+        frameGenTargets[0] = activity.getString(R.string.frame_generation_fixed_mode);
+        for (int i = 1; i < frameGenTargets.length; i++) {
+            frameGenTargets[i] = activity.getString(R.string.frame_generation_target_mode, FG_TARGETS[i]);
+        }
+        sFrameGenTarget.setAdapter(createAdapter(activity, frameGenTargets));
+        sFrameGenQuality.setAdapter(createAdapter(activity, activity.getResources().getStringArray(R.array.frame_generation_quality_entries)));
+        sSharpenMode.setAdapter(createAdapter(activity, activity.getResources().getStringArray(R.array.sharpen_mode_entries)));
         sbUpscalerSharpness.setSuffix("%");
         sbPresetStrength.setSuffix("%");
 
@@ -135,12 +138,12 @@ public class GraphicsEnhancementsDialog extends ContentDialog {
         btSaveForGame.setVisibility(activity.hasShortcut() ? View.VISIBLE : View.GONE);
         btSaveForGame.setOnClickListener(v -> {
             activity.savePostProcessing(settings.toString(), true);
-            AppUtils.showToast(activity, "Saved for this game");
+            AppUtils.showToast(activity, R.string.graphics_enhancements_saved_for_game);
         });
 
         findViewById(R.id.BTSaveAsDefault).setOnClickListener(v -> {
             activity.savePostProcessing(settings.toString(), false);
-            AppUtils.showToast(activity, "Saved as container default");
+            AppUtils.showToast(activity, R.string.graphics_enhancements_saved_for_container);
         });
 
         findViewById(R.id.BTResetEnhancements).setOnClickListener(v -> {
@@ -321,27 +324,11 @@ public class GraphicsEnhancementsDialog extends ContentDialog {
 
     private void showFrameGenInfo() {
         ContentDialog dialog = new ContentDialog(getContext(), R.layout.info_message_dialog);
-        dialog.setTitle("Frame Generation");
+        dialog.setTitle(R.string.frame_generation);
         dialog.setIcon(R.drawable.ic_driver_info);
 
         TextView tvMessage = dialog.findViewById(R.id.TVInfoMessage);
-        String message = "<b>Frame Generation (ZeroFG)</b><br/>" +
-                "Builds new frames between the game's own frames from the motion between them, so the game looks smoother than it renders.<br/><br/>" +
-                "<b>Modes:</b><br/>" +
-                "- <b>2x (fixed)</b>: one generated frame per game frame (30 becomes 60). Works while the game runs at 10-50 fps.<br/>" +
-                "- <b>Auto - target N fps</b>: frames are shown at the target rate exactly, never above it, with as many generated frames as that takes (up to 4x the game). " +
-                "The multiplier can be fractional: a game at 30 with a target of 60 runs 2x, at 24 it runs 2.5x, at 20 it runs 3x. Under 1.2x (a game at 50+ with a target of 60) it is left alone.<br/>" +
-                "- The screen's refresh rate is set to suit the frames shown (60 or 120 Hz for a target of 60), so they are evenly spaced.<br/><br/>" +
-                "<b>Best results:</b><br/>" +
-                "- Cap the game with the FPS Limiter above (e.g. 30 with a target of 60): a steady game rate gives even motion.<br/>" +
-                "- The HUD shows <i>shown fps \u00b7 game fps \u00d7 multiplier \u00b7 ms per generated frame</i>.<br/><br/>" +
-                "<b>Cost:</b><br/>" +
-                "- About 3 ms (800x600) to 5 ms (1280x720) of GPU time per generated frame, run at high GPU priority so frames are on time.<br/>" +
-                "- One frame of added input latency: a frame between two others can only be made once the newer one exists.<br/>" +
-                "- Needs Vulkan 1.3. Menus, loading screens and stalls (under 10 fps) are not interpolated.<br/><br/>" +
-                "<b>Quality:</b><br/>" +
-                "- <b>Balanced</b>: two motion refinement passes (the default).<br/>" +
-                "- <b>Quality</b>: four passes: more accurate motion on moving objects (fewer warps and trails, most visible at 800x600 and below), about 40% more GPU time. Best for games limited by the CPU.";
+        String message = getContext().getString(R.string.frame_generation_help);
         tvMessage.setText(android.text.Html.fromHtml(message, android.text.Html.FROM_HTML_MODE_LEGACY));
 
         dialog.findViewById(R.id.BTCancel).setVisibility(View.GONE);
@@ -350,15 +337,11 @@ public class GraphicsEnhancementsDialog extends ContentDialog {
 
     private void showFPSLimitInfo() {
         ContentDialog dialog = new ContentDialog(getContext(), R.layout.info_message_dialog);
-        dialog.setTitle("Universal FPS Limiter");
+        dialog.setTitle(R.string.universal_fps_limiter);
         dialog.setIcon(R.drawable.ic_driver_info);
 
         TextView tvMessage = dialog.findViewById(R.id.TVInfoMessage);
-        String message = "<b>Universal FPS Limiter</b><br/>" +
-                "A high-precision system-level limiter that throttles the game engine before it reaches the display.<br/><br/>" +
-                "<b>How it works:</b><br/>" +
-                "- It uses microsecond-precise thread sleeping and busy-waiting to ensure frames are presented at exact intervals.<br/>" +
-                "- Unlike driver-level limits (like DXVK), this works across all wrappers (DXVK, WineD3D, etc.) and reduces both CPU heat and input jitter.";
+        String message = getContext().getString(R.string.fps_limiter_help);
         tvMessage.setText(android.text.Html.fromHtml(message, android.text.Html.FROM_HTML_MODE_LEGACY));
 
         dialog.findViewById(R.id.BTCancel).setVisibility(View.GONE);

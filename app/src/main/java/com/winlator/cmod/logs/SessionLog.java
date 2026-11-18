@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.core.Callback;
 import com.winlator.cmod.core.FileUtils;
 import com.winlator.cmod.core.ProcessHelper;
@@ -142,12 +143,12 @@ public final class SessionLog {
      * Android's own records, newest first; written to _app/crash_<time>.txt when {@code save}. Android 11+.
      */
     public static String exitReasons(Context context, boolean save) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return "Exit reasons need Android 11 or newer.";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return context.getString(R.string.exit_reasons_requires_android_11);
         StringBuilder sb = new StringBuilder();
         try {
             ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             List<ApplicationExitInfo> infos = am.getHistoricalProcessExitReasons(context.getPackageName(), 0, 8);
-            if (infos.isEmpty()) return "Android has no exit records for this app yet.";
+            if (infos.isEmpty()) return context.getString(R.string.no_app_exit_records);
             for (ApplicationExitInfo info : infos) {
                 sb.append(LogFiles.timestamp(info.getTimestamp())).append("  ").append(reasonName(info.getReason()))
                   .append("  (").append(info.getProcessName()).append(")\n");
@@ -159,7 +160,7 @@ public final class SessionLog {
                 deviceHeader(context, null) + "=== Recent exit reasons ===\n" + sb);
         }
         catch (Exception e) {
-            return "Could not read exit reasons: " + e.getMessage();
+            return context.getString(R.string.read_app_exit_records_failed, e.getMessage());
         }
         return sb.toString();
     }

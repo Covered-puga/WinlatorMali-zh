@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Community configurations -->
+    <string name="community_no_network">无法连接互联网。\n请检查网络设置。</string>
+    <string name="community_no_shared_configs">还没有人分享社区配置。\n可在快捷方式菜单中分享你的配置。</string>
+    <string name="community_game_list_failed">无法获取游戏列表。\n请检查网络连接或服务器状态。</string>
+    <string name="community_game_search_empty">未找到与“%1$s”匹配的游戏</string>
+    <string name="community_fetching_configs">正在获取配置…</string>
+    <string name="community_no_game_configs">未找到此游戏的配置。</string>
+    <string name="community_fetch_configs_failed">无法获取配置。请检查网络连接。</string>
+    <string name="community_select_config">选择配置</string>
+    <string name="community_config_details">配置详情</string>
+    <string name="community_unknown_device">未知设备</string>
+    <string name="community_no_notes">暂无备注。</string>
+    <string name="community_ram_value">%1$s 内存</string>
+    <string name="community_storage_value">%1$s 存储</string>
+    <string name="community_just_now">刚刚</string>
+    <string name="community_minutes_ago">%1$d 分钟前</string>
+    <string name="community_hours_ago">%1$d 小时前</string>
+    <string name="community_days_ago">%1$d 天前</string>
+    <string name="community_vote_helpful">👍 有帮助（%1$d）</string>
+    <string name="community_vote_helpful_selected">👍 有帮助（%1$d） ✓</string>
+    <string name="community_vote_not_helpful">👎 无效（%1$d）</string>
+    <string name="community_vote_not_helpful_selected">👎 无效（%1$d） ✓</string>
+    <string name="community_import_button">导入</string>
+    <string name="community_downloading_config">正在下载配置…</string>
+    <string name="community_download_failed">无法下载配置。请检查网络连接。</string>
+    <string name="community_wine_notice">Wine 运行时提示</string>
+    <string name="community_download_button">下载</string>
+    <string name="community_use_installed">使用已安装版本</string>
+    <string name="community_select_wine">选择 Wine 运行时</string>
+    <string name="community_import_confirm"><![CDATA[要导入 <b>%1$s</b> 的配置吗？<br><br>Wine 运行时：<b>%2$s</b>]]></string>
+    <string name="community_import_notes_html"><![CDATA[<br><br><b>备注：</b><br>%1$s]]></string>
+    <string name="community_import_title">导入配置</string>
+    <string name="community_importing">正在导入配置…</string>
+    <string name="community_import_minor_errors">已导入，但部分项目失败。</string>
+    <string name="community_import_failed">导入失败。</string>
+    <string name="community_single_config">%1$d 份配置</string>
+    <string name="community_multiple_configs">%1$d 份配置</string>
+    <string name="community_game_error">错误</string>
+    <string name="community_wine_required">尚未安装 Wine 运行时。请在附加内容中下载。</string>
+    <string name="community_default_runtime">默认</string>
+    <string name="community_runtime_fallback">尚未安装“%1$s”运行时，将使用 %2$s</string>
+    <string name="community_wine_none_installed_html"><![CDATA[此配置推荐使用：<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>此设备尚未安装 Wine 或 Proton 运行时。<br><br>请在附加内容中下载 <b>%1$s</b>，以使用此配置。]]></string>
+    <string name="community_wine_select_installed_html"><![CDATA[此配置推荐使用：<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>此设备尚未安装该版本。<br><br>要下载 <b>%1$s</b>，还是选择一个已安装的运行时？]]></string>
+    <string name="community_wine_use_installed_html"><![CDATA[此配置推荐使用：<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>此设备尚未安装该版本。<br><br>要下载 <b>%1$s</b>，还是继续使用已安装的运行时（<b>%2$s</b>）？]]></string>
+    <string name="community_imported_html"><![CDATA[<b>导入成功！</b><br><br>已用社区配置创建新容器。<br><br><b>导入的配置</b><br>• Wine：%1$s<br>• 图形驱动程序：%2$s<br>• DX 转换层：%3$s<br><br><b>使用方法</b><br>1. 打开<b>容器</b>。<br>2. 运行 <b>[Community] %4$s</b>。<br>3. 在 D 盘找到游戏的 EXE 文件并运行！]]></string>
+</resources>

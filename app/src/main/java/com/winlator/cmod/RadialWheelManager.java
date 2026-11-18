@@ -428,7 +428,7 @@ public class RadialWheelManager {
             }
 
             String label = (slice.label != null && !slice.label.isEmpty())
-                    ? slice.label : (slice.binding != null && slice.binding != Binding.NONE ? slice.binding.toString() : "");
+                    ? slice.label : (slice.binding != null && slice.binding != Binding.NONE ? slice.binding.getDisplayLabel(inputControlsView.getContext()) : "");
             if (label.isEmpty()) continue;
 
             if (i == selectedSlice) {

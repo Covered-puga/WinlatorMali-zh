@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="34dp"
         android:minWidth="76dp"
-        android:text="Get"
+        android:text="@string/get_runtime"
         android:textSize="12sp"
         android:layout_marginStart="8dp" />
 
@@ -66,6 +66,6 @@
         app:tint="#FF5252"
         android:layout_marginStart="6dp"
         android:visibility="gone"
-        android:contentDescription="Delete Runtime" />
+        android:contentDescription="@string/delete_runtime" />
 
 </LinearLayout>

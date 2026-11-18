@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Running session and control editor options -->
+    <string name="control_type_button">BUTTON</string>
+    <string name="control_type_d_pad">D-PAD</string>
+    <string name="control_type_range_button">RANGE-BUTTON</string>
+    <string name="control_type_stick">STICK</string>
+    <string name="control_type_trackpad">TRACKPAD</string>
+    <string name="control_type_dynamic_stick">DYNAMIC-STICK</string>
+    <string name="control_type_mouse_area">MOUSE-AREA</string>
+    <string name="control_type_button_grid">BUTTON-GRID</string>
+    <string name="control_type_expandable_button">EXPANDABLE-BUTTON</string>
+    <string name="control_shape_circle">CIRCLE</string>
+    <string name="control_shape_capsule">CAPSULE</string>
+    <string name="control_shape_oval">OVAL</string>
+    <string name="control_shape_round_rect">ROUND RECT</string>
+    <string name="control_shape_rect">RECT</string>
+    <string name="control_shape_square">SQUARE</string>
+    <string name="control_shape_hexagon">HEXAGON</string>
+    <string name="control_shape_diamond">DIAMOND</string>
+    <string name="control_shape_octagon">OCTAGON</string>
+    <string name="control_range_letters">FROM A TO Z</string>
+    <string name="control_range_digits">FROM 0 TO 9</string>
+    <string name="control_range_function_keys">FROM F1 TO F12</string>
+    <string name="control_range_numpad">FROM NP0 TO NP9</string>
+    <string name="control_style_glass">WinMali Default</string>
+    <string name="control_style_xbox">Xbox Edition</string>
+    <string name="control_style_playstation">PlayStation Edition</string>
+    <string name="frame_generation_fixed_mode">2x (fixed)</string>
+    <string name="frame_generation_target_mode">Auto - target %1$d fps</string>
+    <!-- Theme preset labels -->
+    <string name="theme_preset_midnight_ocean">Midnight Ocean</string>
+    <string name="theme_preset_obsidian_oled">Obsidian OLED</string>
+    <string name="theme_preset_cyberpunk">Cyberpunk Neon</string>
+    <string name="theme_preset_crimson_dusk">Crimson Dusk</string>
+    <string name="theme_preset_dark_glass">Classic (Dark Glass)</string>
+    <string name="theme_preset_emerald_depth">Emerald Depth</string>
+    <string name="theme_preset_grape_sunset">Grape Sunset</string>
+    <string name="theme_preset_violet_dream">Violet Dream</string>
+    <string name="theme_preset_custom_palette">Custom Palette...</string>
+    <string name="theme_preset_custom">Custom</string>
+</resources>

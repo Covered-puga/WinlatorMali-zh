@@ -138,17 +138,17 @@ public class WineDownloader {
         String defaultTitle = "Proton 10.0-4 arm64ec (" + (isModern ? "SDK 35" : "SDK 28") + ")";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-            .setTitle("Welcome to Winlator Mali")
-            .setMessage("No Wine or Proton runtimes are installed yet.\n\nTo run Windows games with highest performance, download the official Proton 10 runtime:")
-            .setPositiveButton("Download " + defaultTitle, (dialog, which) -> {
+            .setTitle(R.string.welcome_to_winlator_mali)
+            .setMessage(R.string.welcome_wine_runtime_required)
+            .setPositiveButton(activity.getString(R.string.download_runtime_named, defaultTitle), (dialog, which) -> {
                 sActiveWelcomeDialog = null;
                 showDownloadDialog(activity, null);
             })
-            .setNeutralButton("Choose from Sources", (dialog, which) -> {
+            .setNeutralButton(R.string.choose_runtime_from_sources, (dialog, which) -> {
                 sActiveWelcomeDialog = null;
                 showDownloadDialog(activity, null);
             })
-            .setNegativeButton("Later", (dialog, which) -> {
+            .setNegativeButton(R.string.later, (dialog, which) -> {
                 sActiveWelcomeDialog = null;
             })
             .setOnDismissListener(dialog -> {
@@ -166,7 +166,7 @@ public class WineDownloader {
         boolean isDarkMode = ThemeManager.isDarkMode(activity);
 
         ContentDialog dialog = new ContentDialog(activity, R.layout.wine_downloader_dialog);
-        dialog.setTitle("Wine & Proton Downloader");
+        dialog.setTitle(R.string.wine_proton_downloader);
         dialog.setIcon(R.drawable.icon_wine);
 
         View contentView = dialog.getContentView();
@@ -184,11 +184,11 @@ public class WineDownloader {
 
         // Catalog sources in Container Wine Downloader
         String[] catalogs = {
-            "☁️ Bannerlator Nightlies",
-            "☁️ WinNative Components",
-            "☁️ StevenMXZ Contents",
-            "🌐 Custom Catalog URL...",
-            "📁 Installed on Device"
+            activity.getString(R.string.catalog_bannerlator_nightlies),
+            activity.getString(R.string.catalog_winnative_components),
+            activity.getString(R.string.catalog_stevenmxz_contents),
+            activity.getString(R.string.catalog_custom_url),
+            activity.getString(R.string.catalog_installed_locally)
         };
 
         ArrayAdapter<String> catalogAdapter = new ArrayAdapter<String>(activity, R.layout.custom_spinner_item, catalogs) {
@@ -217,7 +217,7 @@ public class WineDownloader {
                 pbLoading.setVisibility(View.GONE);
                 List<String> installed = getInstalledWineVersions(activity);
                 if (installed.isEmpty()) {
-                    tvEmptyList.setText("No Wine or Proton runtimes installed.");
+                    tvEmptyList.setText(R.string.no_installed_wine_runtimes);
                     tvEmptyList.setVisibility(View.VISIBLE);
                     lvWineList.setVisibility(View.GONE);
                 } else {
@@ -225,15 +225,15 @@ public class WineDownloader {
                     lvWineList.setVisibility(View.VISIBLE);
                     InstalledWineAdapter installedAdapter = new InstalledWineAdapter(activity, installed, (verName) -> {
                         new AlertDialog.Builder(activity)
-                            .setTitle("Delete " + verName + "?")
-                            .setMessage("Are you sure you want to remove this runtime from Winlator Mali?")
-                            .setPositiveButton("Delete", (d, w) -> {
+                            .setTitle(activity.getString(R.string.confirm_delete_runtime_named, verName))
+                            .setMessage(R.string.confirm_remove_installed_runtime)
+                            .setPositiveButton(R.string.file_manager_delete, (d, w) -> {
                                 deleteWineVersion(activity, verName);
-                                AppUtils.showToast(activity, verName + " removed.");
+                                AppUtils.showToast(activity, activity.getString(R.string.runtime_removed, verName));
                                 loaderHolder[0].run();
                                 if (onInstalledCallback != null) onInstalledCallback.run();
                             })
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(R.string.cancel, null)
                             .show();
                     });
                     lvWineList.setAdapter(installedAdapter);
@@ -246,11 +246,11 @@ public class WineDownloader {
 
                 String fetchUrl = activeCatalogUrl[0];
                 Executors.newSingleThreadExecutor().execute(() -> {
-                    List<CloudWineOption> wineItems = fetchRemoteWineList(fetchUrl);
+                    List<CloudWineOption> wineItems = fetchRemoteWineList(activity, fetchUrl);
                     activity.runOnUiThread(() -> {
                         pbLoading.setVisibility(View.GONE);
                         if (wineItems.isEmpty()) {
-                            tvEmptyList.setText("No Wine or Proton packages found in this source.");
+                            tvEmptyList.setText(R.string.no_wine_packages_in_source);
                             tvEmptyList.setVisibility(View.VISIBLE);
                             lvWineList.setVisibility(View.GONE);
                         } else {
@@ -286,10 +286,10 @@ public class WineDownloader {
                     input.setHint("https://example.com/contents.json");
                     input.setText(saved);
                     new AlertDialog.Builder(activity)
-                        .setTitle("Custom Catalog URL")
-                        .setMessage("Enter the URL to a contents.json repository:")
+                        .setTitle(R.string.custom_catalog_url_title)
+                        .setMessage(R.string.enter_wine_catalog_url)
                         .setView(input)
-                        .setPositiveButton("Load", (d, w) -> {
+                        .setPositiveButton(R.string.load_catalog, (d, w) -> {
                             String custom = input.getText().toString().trim();
                             if (!custom.isEmpty()) {
                                 sp.edit().putString("downloadable_contents_url", custom).apply();
@@ -297,7 +297,7 @@ public class WineDownloader {
                                 loaderHolder[0].run();
                             }
                         })
-                        .setNegativeButton("Cancel", (d, w) -> {
+                        .setNegativeButton(R.string.cancel, (d, w) -> {
                             sCatalogSource.setSelection(0);
                         })
                         .show();
@@ -325,11 +325,11 @@ public class WineDownloader {
         String patternUrl = option.patternUrl;
 
         llProgress.setVisibility(View.VISIBLE);
-        tvProgressTitle.setText("Downloading " + title);
+        tvProgressTitle.setText(activity.getString(R.string.downloading_runtime_named, title));
         pbDownload.setIndeterminate(false);
         pbDownload.setProgress(0);
-        tvProgressStatus.setText("Connecting to repository...");
-        tvProgressPercent.setText("0%");
+        tvProgressStatus.setText(R.string.connecting_to_catalog);
+        tvProgressPercent.setText(activity.getString(R.string.progress_percentage, 0));
 
         Executors.newSingleThreadExecutor().execute(() -> {
             File wcpFile = null;
@@ -343,19 +343,19 @@ public class WineDownloader {
                 downloadFileWithDetailedProgress(urlStr, wcpFile, (progress, readBytes, totalBytes) -> {
                     activity.runOnUiThread(() -> {
                         pbDownload.setProgress(progress);
-                        tvProgressPercent.setText(progress + "%");
-                        String statusStr = String.format(Locale.US, "%.1f MB / %.1f MB", (readBytes / (1024.0 * 1024.0)), (totalBytes / (1024.0 * 1024.0)));
-                        tvProgressStatus.setText("Downloading runtime: " + statusStr);
+                        tvProgressPercent.setText(activity.getString(R.string.progress_percentage, progress));
+                        String statusStr = activity.getString(R.string.runtime_download_progress, readBytes / (1024.0 * 1024.0), totalBytes / (1024.0 * 1024.0));
+                        tvProgressStatus.setText(activity.getString(R.string.downloading_runtime_size, statusStr));
                     });
                 });
 
                 // Download container pattern if URL provided
                 if (patternUrl != null && !patternUrl.isEmpty()) {
                     activity.runOnUiThread(() -> {
-                        tvProgressTitle.setText("Downloading container pattern for " + title);
-                        tvProgressStatus.setText("Connecting to pattern archive...");
+                        tvProgressTitle.setText(activity.getString(R.string.downloading_runtime_pattern_named, title));
+                        tvProgressStatus.setText(R.string.connecting_to_pattern_archive);
                         pbDownload.setProgress(0);
-                        tvProgressPercent.setText("0%");
+                        tvProgressPercent.setText(activity.getString(R.string.progress_percentage, 0));
                     });
 
                     patternFile = new File(cacheDir, versionName + "_container_pattern_" + System.currentTimeMillis() + ".tzst");
@@ -363,9 +363,9 @@ public class WineDownloader {
                     downloadFileWithDetailedProgress(patternUrl, patternFile, (progress, readBytes, totalBytes) -> {
                         activity.runOnUiThread(() -> {
                             pbDownload.setProgress(progress);
-                            tvProgressPercent.setText(progress + "%");
-                            String statusStr = String.format(Locale.US, "%.1f MB / %.1f MB", (readBytes / (1024.0 * 1024.0)), (totalBytes / (1024.0 * 1024.0)));
-                            tvProgressStatus.setText("Downloading pattern: " + statusStr);
+                            tvProgressPercent.setText(activity.getString(R.string.progress_percentage, progress));
+                            String statusStr = activity.getString(R.string.runtime_download_progress, readBytes / (1024.0 * 1024.0), totalBytes / (1024.0 * 1024.0));
+                            tvProgressStatus.setText(activity.getString(R.string.downloading_runtime_pattern_size, statusStr));
                         });
                     });
                 }
@@ -374,8 +374,8 @@ public class WineDownloader {
 
                 activity.runOnUiThread(() -> {
                     pbDownload.setIndeterminate(true);
-                    tvProgressTitle.setText("Installing " + title);
-                    tvProgressStatus.setText("Extracting & registering runtime packages...");
+                    tvProgressTitle.setText(activity.getString(R.string.installing_runtime_named, title));
+                    tvProgressStatus.setText(R.string.extracting_and_registering_runtime);
                 });
 
                 ContentsManager contentsManager = new ContentsManager(activity);
@@ -386,7 +386,7 @@ public class WineDownloader {
                         if (finalSavedPatternFile != null) FileUtils.delete(finalSavedPatternFile);
                         activity.runOnUiThread(() -> {
                             llProgress.setVisibility(View.GONE);
-                            AppUtils.showToast(activity, "Installation failed: " + reason);
+                            AppUtils.showToast(activity, activity.getString(R.string.content_installation_failed, reason));
                         });
                     }
 
@@ -399,7 +399,7 @@ public class WineDownloader {
                                 if (finalSavedPatternFile != null) FileUtils.delete(finalSavedPatternFile);
                                 activity.runOnUiThread(() -> {
                                     llProgress.setVisibility(View.GONE);
-                                    AppUtils.showToast(activity, "Installation failed: " + reason);
+                                    AppUtils.showToast(activity, activity.getString(R.string.content_installation_failed, reason));
                                 });
                             }
 
@@ -432,7 +432,7 @@ public class WineDownloader {
                                 contentsManager.syncContents();
                                 activity.runOnUiThread(() -> {
                                     llProgress.setVisibility(View.GONE);
-                                    AppUtils.showToast(activity, title + " installed successfully!");
+                                    AppUtils.showToast(activity, activity.getString(R.string.runtime_installation_success, title));
                                     if (onInstalledCallback != null) onInstalledCallback.run();
                                     if (dialog != null && dialog.isShowing()) dialog.dismiss();
                                 });
@@ -447,13 +447,13 @@ public class WineDownloader {
                 if (patternFile != null) FileUtils.delete(patternFile);
                 activity.runOnUiThread(() -> {
                     llProgress.setVisibility(View.GONE);
-                    AppUtils.showToast(activity, "Download failed: " + e.getMessage());
+                    AppUtils.showToast(activity, activity.getString(R.string.download_error_details, e.getMessage()));
                 });
             }
         });
     }
 
-    private static List<CloudWineOption> fetchRemoteWineList(String repoUrl) {
+    private static List<CloudWineOption> fetchRemoteWineList(Context context, String repoUrl) {
         List<CloudWineOption> list = new ArrayList<>();
         try {
             URL url = new URL(repoUrl);
@@ -501,7 +501,7 @@ public class WineDownloader {
 
                     if (isWineOrProton) {
                         String cleanTitle = verName;
-                        String cleanDesc = desc.isEmpty() ? (lowerName.contains("proton") ? "Proton Compatibility Runtime" : "Wine Runtime Package") : desc;
+                        String cleanDesc = desc.isEmpty() ? (lowerName.contains("proton") ? context.getString(R.string.proton_compatibility_runtime) : context.getString(R.string.wine_runtime_package)) : desc;
                         list.add(new CloudWineOption(cleanTitle, verName, remoteUrl, cleanDesc));
                     }
                 }
@@ -605,11 +605,11 @@ public class WineDownloader {
             }
 
             if (isInstalled) {
-                btAction.setText("Installed");
+                btAction.setText(R.string.installed_status);
                 btAction.setEnabled(false);
                 btAction.setAlpha(0.5f);
             } else {
-                btAction.setText("Get");
+                btAction.setText(R.string.get_runtime);
                 btAction.setEnabled(true);
                 btAction.setAlpha(1.0f);
                 btAction.setOnClickListener(v -> {
@@ -650,7 +650,7 @@ public class WineDownloader {
             ImageButton btDelete = convertView.findViewById(R.id.BTWineItemDelete);
 
             tvTitle.setText(verName);
-            tvSub.setText("Active runtime in imagefs/opt or contents folder");
+            tvSub.setText(R.string.active_runtime_folder);
 
             btAction.setVisibility(View.GONE);
             btDelete.setVisibility(View.VISIBLE);

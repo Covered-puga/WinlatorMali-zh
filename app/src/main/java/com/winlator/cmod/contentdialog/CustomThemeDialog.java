@@ -55,7 +55,7 @@ public class CustomThemeDialog extends ContentDialog {
 
     public CustomThemeDialog(Context context) {
         super(context, R.layout.custom_theme_dialog);
-        setTitle("Customize Theme");
+        setTitle(R.string.customize_theme);
         setIcon(R.drawable.icon_popup_menu_settings);
 
         selectedAccent = ThemeManager.getCustomAccentColor(context);
@@ -249,7 +249,8 @@ public class CustomThemeDialog extends ContentDialog {
 
         // Calculate contrast
         double contrast = ThemePreset.contrastRatio(selectedAccent, surfaceColor);
-        String contrastText = String.format(Locale.ENGLISH, "Contrast: %.1f:1 (%s)", contrast, contrast >= 3.0 ? "Pass" : "Low");
+        String contrastText = getContext().getString(R.string.color_contrast_ratio, contrast,
+                getContext().getString(contrast >= 3.0 ? R.string.color_contrast_pass : R.string.color_contrast_low));
         tvPreviewContrastBadge.setText(contrastText);
 
         GradientDrawable badgeDrawable = new GradientDrawable();

@@ -264,7 +264,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
     private void createNotifcationChannel() {
         String name = "Winlator";
-        String description = "Winlator XServer Messages";
+        String description = getString(R.string.xserver_messages_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
         channel.setDescription(description);
@@ -1128,7 +1128,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             editor.apply();
 
             com.winlator.cmod.perf.PerformanceManager.applySettingsLive(this, preferences);
-            AppUtils.showToast(this, "Performance settings applied");
+            AppUtils.showToast(this, R.string.performance_settings_applied);
         });
 
         dialog.show();
@@ -1136,7 +1136,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
     private void showHUDConfigDialog() {
         if (container == null || !container.isShowFPS()) {
-            AppUtils.showToast(this, "Turn on 'Show FPS' in Container Settings");
+            AppUtils.showToast(this, R.string.hud_requires_show_fps);
             return;
         }
 
@@ -1157,7 +1157,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         frameRating.enableByUser();
 
         final ContentDialog dialog = new ContentDialog(this, R.layout.hud_config_dialog);
-        dialog.setTitle("HUD Settings");
+        dialog.setTitle(R.string.hud_settings);
         dialog.setIcon(R.drawable.ic_hud);
 
         CheckBox cbEnable = dialog.findViewById(R.id.CBHudEnable);
@@ -1188,13 +1188,13 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         int initialAlpha = (int)(frameRating.getHudAlpha() * 100);
         sbAlpha.setProgress(initialAlpha);
-        tvAlpha.setText(initialAlpha + "%");
+        tvAlpha.setText(getString(R.string.progress_percentage, initialAlpha));
 
         float initialScaleValue = frameRating.getHudScale();
         sbScale.setProgress((int)((initialScaleValue - 0.5f) / 1.5f * 100));
-        tvScale.setText(String.format(Locale.US, "%.1fx", initialScaleValue));
+        tvScale.setText(getString(R.string.hud_scale_value, initialScaleValue));
 
-        String[] presets = {"Custom", "Top Left", "Top Center", "Top Right", "Middle Left", "Center", "Middle Right", "Bottom Left", "Bottom Center", "Bottom Right"};
+        String[] presets = getResources().getStringArray(R.array.hud_position_entries);
         int popupBgRes = isDarkMode ? R.drawable.content_dialog_background_dark : R.drawable.content_dialog_background;
         spPreset.setPopupBackgroundResource(popupBgRes);
         spPreset.setAdapter(createThemedSpinnerAdapter(this, presets, isDarkMode));
@@ -1203,7 +1203,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         Spinner spStyle = dialog.findViewById(R.id.SPHudStyle);
         if (spStyle != null) {
-            String[] styles = {"Classic (Multi-Color)", "Classic Monochrome", "Modular Glass Tiles", "Adaptive (Theme Dynamic)", "Glass (WinMali Default)"};
+            String[] styles = getResources().getStringArray(R.array.hud_style_entries);
             spStyle.setPopupBackgroundResource(popupBgRes);
             spStyle.setAdapter(createThemedSpinnerAdapter(this, styles, isDarkMode));
             spStyle.setSelection(Math.min(WinlatorHUD.STYLE_GLASS, frameRating.getHudStyle()));
@@ -1245,7 +1245,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) frameRating.setHudAlpha(progress / 100f);
-                tvAlpha.setText(progress + "%");
+                tvAlpha.setText(getString(R.string.progress_percentage, progress));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -1256,7 +1256,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float scale = 0.5f + (progress / 100f) * 1.5f;
                 if (fromUser) frameRating.setHudScale(scale);
-                tvScale.setText(String.format(Locale.US, "%.1fx", scale));
+                tvScale.setText(getString(R.string.hud_scale_value, scale));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -1283,11 +1283,11 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
                 
                 int alphaVal = (int)(frameRating.getHudAlpha() * 100);
                 sbAlpha.setProgress(alphaVal);
-                tvAlpha.setText(alphaVal + "%");
+                tvAlpha.setText(getString(R.string.progress_percentage, alphaVal));
 
                 float scaleValue = frameRating.getHudScale();
                 sbScale.setProgress((int)((scaleValue - 0.5f) / 1.5f * 100));
-                tvScale.setText(String.format(Locale.US, "%.1fx", scaleValue));
+                tvScale.setText(getString(R.string.hud_scale_value, scaleValue));
                 
                 spPreset.setSelection(WinlatorHUD.PRESET_TOP_RIGHT + 1);
             }, 50);
@@ -1972,19 +1972,19 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         int popupBgRes = isDarkMode ? R.drawable.content_dialog_background_dark : R.drawable.content_dialog_background;
 
         final Spinner sGyroActivationMode = dialog.findViewById(R.id.SGyroActivationMode);
-        String[] activationModes = {"Always", "Touch Screen / Touchpad", "Left Trigger (LT / ADS)", "Right Trigger (RT)", "Right Stick (RS)"};
+        String[] activationModes = getResources().getStringArray(R.array.gyro_activation_mode_entries);
         sGyroActivationMode.setPopupBackgroundResource(popupBgRes);
         sGyroActivationMode.setAdapter(createThemedSpinnerAdapter(this, activationModes, isDarkMode));
         sGyroActivationMode.setSelection(Math.min(gyroActivationMode, activationModes.length - 1));
 
         final Spinner sGyroTarget = dialog.findViewById(R.id.SGyroTarget);
-        String[] gyroTargets = {"Mouse Look", "Right Stick (Camera)", "Left Stick (Steering)", "Arrow Keys"};
+        String[] gyroTargets = getResources().getStringArray(R.array.gyro_target_entries);
         sGyroTarget.setPopupBackgroundResource(popupBgRes);
         sGyroTarget.setAdapter(createThemedSpinnerAdapter(this, gyroTargets, isDarkMode));
         sGyroTarget.setSelection(Math.min(gyroTarget, gyroTargets.length - 1));
 
         final Spinner sGyroCurve = dialog.findViewById(R.id.SGyroCurve);
-        String[] gyroCurves = {"Linear (1:1)", "Enhanced (Exponential)", "Sigmoid (S-Curve)"};
+        String[] gyroCurves = getResources().getStringArray(R.array.gyro_curve_entries);
         sGyroCurve.setPopupBackgroundResource(popupBgRes);
         sGyroCurve.setAdapter(createThemedSpinnerAdapter(this, gyroCurves, isDarkMode));
         sGyroCurve.setSelection(Math.min(gyroCurve, gyroCurves.length - 1));
@@ -1992,28 +1992,28 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         final TextView tvGyroSensitivityX = dialog.findViewById(R.id.TVGyroSensitivityX);
         final SeekBar sbGyroSensitivityX = dialog.findViewById(R.id.SBGyroSensitivityX);
         sbGyroSensitivityX.setProgress((int)(gyroSensitivityX * 50));
-        tvGyroSensitivityX.setText(String.format(Locale.US, "Sensitivity X (Yaw): %.1fx", gyroSensitivityX));
+        tvGyroSensitivityX.setText(getString(R.string.gyro_sensitivity_yaw, gyroSensitivityX));
 
         final TextView tvGyroSensitivityY = dialog.findViewById(R.id.TVGyroSensitivityY);
         final SeekBar sbGyroSensitivityY = dialog.findViewById(R.id.SBGyroSensitivityY);
         sbGyroSensitivityY.setProgress((int)(gyroSensitivityY * 50));
-        tvGyroSensitivityY.setText(String.format(Locale.US, "Sensitivity Y (Pitch): %.1fx", gyroSensitivityY));
+        tvGyroSensitivityY.setText(getString(R.string.gyro_sensitivity_pitch, gyroSensitivityY));
 
         final TextView tvGyroSmoothing = dialog.findViewById(R.id.TVGyroSmoothing);
         final SeekBar sbGyroSmoothing = dialog.findViewById(R.id.SBGyroSmoothing);
         sbGyroSmoothing.setProgress((int)(gyroSmoothing * 100));
-        tvGyroSmoothing.setText(String.format(Locale.US, "Gyro Smoothing: %d%%", (int)(gyroSmoothing * 100)));
+        tvGyroSmoothing.setText(getString(R.string.gyro_smoothing_value, (int)(gyroSmoothing * 100)));
 
         final TextView tvGyroDeadzone = dialog.findViewById(R.id.TVGyroDeadzone);
         final SeekBar sbGyroDeadzone = dialog.findViewById(R.id.SBGyroDeadzone);
         sbGyroDeadzone.setProgress((int)(gyroDeadzone * 200));
-        tvGyroDeadzone.setText(String.format(Locale.US, "Gyro Deadzone: %d%%", (int)(gyroDeadzone * 100)));
+        tvGyroDeadzone.setText(getString(R.string.gyro_deadzone_value, (int)(gyroDeadzone * 100)));
 
         sbGyroSensitivityX.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float val = Math.max(0.1f, progress / 50.0f);
-                tvGyroSensitivityX.setText(String.format(Locale.US, "Sensitivity X (Yaw): %.1fx", val));
+                tvGyroSensitivityX.setText(getString(R.string.gyro_sensitivity_yaw, val));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -2023,7 +2023,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float val = Math.max(0.1f, progress / 50.0f);
-                tvGyroSensitivityY.setText(String.format(Locale.US, "Sensitivity Y (Pitch): %.1fx", val));
+                tvGyroSensitivityY.setText(getString(R.string.gyro_sensitivity_pitch, val));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -2032,7 +2032,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         sbGyroSmoothing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvGyroSmoothing.setText(String.format(Locale.US, "Gyro Smoothing: %d%%", progress));
+                tvGyroSmoothing.setText(getString(R.string.gyro_smoothing_value, progress));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -2041,7 +2041,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         sbGyroDeadzone.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvGyroDeadzone.setText(String.format(Locale.US, "Gyro Deadzone: %d%%", progress / 2));
+                tvGyroDeadzone.setText(getString(R.string.gyro_deadzone_value, progress / 2));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -2055,7 +2055,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             ArrayList<ControlsProfile> profiles = inputControlsManager.getProfiles(true);
             ControlsProfile selectedProfile = (position > 0 && position <= profiles.size()) ? profiles.get(position - 1) : null;
             if (selectedProfile == null && ExternalController.getControllers().isEmpty()) {
-                AppUtils.showToast(this, "Please select a profile or connect a controller");
+                AppUtils.showToast(this, R.string.profile_or_controller_required);
                 return;
             }
             RadialWheelsDialog.show(this, selectedProfile, () -> {
@@ -2075,7 +2075,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
                 .putFloat("gyro_bias_x", gyroBiasX)
                 .putFloat("gyro_bias_y", gyroBiasY)
                 .apply();
-            AppUtils.showToast(this, "Gyro Calibrated");
+            AppUtils.showToast(this, R.string.gyro_calibrated);
         });
 
         dialog.findViewById(R.id.BTGyroReset).setOnClickListener(v -> {
@@ -2095,7 +2095,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
                 .putFloat("gyro_bias_x", 0)
                 .putFloat("gyro_bias_y", 0)
                 .apply();
-            AppUtils.showToast(this, "Gyro Settings Reset");
+            AppUtils.showToast(this, R.string.gyro_settings_reset);
         });
 
         final Runnable updateProfile = () -> {

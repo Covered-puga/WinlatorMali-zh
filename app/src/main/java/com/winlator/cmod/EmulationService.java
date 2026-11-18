@@ -49,10 +49,10 @@ public class EmulationService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_stat_ab_gear_0011)
-                .setContentTitle("Winlator Emulation")
-                .setContentText("Emulation is running in the background")
+                .setContentTitle(getString(R.string.winlator_emulation_notification))
+                .setContentText(getString(R.string.emulation_running_in_background))
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.icon_remove, "Stop Emulation", stopPendingIntent)
+                .addAction(R.drawable.icon_remove, getString(R.string.stop_emulation), stopPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(true)
                 .build();
@@ -84,7 +84,7 @@ public class EmulationService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Emulation Service Channel",
+                    getString(R.string.emulation_service_channel),
                     NotificationManager.IMPORTANCE_LOW
             );
             NotificationManager manager = getSystemService(NotificationManager.class);

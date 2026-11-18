@@ -26,32 +26,32 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Appearance" />
+                android:text="@string/appearance" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Emulation" />
+                android:text="@string/emulation" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Input &amp; Display" />
+                android:text="@string/input_and_display" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Storage &amp; Audio" />
+                android:text="@string/storage_and_audio" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Performance" />
+                android:text="@string/performance" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Advanced" />
+                android:text="@string/advanced" />
         </com.google.android.material.tabs.TabLayout>
 
         <ScrollView
@@ -80,7 +80,7 @@
                         android:id="@+id/TVTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Theme &amp; Colors"
+                        android:text="@string/theme_and_colors"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="?attr/colorAccent"
@@ -103,7 +103,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Active Color Palette"
+                                android:text="@string/active_color_palette"
                                 android:textStyle="bold"
                                 android:textSize="13sp"
                                 android:textColor="?android:attr/textColorSecondary"
@@ -129,7 +129,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Custom Palette Editor"
+                                android:text="@string/custom_palette_editor"
                                 android:textSize="14sp" />
 
                             <ImageButton
@@ -138,7 +138,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/icon_popup_menu_settings"
-                                android:contentDescription="Customize Colors" />
+                                android:contentDescription="@string/customize_colors" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -198,36 +198,36 @@
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTAddBox64Preset"
-                                android:tooltipText="Add"
+                                android:tooltipText="@string/add"
                                 android:src="@drawable/icon_add" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTEditBox64Preset"
-                                android:tooltipText="Edit"
+                                android:tooltipText="@string/edit"
                                 android:src="@drawable/icon_edit" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Duplicate"
+                                android:tooltipText="@string/duplicate"
                                 android:id="@+id/BTDuplicateBox64Preset"
                                 android:src="@drawable/icon_duplicate" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Remove"
+                                android:tooltipText="@string/remove"
                                 android:id="@+id/BTRemoveBox64Preset"
                                 android:src="@drawable/icon_remove" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTExportBox64Preset"
-                                android:tooltipText="Export"
+                                android:tooltipText="@string/export"
                                 android:src="@drawable/icon_export" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Import"
+                                android:tooltipText="@string/import_action"
                                 android:id="@+id/BTImportBox64Preset"
                                 android:src="@drawable/icon_popup_menu_download" />
                         </LinearLayout>
@@ -278,36 +278,36 @@
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTAddFEXCorePreset"
-                                android:tooltipText="Add"
+                                android:tooltipText="@string/add"
                                 android:src="@drawable/icon_add" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTEditFEXCorePreset"
-                                android:tooltipText="Edit"
+                                android:tooltipText="@string/edit"
                                 android:src="@drawable/icon_edit" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Duplicate"
+                                android:tooltipText="@string/duplicate"
                                 android:id="@+id/BTDuplicateFEXCorePreset"
                                 android:src="@drawable/icon_duplicate" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Remove"
+                                android:tooltipText="@string/remove"
                                 android:id="@+id/BTRemoveFEXCorePreset"
                                 android:src="@drawable/icon_remove" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
                                 android:id="@+id/BTExportFEXCorePreset"
-                                android:tooltipText="Export"
+                                android:tooltipText="@string/export"
                                 android:src="@drawable/icon_export" />
 
                             <ImageButton
                                 style="@style/ListMenuButton"
-                                android:tooltipText="Import"
+                                android:tooltipText="@string/import_action"
                                 android:id="@+id/BTImportFEXCorePreset"
                                 android:src="@drawable/icon_popup_menu_download" />
                         </LinearLayout>
@@ -399,14 +399,14 @@
                             android:id="@+id/CBCursorLock"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Capture External Pointer (Mouse Lock)"
+                            android:text="@string/capture_external_pointer"
                             android:layout_marginVertical="3dp" />
 
                         <CheckBox
                             android:id="@+id/CBXinputToggle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Disable XInput (Exclusive Mouse/Keyboard Mode)"
+                            android:text="@string/disable_xinput_exclusive_input"
                             android:layout_marginVertical="3dp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -426,7 +426,7 @@
                         android:id="@+id/TVShortcutSettings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Storage Paths"
+                        android:text="@string/storage_paths"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="?attr/colorAccent"
@@ -443,7 +443,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Winlator Storage Path"
+                            android:text="@string/winlator_storage_path"
                             android:textStyle="bold"
                             android:textSize="13sp"
                             android:textColor="?android:attr/textColorSecondary" />
@@ -471,13 +471,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="36dp"
                                 android:layout_marginStart="8dp"
-                                android:text="Browse" />
+                                android:text="@string/browse" />
                         </LinearLayout>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Shortcut Export Path"
+                            android:text="@string/shortcut_export_path"
                             android:textStyle="bold"
                             android:textSize="13sp"
                             android:textColor="?android:attr/textColorSecondary" />
@@ -504,7 +504,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="36dp"
                                 android:layout_marginStart="8dp"
-                                android:text="Browse" />
+                                android:text="@string/browse" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -513,7 +513,7 @@
                         android:id="@+id/TVCustomApiKey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="SteamGridDB API Key"
+                        android:text="@string/steamgriddb_api_key"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="?attr/colorAccent"
@@ -538,7 +538,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Set SteamGrid API Key (Cover Art)" />
+                                android:text="@string/steamgrid_api_key_cover_art" />
 
                             <ImageView
                                 android:id="@+id/BTHelpApiKey"
@@ -552,7 +552,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:hint="Enter your API Key here"
+                            android:hint="@string/enter_api_key_hint"
                             android:textSize="13sp"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -627,7 +627,7 @@
                         android:id="@+id/TVPerformanceHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Non-Root Performance Enhancements"
+                        android:text="@string/non_root_performance_enhancements"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="?attr/colorAccent"
@@ -646,14 +646,14 @@
                             android:id="@+id/CBGameModeSignal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Trigger Android Game Mode Signal (API 33+)"
+                            android:text="@string/performance_android_game_mode_signal"
                             android:textStyle="bold"
                             android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Informs Android and OEM Game Boosters (HyperBoost, Game Turbo, Samsung Game Booster, Pixel Game Dashboard) that an active game is running."
+                            android:text="@string/performance_game_mode_details"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
                             android:layout_marginStart="32dp"
@@ -664,14 +664,14 @@
                             android:id="@+id/CBThreadPriorityBoost"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Guest Thread Priority Boost"
+                            android:text="@string/performance_guest_thread_priority"
                             android:textStyle="bold"
                             android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Promotes Box64/Wine CPU worker threads from default nice 0 to urgent display priorities (-8/-4/-2) without downgrading render threads."
+                            android:text="@string/performance_guest_thread_priority_details"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
                             android:layout_marginStart="32dp"
@@ -682,14 +682,14 @@
                             android:id="@+id/CBPreferBigCores"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Prefer Big CPU Cores"
+                            android:text="@string/prefer_big_cpu_cores"
                             android:textStyle="bold"
                             android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Dynamically detects the device's Prime/Big CPU cluster and pins emulation threads to high-performance cores via taskset affinity."
+                            android:text="@string/performance_big_cores_details"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
                             android:layout_marginStart="32dp"
@@ -700,14 +700,14 @@
                             android:id="@+id/CBHighRefreshRate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Force High Refresh Rate"
+                            android:text="@string/performance_force_high_refresh_rate"
                             android:textStyle="bold"
                             android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Attempts to set the display to its maximum supported refresh rate (e.g., 120Hz/144Hz) to reduce input lag."
+                            android:text="@string/performance_high_refresh_rate_details"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
                             android:layout_marginStart="32dp"
@@ -718,14 +718,14 @@
                             android:id="@+id/CBSustainedPerformance"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Sustained Performance Mode"
+                            android:text="@string/performance_sustained_mode"
                             android:textStyle="bold"
                             android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Requests Android sustained performance mode to prevent abrupt thermal clock throttling spikes and maintain consistent frame pacing."
+                            android:text="@string/performance_sustained_details"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
                             android:layout_marginStart="32dp"
@@ -742,14 +742,14 @@
                                 android:id="@+id/CBSamsungBoost"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Samsung Galaxy Game Turbo"
+                                android:text="@string/samsung_galaxy_game_turbo"
                                 android:textStyle="bold"
                                 android:textSize="13sp" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Engages Samsung Galaxy SPerf SDK hardware clock acceleration on supported Samsung devices."
+                                android:text="@string/performance_samsung_boost_details"
                                 android:textSize="11sp"
                                 android:textColor="?android:attr/textColorSecondary"
                                 android:layout_marginStart="32dp" />
@@ -772,7 +772,7 @@
                         android:id="@+id/TVExperimental"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Catalog Settings"
+                        android:text="@string/catalog_settings"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="?attr/colorAccent"
@@ -789,7 +789,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Download Catalog Source"
+                            android:text="@string/download_catalog_source"
                             android:textStyle="bold"
                             android:textSize="13sp"
                             android:textColor="?android:attr/textColorSecondary"
@@ -805,7 +805,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Catalog JSON URL"
+                            android:text="@string/catalog_json_url"
                             android:textSize="12sp"
                             android:textColor="?android:attr/textColorSecondary" />
 
@@ -916,7 +916,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Log Manager"
+                                    android:text="@string/log_manager"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
 
@@ -926,7 +926,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:textSize="12sp"
-                                    android:text="What to record, where logs go, and every game's logs" />
+                                    android:text="@string/log_manager_summary" />
                             </LinearLayout>
 
                             <TextView

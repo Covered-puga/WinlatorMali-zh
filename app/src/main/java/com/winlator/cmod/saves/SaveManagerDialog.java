@@ -60,7 +60,8 @@ public class SaveManagerDialog extends ContentDialog {
     }
 
     private void initView() {
-        setTitle(shortcut != null ? "Game Saves: " + shortcut.name : "Container Saves: " + container.getName());
+        setTitle(shortcut != null ? activity.getString(R.string.save_manager_game_title, shortcut.name)
+                : activity.getString(R.string.save_manager_container_title, container.getName()));
         setIcon(R.drawable.icon_save_manager);
 
         TextView tvSubtitle = findViewById(R.id.TVSaveSubtitle);
@@ -71,15 +72,15 @@ public class SaveManagerDialog extends ContentDialog {
 
         Button btnConfirm = findViewById(R.id.BTConfirm);
         Button btnCancel = findViewById(R.id.BTCancel);
-        if (btnConfirm != null) btnConfirm.setText("Export Backup");
-        if (btnCancel != null) btnCancel.setText("Close");
+        if (btnConfirm != null) btnConfirm.setText(R.string.save_manager_export_backup);
+        if (btnCancel != null) btnCancel.setText(R.string.save_manager_close);
         // The three icons have different intrinsic sizes, which made one pill taller than the others.
         sizeStartIcon(btnRestore, 18);
         sizeStartIcon(btnAddFolder, 18);
         limitListHeight();
 
         if (shortcut != null) {
-            tvSubtitle.setText("Save folders");
+            tvSubtitle.setText(R.string.save_folders);
             btnAddFolder.setOnClickListener(v -> openFolderPicker());
             populateGameList(llSaveLocations, btnToggleAll);
 
@@ -93,7 +94,7 @@ public class SaveManagerDialog extends ContentDialog {
                         }
                     }
                     for (CheckBox cb : checkBoxes) cb.setChecked(!allChecked);
-                    btnToggleAll.setText(!allChecked ? "Deselect all" : "Select all");
+                    btnToggleAll.setText(!allChecked ? R.string.save_manager_deselect_all : R.string.select_all);
                 });
             }
 
@@ -103,38 +104,38 @@ public class SaveManagerDialog extends ContentDialog {
                     if (cb.isChecked()) selected.add((File) cb.getTag());
                 }
                 if (selected.isEmpty()) {
-                    Toast.makeText(activity, "Please select at least one save location to export", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.save_manager_select_location, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Executors.newSingleThreadExecutor().execute(() -> {
                     try {
-                        File zip = GameSaveBackup.backupGameSaves(shortcut, selected);
-                        activity.runOnUiThread(() -> AppUtils.showToast(activity, "Exported successfully to:\n" + zip.getName()));
+                        File zip = GameSaveBackup.backupGameSaves(activity, shortcut, selected);
+                        activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_exported, zip.getName())));
                     } catch (Exception e) {
-                        activity.runOnUiThread(() -> AppUtils.showToast(activity, "Backup failed: " + e.getMessage()));
+                        activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_backup_failed, e.getMessage())));
                     }
                 });
             });
 
         } else if (container != null) {
-            tvSubtitle.setText("Container profile saves");
+            tvSubtitle.setText(R.string.save_manager_container_subtitle);
             if (btnToggleAll != null) btnToggleAll.setVisibility(View.GONE);
             btnAddFolder.setVisibility(View.GONE);
             ((LinearLayout.LayoutParams) btnRestore.getLayoutParams()).setMarginEnd(0);
 
             TextView tvDesc = new TextView(activity);
-            tvDesc.setText("Creates a full portable snapshot of Documents, Saved Games, AppData, Public Documents and ProgramData\\Steam (where cracked games keep saves) for container: " + container.getName());
+            tvDesc.setText(activity.getString(R.string.save_manager_container_snapshot, container.getName()));
             tvDesc.setTextColor(0xFF888888);
             tvDesc.setPadding(0, 16, 0, 16);
             llSaveLocations.addView(tvDesc);
 
             setOnConfirmCallback(() -> Executors.newSingleThreadExecutor().execute(() -> {
                 try {
-                    File zip = GameSaveBackup.backupContainerSaves(container);
-                    activity.runOnUiThread(() -> AppUtils.showToast(activity, "Container backup exported to:\n" + zip.getName()));
+                    File zip = GameSaveBackup.backupContainerSaves(activity, container);
+                    activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_container_exported, zip.getName())));
                 } catch (Exception e) {
-                    activity.runOnUiThread(() -> AppUtils.showToast(activity, "Backup failed: " + e.getMessage()));
+                    activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_backup_failed, e.getMessage())));
                 }
             }));
         }
@@ -146,11 +147,11 @@ public class SaveManagerDialog extends ContentDialog {
         llSaveLocations.removeAllViews();
         checkBoxes.clear();
 
-        List<GameSaveBackup.SaveLocationInfo> discovered = GameSaveBackup.getSaveLocations(shortcut);
+        List<GameSaveBackup.SaveLocationInfo> discovered = GameSaveBackup.getSaveLocations(activity, shortcut);
         if (discovered.isEmpty()) {
             if (btnToggleAll != null) btnToggleAll.setVisibility(View.GONE);
             TextView tvEmpty = new TextView(activity);
-            tvEmpty.setText("No save folders found for this game yet.\nIf you know where it saves, tap Add Folder to pick it.");
+            tvEmpty.setText(R.string.save_manager_no_folders);
             tvEmpty.setTextColor(0xFF888888);
             tvEmpty.setPadding(0, 24, 0, 24);
             llSaveLocations.addView(tvEmpty);
@@ -173,12 +174,13 @@ public class SaveManagerDialog extends ContentDialog {
             tvPath.setText(info.friendlyPath);
 
             if (info.missing) {
-                showTag(tvTag, "Not found", 0xFFE5534B);
-                tvMeta.setText("Folder no longer exists");
+                showTag(tvTag, activity.getString(R.string.item_not_found), 0xFFE5534B);
+                tvMeta.setText(R.string.save_manager_missing_folder);
             } else {
-                if (info.custom) showTag(tvTag, "Added by you", 0xFF3D82FF);
-                else if (!info.suggested) showTag(tvTag, "Possible match", 0xFFD29922);
-                String files = info.fileCount == 1 ? "1 file" : info.fileCount + " files";
+                if (info.custom) showTag(tvTag, activity.getString(R.string.save_manager_added_by_user), 0xFF3D82FF);
+                else if (!info.suggested) showTag(tvTag, activity.getString(R.string.save_manager_possible_match), 0xFFD29922);
+                String files = info.fileCount == 1 ? activity.getString(R.string.file_count_one)
+                        : activity.getString(R.string.file_count_many, info.fileCount);
                 tvMeta.setText(files + " • " + info.getFormattedSize() + (info.lastModified > 0 ? " • " + info.getFormattedLastModified() : ""));
             }
 
@@ -192,13 +194,13 @@ public class SaveManagerDialog extends ContentDialog {
             });
             if (info.custom) {
                 Runnable confirmRemove = () -> new AlertDialog.Builder(activity)
-                    .setTitle("Remove folder?")
-                    .setMessage("Stop including this folder in this game's save backups?\n\n" + info.friendlyPath + "\n\nNothing is deleted from storage.")
-                    .setPositiveButton("Remove", (d, w) -> {
+                    .setTitle(R.string.save_manager_remove_folder_title)
+                    .setMessage(activity.getString(R.string.save_manager_remove_folder_confirm, info.friendlyPath))
+                    .setPositiveButton(R.string.save_manager_remove, (d, w) -> {
                         GameSaveBackup.removeCustomSaveDir(shortcut, info.directory);
                         populateGameList(llSaveLocations, btnToggleAll);
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(R.string.cancel, null)
                     .show();
                 btRemove.setVisibility(View.VISIBLE);
                 btRemove.setImageTintList(android.content.res.ColorStateList.valueOf(0xFF8B949E));
@@ -256,9 +258,9 @@ public class SaveManagerDialog extends ContentDialog {
             String path = bundle.getString(FileManagerFragment.PICKED_PATH);
             if (path != null) {
                 if (GameSaveBackup.addCustomSaveDir(target, new File(path))) {
-                    AppUtils.showToast(fragmentActivity, "Save folder added");
+                    AppUtils.showToast(fragmentActivity, R.string.save_manager_folder_added);
                 } else {
-                    AppUtils.showToast(fragmentActivity, "Pick a folder inside this game's container, its game folder, or your phone storage.");
+                    AppUtils.showToast(fragmentActivity, R.string.save_manager_folder_outside);
                 }
             }
             new SaveManagerDialog(fragmentActivity, target).show();
@@ -283,18 +285,18 @@ public class SaveManagerDialog extends ContentDialog {
         List<String> displayItems = new ArrayList<>();
         final List<File> zipFiles = new ArrayList<>();
 
-        displayItems.add("📁 Browse Storage / Pick .zip File...");
+        displayItems.add(activity.getString(R.string.save_manager_browse_zip));
         zipFiles.add(null);
 
         if (detectedZips != null) {
             for (File z : detectedZips) {
-                displayItems.add("📦 " + z.getName() + " (" + GameSaveBackup.formatBytes(z.length()) + ")");
+                displayItems.add(activity.getString(R.string.save_manager_archive_list_entry, z.getName(), GameSaveBackup.formatBytes(z.length())));
                 zipFiles.add(z);
             }
         }
 
         new AlertDialog.Builder(activity)
-            .setTitle("Select Save Archive to Restore")
+            .setTitle(R.string.save_manager_select_archive)
             .setItems(displayItems.toArray(new String[0]), (dialog, which) -> {
                 if (which == 0) {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -307,7 +309,7 @@ public class SaveManagerDialog extends ContentDialog {
                     if (selectedFile != null) inspectAndPromptRestore(selectedFile, null);
                 }
             })
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.cancel, null)
             .show();
     }
 
@@ -320,7 +322,7 @@ public class SaveManagerDialog extends ContentDialog {
         return () -> {
             if (file != null) return new FileInputStream(file);
             java.io.InputStream is = activity.getContentResolver().openInputStream(uri);
-            if (is == null) throw new java.io.IOException("Cannot open the selected file");
+            if (is == null) throw new java.io.IOException(activity.getString(R.string.save_manager_open_file_failed));
             return is;
         };
     }
@@ -329,56 +331,58 @@ public class SaveManagerDialog extends ContentDialog {
         GameSaveBackup.StreamOpener opener = openerFor(file, uri);
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                GameSaveBackup.ArchiveInspectionResult inspection = GameSaveBackup.inspectArchive(opener.open());
+                GameSaveBackup.ArchiveInspectionResult inspection = GameSaveBackup.inspectArchive(activity, opener.open());
                 activity.runOnUiThread(() -> {
                     switch (inspection.status) {
                         case VALID_WINLATOR_MANIFEST: {
                             StringBuilder msg = new StringBuilder();
-                            msg.append("🎮 Game: ").append(inspection.gameName).append("\n");
-                            if (!inspection.createdAt.isEmpty()) msg.append("📅 Backed Up: ").append(inspection.createdAt).append("\n");
-                            msg.append("📦 Contents: ").append(inspection.fileCount).append(" files (").append(GameSaveBackup.formatBytes(inspection.totalBytes)).append(")\n");
+                            msg.append(activity.getString(R.string.save_manager_inspection_game, inspection.gameName)).append('\n');
+                            if (!inspection.createdAt.isEmpty()) {
+                                msg.append(activity.getString(R.string.save_manager_inspection_date, inspection.createdAt)).append('\n');
+                            }
+                            msg.append(activity.getString(R.string.save_manager_inspection_contents, inspection.fileCount, GameSaveBackup.formatBytes(inspection.totalBytes)))
+                                    .append('\n');
                             if (!inspection.detectedPaths.isEmpty()) {
-                                msg.append("\n📍 Restores to the same places:\n");
+                                msg.append('\n').append(activity.getString(R.string.save_manager_inspection_same_paths)).append('\n');
                                 for (String p : inspection.detectedPaths) msg.append(" • ").append(p).append("\n");
                             }
-                            msg.append("\nRestore these saves into container '").append(container.getName()).append("'?");
+                            msg.append('\n').append(activity.getString(R.string.save_manager_restore_into, container.getName()));
 
                             new AlertDialog.Builder(activity)
-                                .setTitle("Verified Save Backup")
+                                .setTitle(R.string.save_manager_verified_backup)
                                 .setMessage(msg.toString())
-                                .setPositiveButton("Continue", (d, w) -> planAndRestore(opener))
-                                .setNegativeButton("Cancel", null)
+                                .setPositiveButton(R.string._continue, (d, w) -> planAndRestore(opener))
+                                .setNegativeButton(R.string.cancel, null)
                                 .show();
                             break;
                         }
                         case GENERIC_SAVE_ARCHIVE: {
                             StringBuilder msg = new StringBuilder();
-                            msg.append("⚠️ This archive wasn't made by Winlator Mali, but it contains save files.\n");
-                            msg.append("User folders (e.g. steamuser) are remapped to this container's user.\n\n");
-                            msg.append("Detected save paths:\n");
+                            msg.append(activity.getString(R.string.save_manager_third_party_warning));
+                            msg.append(activity.getString(R.string.save_manager_detected_paths)).append('\n');
                             for (String p : inspection.detectedPaths) msg.append(" • ").append(p).append("\n");
-                            msg.append("\nDo you want to continue?");
+                            msg.append('\n').append(activity.getString(R.string.save_manager_continue_question));
 
                             new AlertDialog.Builder(activity)
-                                .setTitle("Third-Party Save Archive")
+                                .setTitle(R.string.save_manager_third_party_archive)
                                 .setMessage(msg.toString())
-                                .setPositiveButton("Continue", (d, w) -> planAndRestore(opener))
-                                .setNegativeButton("Cancel", null)
+                                .setPositiveButton(R.string._continue, (d, w) -> planAndRestore(opener))
+                                .setNegativeButton(R.string.cancel, null)
                                 .show();
                             break;
                         }
                         case INVALID_NON_SAVE_ARCHIVE: {
                             new AlertDialog.Builder(activity)
-                                .setTitle("❌ Invalid Save Archive")
-                                .setMessage(inspection.errorMessage != null ? inspection.errorMessage : "The selected archive does not contain valid Windows or Wine save data.\n\nRestoration was cancelled to prevent container corruption.")
-                                .setPositiveButton("OK", null)
+                                .setTitle(R.string.save_manager_invalid_archive)
+                                .setMessage(inspection.errorMessage != null ? inspection.errorMessage : activity.getString(R.string.save_manager_invalid_archive_reason))
+                                .setPositiveButton(R.string.ok, null)
                                 .show();
                             break;
                         }
                     }
                 });
             } catch (Exception e) {
-                activity.runOnUiThread(() -> AppUtils.showToast(activity, "Failed to read archive: " + e.getMessage()));
+                activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_read_failed, e.getMessage())));
             }
         });
     }
@@ -390,11 +394,11 @@ public class SaveManagerDialog extends ContentDialog {
                 activity.runOnUiThread(() -> {
                     if (plan.fileCount() == 0) {
                         new AlertDialog.Builder(activity)
-                            .setTitle("Nothing to restore")
+                            .setTitle(R.string.save_manager_nothing_to_restore)
                             .setMessage(plan.rejected > 0
-                                ? plan.rejected + " file(s) in this backup belong outside this container (or to a game folder that couldn't be found), so they were not restored.\n\nIf they belong to a game installed outside drive C:, restore from that game's own Save Manager instead."
-                                : "This backup has no files to restore.")
-                            .setPositiveButton("OK", null)
+                                ? activity.getString(R.string.save_manager_outside_container, plan.rejected)
+                                : activity.getString(R.string.save_manager_backup_empty))
+                            .setPositiveButton(R.string.ok, null)
                             .show();
                         return;
                     }
@@ -405,10 +409,10 @@ public class SaveManagerDialog extends ContentDialog {
                     }
 
                     String[] options = {
-                        "Back up my current saves first, then overwrite (recommended)",
-                        "Overwrite all",
-                        "Only overwrite where the backup is newer",
-                        "Keep existing files, only add missing ones"
+                        activity.getString(R.string.save_manager_backup_then_overwrite),
+                        activity.getString(R.string.save_manager_overwrite_all),
+                        activity.getString(R.string.save_manager_overwrite_newer),
+                        activity.getString(R.string.save_manager_keep_existing)
                     };
                     GameSaveBackup.ConflictMode[] modes = {
                         GameSaveBackup.ConflictMode.BACKUP_THEN_OVERWRITE,
@@ -417,13 +421,13 @@ public class SaveManagerDialog extends ContentDialog {
                         GameSaveBackup.ConflictMode.SKIP_EXISTING
                     };
                     new AlertDialog.Builder(activity)
-                        .setTitle(plan.conflicts + " of " + plan.fileCount() + " files already exist")
+                        .setTitle(activity.getString(R.string.save_manager_conflicts, plan.conflicts, plan.fileCount()))
                         .setItems(options, (d, which) -> runRestore(plan, modes[which], opener))
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(R.string.cancel, null)
                         .show();
                 });
             } catch (Exception e) {
-                activity.runOnUiThread(() -> AppUtils.showToast(activity, "Failed to read archive: " + e.getMessage()));
+                activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_read_failed, e.getMessage())));
             }
         });
     }
@@ -432,29 +436,32 @@ public class SaveManagerDialog extends ContentDialog {
         String label = shortcut != null ? shortcut.name : (!plan.gameName.isEmpty() ? plan.gameName : container.getName());
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                GameSaveBackup.RestoreResult result = GameSaveBackup.executeRestore(plan, mode, label, opener);
+                GameSaveBackup.RestoreResult result = GameSaveBackup.executeRestore(activity, plan, mode, label, opener);
                 activity.runOnUiThread(() -> {
                     StringBuilder msg = new StringBuilder();
-                    msg.append("✅ Restored: ").append(result.written).append(" file(s)\n");
-                    if (result.skipped > 0) msg.append("⏭ Kept existing: ").append(result.skipped).append(" file(s)\n");
-                    if (result.rejected > 0) msg.append("⛔ Not restored: ").append(result.rejected).append(" file(s) outside this container or game folder\n");
+                    msg.append(activity.getString(R.string.save_manager_restored_count, result.written)).append('\n');
+                    if (result.skipped > 0) {
+                        msg.append(activity.getString(R.string.save_manager_kept_count, result.skipped)).append('\n');
+                    }
+                    if (result.rejected > 0) {
+                        msg.append(activity.getString(R.string.save_manager_rejected_count, result.rejected)).append('\n');
+                    }
                     if (!plan.locations.isEmpty()) {
-                        msg.append("\n📍 Restored to:\n");
+                        msg.append('\n').append(activity.getString(R.string.save_manager_restored_paths)).append('\n');
                         for (String loc : plan.locations) msg.append(" • ").append(loc).append("\n");
                     }
                     if (result.preRestoreBackup != null) {
-                        msg.append("\n💾 Your previous saves were backed up first:\n").append(result.preRestoreBackup.getName())
-                           .append("\n(restore it the same way to undo)");
+                        msg.append('\n').append(activity.getString(R.string.save_manager_previous_backup, result.preRestoreBackup.getName()));
                     }
                     dismiss();
                     new AlertDialog.Builder(activity)
-                        .setTitle("Restore complete")
+                        .setTitle(R.string.save_manager_restore_complete)
                         .setMessage(msg.toString())
-                        .setPositiveButton("OK", null)
+                        .setPositiveButton(R.string.ok, null)
                         .show();
                 });
             } catch (Exception e) {
-                activity.runOnUiThread(() -> AppUtils.showToast(activity, "Restore failed: " + e.getMessage()));
+                activity.runOnUiThread(() -> AppUtils.showToast(activity, activity.getString(R.string.save_manager_restore_failed, e.getMessage())));
             }
         });
     }

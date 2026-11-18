@@ -11,7 +11,7 @@
         android:id="@+id/TVWineDownloaderSubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select a Content Source to download Wine or Proton runtimes:"
+        android:text="@string/select_wine_content_source"
         android:textSize="13sp"
         android:textColor="?android:attr/textColorSecondary"
         android:layout_marginBottom="10dp" />
@@ -39,7 +39,7 @@
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_refresh"
             app:tint="?attr/colorAccent"
-            android:contentDescription="Refresh Content Source" />
+            android:contentDescription="@string/refresh_content_source" />
     </LinearLayout>
 
     <!-- Wine/Proton List Container -->
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="No Wine or Proton runtimes found in this source."
+            android:text="@string/no_wine_runtimes_in_source"
             android:textSize="13sp"
             android:textColor="?android:attr/textColorSecondary"
             android:visibility="gone" />
@@ -89,7 +89,7 @@
             android:id="@+id/TVProgressTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Downloading Wine runtime..."
+            android:text="@string/downloading_wine_runtime"
             android:textStyle="bold"
             android:textSize="13sp"
             android:textColor="?attr/colorAccent"
@@ -115,7 +115,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Downloading: 0 MB / 0 MB"
+                android:text="@string/downloading_initial_size"
                 android:textSize="12sp"
                 android:textColor="?android:attr/textColorSecondary" />
 

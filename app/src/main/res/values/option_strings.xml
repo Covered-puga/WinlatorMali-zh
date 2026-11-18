@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="custom_option">Custom</string>
+    <string name="no_wine_installed_option">(No Wine Installed - Tap Download)</string>
+    <string name="option_current_device">Device</string>
+    <string name="option_default_device_memory">0 (Default)</string>
+    <string name="option_present_mailbox">mailbox</string>
+    <string name="option_present_fifo">fifo</string>
+    <string name="option_present_immediate">immediate</string>
+    <string name="option_present_relaxed">relaxed</string>
+    <string name="option_resource_auto">auto</string>
+    <string name="option_resource_opaque">opaque</string>
+    <string name="graphics_driver_extensions">Extensions</string>
+    <string name="option_backbuffer">backbuffer</string>
+    <string name="option_binding_none">NONE</string>
+    <string name="option_binding_mouse_left_button">LEFT BUTTON</string>
+    <string name="option_binding_mouse_middle_button">MIDDLE BUTTON</string>
+    <string name="option_binding_mouse_right_button">RIGHT BUTTON</string>
+    <string name="option_binding_mouse_move_left">MOVE LEFT</string>
+    <string name="option_binding_mouse_move_right">MOVE RIGHT</string>
+    <string name="option_binding_mouse_move_up">MOVE UP</string>
+    <string name="option_binding_mouse_move_down">MOVE DOWN</string>
+    <string name="option_binding_mouse_scroll_up">SCROLL UP</string>
+    <string name="option_binding_mouse_scroll_down">SCROLL DOWN</string>
+    <string name="option_binding_key_up">UP</string>
+    <string name="option_binding_key_right">RIGHT</string>
+    <string name="option_binding_key_down">DOWN</string>
+    <string name="option_binding_key_left">LEFT</string>
+    <string name="option_binding_key_space">SPACE</string>
+    <string name="option_binding_gamepad_button_select">BUTTON SELECT</string>
+    <string name="option_binding_gamepad_button_start">BUTTON START</string>
+    <string name="option_binding_gamepad_left_thumb_up">LEFT THUMB UP</string>
+    <string name="option_binding_gamepad_left_thumb_right">LEFT THUMB RIGHT</string>
+    <string name="option_binding_gamepad_left_thumb_down">LEFT THUMB DOWN</string>
+    <string name="option_binding_gamepad_left_thumb_left">LEFT THUMB LEFT</string>
+    <string name="option_binding_gamepad_right_thumb_up">RIGHT THUMB UP</string>
+    <string name="option_binding_gamepad_right_thumb_right">RIGHT THUMB RIGHT</string>
+    <string name="option_binding_gamepad_right_thumb_down">RIGHT THUMB DOWN</string>
+    <string name="option_binding_gamepad_right_thumb_left">RIGHT THUMB LEFT</string>
+    <string name="option_binding_gamepad_dpad_up">DPAD UP</string>
+    <string name="option_binding_gamepad_dpad_right">DPAD RIGHT</string>
+    <string name="option_binding_gamepad_dpad_down">DPAD DOWN</string>
+    <string name="option_binding_gamepad_dpad_left">DPAD LEFT</string>
+    <string name="option_binding_gamepad_button">BUTTON %1$s</string>
+</resources>

@@ -35,7 +35,7 @@
             android:layout_marginStart="8dp"
             android:id="@+id/BTMenu"
             android:src="@drawable/icon_menu"
-            android:contentDescription="Select predefined variable" />
+            android:contentDescription="@string/select_predefined_variable" />
     </LinearLayout>
 
     <TextView
@@ -52,6 +52,6 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:id="@+id/ETValue"
-        android:hint="Value"
+        android:hint="@string/value"
         android:singleLine="true" />
 </LinearLayout>

@@ -38,7 +38,7 @@
                 app:tint="?android:attr/textColorSecondary"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"
-                android:contentDescription="Info" />
+                android:contentDescription="@string/info" />
         </LinearLayout>
 
         <LinearLayout
@@ -113,7 +113,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Layer version"
+                    android:text="@string/bcn_layer_version"
                     android:textSize="12.5sp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginBottom="4dp" />
@@ -138,7 +138,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="36dp"
-                        android:text="Direct texture upload (faster)"
+                        android:text="@string/bcn_direct_texture_upload"
                         android:textSize="13sp" />
 
                     <CheckBox
@@ -162,7 +162,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Transcode to"
+                        android:text="@string/bcn_transcode_to"
                         android:textSize="12.5sp"
                         android:textColor="?android:attr/textColorSecondary"
                         android:layout_marginBottom="4dp" />
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Quality"
+                        android:text="@string/quality"
                         android:textSize="12.5sp"
                         android:textColor="?android:attr/textColorSecondary"
                         android:layout_marginTop="8dp"

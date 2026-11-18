@@ -110,7 +110,7 @@ public class AdrenotoolsFragment extends Fragment {
                 // Looked up at click time: the position captured at bind time is stale after an earlier removal.
                 int current = viewHolder.getBindingAdapterPosition();
                 if (current == RecyclerView.NO_POSITION) return;
-                ContentDialog.confirm(getContext(), "Remove the driver \"" + name + "\"?", () -> removeAtIndex(current));
+                ContentDialog.confirm(getContext(), getString(R.string.confirm_remove_adrenotools_driver, android.text.TextUtils.htmlEncode(String.valueOf(name))), () -> removeAtIndex(current));
             });
         }
 

@@ -2,6 +2,8 @@ package com.winlator.cmod;
 
 import android.graphics.Color;
 
+import androidx.annotation.StringRes;
+
 /**
  * ThemePreset with WCAG 2.x contrast enforcement.
  *
@@ -14,7 +16,8 @@ import android.graphics.Color;
  * - Dividers: >= 1.6:1 (Visible structural separation)
  */
 public final class ThemePreset {
-    public final String name;
+    @StringRes
+    public final int nameRes;
 
     // Core palette colors
     public final int background;
@@ -46,15 +49,15 @@ public final class ThemePreset {
     private static final double TARGET_COMPONENT = 3.0d;
     private static final double TARGET_DIVIDER = 1.6d;
 
-    public ThemePreset(String name, int background, int surface, int surfaceVariant, int primary) {
-        this(name, background, surface, surfaceVariant, primary,
+    public ThemePreset(@StringRes int nameRes, int background, int surface, int surfaceVariant, int primary) {
+        this(nameRes, background, surface, surfaceVariant, primary,
              DEFAULT_ON_BACKGROUND, DEFAULT_ON_SURFACE, DEFAULT_ON_SURFACE_VARIANT,
              DEFAULT_ON_PRIMARY, DEFAULT_DIVIDER);
     }
 
-    public ThemePreset(String name, int background, int surface, int surfaceVariant, int primary,
+    public ThemePreset(@StringRes int nameRes, int background, int surface, int surfaceVariant, int primary,
                        int onBackground, int onSurface, int onSurfaceVariant, int onPrimary, int divider) {
-        this.name = name;
+        this.nameRes = nameRes;
         this.background = background;
         this.surface = surface;
         this.surfaceVariant = surfaceVariant;

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="custom_option">自定义</string>
+    <string name="no_wine_installed_option">（尚未安装 Wine，请点按下载）</string>
+    <string name="option_current_device">本机设备</string>
+    <string name="option_default_device_memory">0（默认）</string>
+    <string name="option_present_mailbox">邮箱模式（mailbox）</string>
+    <string name="option_present_fifo">先进先出（fifo）</string>
+    <string name="option_present_immediate">立即呈现（immediate）</string>
+    <string name="option_present_relaxed">宽松 FIFO（relaxed）</string>
+    <string name="option_resource_auto">自动</string>
+    <string name="option_resource_opaque">不透明（opaque）</string>
+    <string name="graphics_driver_extensions">扩展</string>
+    <string name="option_backbuffer">后备缓冲区（backbuffer）</string>
+    <string name="option_binding_none">无</string>
+    <string name="option_binding_mouse_left_button">鼠标左键</string>
+    <string name="option_binding_mouse_middle_button">鼠标中键</string>
+    <string name="option_binding_mouse_right_button">鼠标右键</string>
+    <string name="option_binding_mouse_move_left">鼠标左移</string>
+    <string name="option_binding_mouse_move_right">鼠标右移</string>
+    <string name="option_binding_mouse_move_up">鼠标上移</string>
+    <string name="option_binding_mouse_move_down">鼠标下移</string>
+    <string name="option_binding_mouse_scroll_up">滚轮向上</string>
+    <string name="option_binding_mouse_scroll_down">滚轮向下</string>
+    <string name="option_binding_key_up">上方向键</string>
+    <string name="option_binding_key_right">右方向键</string>
+    <string name="option_binding_key_down">下方向键</string>
+    <string name="option_binding_key_left">左方向键</string>
+    <string name="option_binding_key_space">空格键</string>
+    <string name="option_binding_gamepad_button_select">选择键（SELECT）</string>
+    <string name="option_binding_gamepad_button_start">开始键（START）</string>
+    <string name="option_binding_gamepad_left_thumb_up">左摇杆向上</string>
+    <string name="option_binding_gamepad_left_thumb_right">左摇杆向右</string>
+    <string name="option_binding_gamepad_left_thumb_down">左摇杆向下</string>
+    <string name="option_binding_gamepad_left_thumb_left">左摇杆向左</string>
+    <string name="option_binding_gamepad_right_thumb_up">右摇杆向上</string>
+    <string name="option_binding_gamepad_right_thumb_right">右摇杆向右</string>
+    <string name="option_binding_gamepad_right_thumb_down">右摇杆向下</string>
+    <string name="option_binding_gamepad_right_thumb_left">右摇杆向左</string>
+    <string name="option_binding_gamepad_dpad_up">十字键向上</string>
+    <string name="option_binding_gamepad_dpad_right">十字键向右</string>
+    <string name="option_binding_gamepad_dpad_down">十字键向下</string>
+    <string name="option_binding_gamepad_dpad_left">十字键向左</string>
+    <string name="option_binding_gamepad_button">按键 %1$s</string>
+</resources>

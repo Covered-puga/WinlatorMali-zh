@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Config Title"
+        android:text="@string/community_config_title"
         android:textSize="14sp"
         android:textStyle="bold"
         android:textColor="?android:attr/textColorSecondary"
@@ -18,7 +18,7 @@
         android:id="@+id/ETConfigTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter custom title"
+        android:hint="@string/community_config_custom_title_hint"
         android:maxLines="1"
         android:inputType="textCapWords"
         android:layout_marginBottom="16dp"/>
@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notes (Optional)"
+        android:text="@string/community_notes_optional"
         android:textSize="14sp"
         android:textStyle="bold"
         android:textColor="?android:attr/textColorSecondary"
@@ -36,7 +36,7 @@
         android:id="@+id/ETConfigNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add details about drivers, etc."
+        android:hint="@string/community_notes_hint"
         android:minLines="3"
         android:gravity="top"
         android:inputType="textMultiLine"/>

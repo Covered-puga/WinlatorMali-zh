@@ -20,6 +20,7 @@ import com.winlator.cmod.core.GPUInformation;
 import com.winlator.cmod.core.KeyValueSet;
 import com.winlator.cmod.core.StringUtils;
 import com.winlator.cmod.core.VKD3DVersionItem;
+import com.winlator.cmod.widget.LabeledSpinnerAdapter;
 import com.winlator.cmod.xenvironment.ImageFs;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class DXVKConfigDialog extends ContentDialog {
         super(anchor.getContext(), R.layout.dxvk_config_dialog);
         context = anchor.getContext();
         setIcon(R.drawable.icon_settings);
-        setTitle("DXVK "+context.getString(R.string.configuration));
+        setTitle(context.getString(R.string.component_configuration, "DXVK"));
 
         final Spinner sDXVKVersion = findViewById(R.id.SDXVKVersion);
         final Spinner sVKD3DVersion = findViewById(R.id.SVKD3DVersion);
@@ -114,9 +115,8 @@ public class DXVKConfigDialog extends ContentDialog {
         java.util.List<String> ddrawItems = new java.util.ArrayList<>(java.util.Arrays.asList(context.getResources().getStringArray(R.array.ddrawrapper_entries)));
         for (ContentProfile profile : contentsManager.getProfiles(ContentProfile.ContentType.CONTENT_TYPE_D7VK))
             ddrawItems.add("D7VK " + profile.verName);
-        ArrayAdapter<String> ddrawAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, ddrawItems);
-        ddrawAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sDDRAWrapper.setAdapter(ddrawAdapter);
+        sDDRAWrapper.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_item,
+                ddrawItems, value -> value.equals("None") ? context.getString(R.string.none) : value));
         AppUtils.setSpinnerSelectionFromIdentifier(sDDRAWrapper, config.get("ddrawrapper"));
 
         try {
@@ -129,20 +129,11 @@ public class DXVKConfigDialog extends ContentDialog {
 
         findViewById(R.id.BTHelpDxvkConfig).setOnClickListener(v -> {
             ContentDialog dialog = new ContentDialog(getContext(), R.layout.bcn_info_dialog);
-            dialog.setTitle("Pre-Configured DXVK Config");
+            dialog.setTitle(R.string.preconfigured_dxvk_config_title);
             dialog.setIcon(R.drawable.ic_driver_info);
 
             TextView tvMessage = dialog.findViewById(R.id.TVInfoMessage);
-            String message = "<b>Pre-Configured DXVK Optimizations:</b><br/><br/>" +
-                    "&#8226; <b>memoryTrack:</b> Enables strict tracking of memory allocations. Prevents \"Out of Memory\" crashes by ensuring the heap is managed correctly on Android's shared RAM architecture.<br/><br/>" +
-                    "&#8226; <b>nvapiHack:</b> Disables NVIDIA-specific spoofing. Prevents games from attempting to call proprietary NVIDIA features that cause crashes on mobile hardware.<br/><br/>" +
-                    "&#8226; <b>numCompilerThreads:</b> Limits shader compilation to 4 threads. Prevents CPU cores from maxing out, reducing heat and avoiding thermal throttling for a stable framerate.<br/><br/>" +
-                    "<b>Mali Specialized (Non-Adreno):</b><br/><br/>" +
-                    "&#8226; <b>relaxedBarriers / ignoreGraphicsBarriers:</b> Reduces GPU \"sync points.\" Mali drivers struggle with frequent barriers; disabling non-essential ones significantly boosts FPS by letting the GPU work continuously.<br/><br/>" +
-                    "&#8226; <b>useEarlyDiscard:</b> Discards hidden pixels early in the pipeline. Ideal for Mali's Tile-Based architecture, reducing \"overdraw\" to save GPU power and battery.<br/><br/>" +
-                    "&#8226; <b>shrinkBindingSlots:</b> Minimizes the internal resource table size. Reduces the overall VRAM footprint, leaving more memory available for actual game assets.<br/><br/>" +
-                    "&#8226; <b>maxQueuedFrames:</b> Limits the CPU to preparing only 1 frame ahead. Prevents input lag (latency) and avoids large memory backlogs that can lead to crashes.<br/><br/>" +
-                    "&#8226; <b>allowMapFlagNoWait:</b> Allows the CPU to update resources without waiting for GPU confirmation. Eliminates \"CPU stalls\" and micro-stutters.";
+            String message = getContext().getString(R.string.dxvk_config_help);
             tvMessage.setText(android.text.Html.fromHtml(message, android.text.Html.FROM_HTML_MODE_LEGACY));
             dialog.findViewById(R.id.BTCancel).setVisibility(View.GONE);
             dialog.show();
@@ -339,7 +330,7 @@ public class DXVKConfigDialog extends ContentDialog {
             itemList.add(new VKD3DVersionItem(displayName, versionCode));
         }
 
-        ArrayAdapter<VKD3DVersionItem> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, itemList);
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                itemList, item -> item.getIdentifier().equals("None") ? context.getString(R.string.none) : item.toString()));
     }
 }

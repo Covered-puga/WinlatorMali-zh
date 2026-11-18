@@ -52,7 +52,7 @@
         android:padding="6dp"
         app:tint="?attr/colorAccent"
         android:src="@drawable/ic_driver_info"
-        android:contentDescription="Info" />
+        android:contentDescription="@string/info" />
 
     <ImageButton
         android:id="@+id/BTUpdate"
@@ -63,7 +63,7 @@
         android:padding="6dp"
         app:tint="?attr/colorAccent"
         android:src="@drawable/ic_driver_update"
-        android:contentDescription="Update" />
+        android:contentDescription="@string/update_action" />
 
     <ImageButton
         android:id="@+id/BTRemove"
@@ -74,6 +74,6 @@
         android:padding="6dp"
         app:tint="?attr/colorAccent"
         android:src="@drawable/ic_driver_reset"
-        android:contentDescription="Reset" />
+        android:contentDescription="@string/reset" />
 
 </LinearLayout>

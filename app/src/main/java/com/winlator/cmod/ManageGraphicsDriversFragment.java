@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,7 +43,7 @@ public class ManageGraphicsDriversFragment extends Fragment {
 
     private static class DriverInfo {
         final String fileName;
-        String version = "Unknown";
+        String version;
         String notes = "";
         boolean hasInfo = false;
         boolean isUpdated = false;
@@ -94,7 +95,7 @@ public class ManageGraphicsDriversFragment extends Fragment {
 
         TextView tvDescription = view.findViewById(R.id.TVDescription);
         if (tvDescription != null) {
-            String desc = "Manage and update internal graphics driver components. <b>Updated files</b> are stored in internal storage and <b>prioritized</b> over bundled versions.";
+            String desc = getString(R.string.manage_graphics_drivers_description_html);
             tvDescription.setText(Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY));
         }
 
@@ -176,19 +177,19 @@ public class ManageGraphicsDriversFragment extends Fragment {
             switch (info.fileName) {
                 case "wrapper-1.1.tzst":
                     info.version = "1.1 release";
-                    info.notes = "The main Vulkan wrapper shipped with Winlator Mali 1.1.";
+                    info.notes = context.getString(R.string.driver_default_wrapper_notes);
                     break;
                 case "wrapper-v2.tzst":
                     info.version = "v2 (1.1 release)";
-                    info.notes = "The v2 build of the Vulkan wrapper from Winlator Mali 1.1.";
+                    info.notes = context.getString(R.string.driver_v2_wrapper_notes);
                     break;
                 case "wrapper-leegao.tzst":
                     info.version = "leegao (1.1 release)";
-                    info.notes = "leegao's Vulkan wrapper, as shipped with Winlator Mali 1.1.";
+                    info.notes = context.getString(R.string.driver_leegao_wrapper_notes);
                     break;
                 case "wrapper-gamenative.tzst":
                     info.version = "GameNative (1.1 release)";
-                    info.notes = "GameNative's lightweight Vulkan wrapper, as shipped with Winlator Mali 1.1.";
+                    info.notes = context.getString(R.string.driver_gamenative_wrapper_notes);
                     break;
             }
         }
@@ -222,12 +223,16 @@ public class ManageGraphicsDriversFragment extends Fragment {
             } else {
                 statusStr = getString(R.string.bundled);
             }
-            holder.tvVersion.setText(Html.fromHtml(getString(R.string.version) + ": " + info.version + " (" + statusStr + ")", Html.FROM_HTML_MODE_LEGACY));
+            String displayVersion = info.version != null ? info.version : getString(R.string.unknown_version);
+            String encodedVersion = TextUtils.htmlEncode(displayVersion);
+            holder.tvVersion.setText(Html.fromHtml(
+                    getString(R.string.driver_version_summary, getString(R.string.version), encodedVersion, statusStr),
+                    Html.FROM_HTML_MODE_LEGACY));
 
             holder.btInfo.setOnClickListener(v -> {
-                String details = "<b>File:</b> " + info.fileName + "<br/>" +
-                                 "<b>Version:</b> " + info.version + "<br/><br/>" +
-                                 "<b>Notes:</b><br/>" + (info.notes.isEmpty() ? getString(R.string.no_notes_available) : info.notes.replace("\n", "<br/>"));
+                String notes = info.notes.isEmpty() ? getString(R.string.no_notes_available) : info.notes;
+                String details = getString(R.string.driver_details_html, TextUtils.htmlEncode(info.fileName),
+                        encodedVersion, TextUtils.htmlEncode(notes).replace("\n", "<br/>"));
                 
                 ContentDialog dialog = new ContentDialog(getContext());
                 dialog.setTitle(R.string.driver_details);
@@ -239,7 +244,7 @@ public class ManageGraphicsDriversFragment extends Fragment {
             });
 
             holder.btUpdate.setOnClickListener(v -> {
-                String message = getString(R.string.update_driver_initial_confirm, info.fileName);
+                String message = getString(R.string.update_driver_initial_confirm, TextUtils.htmlEncode(String.valueOf(info.fileName)));
                 ContentDialog.confirm(getContext(), message, () -> {
                     selectedDriverFile = info.fileName;
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -289,7 +294,7 @@ public class ManageGraphicsDriversFragment extends Fragment {
             Uri uri = data.getData();
             String fileName = FileUtils.getUriFileName(getContext(), uri);
             if (fileName != null && fileName.equals(selectedDriverFile)) {
-                String message = getString(R.string.update_driver_confirm, selectedDriverFile);
+                String message = getString(R.string.update_driver_confirm, TextUtils.htmlEncode(String.valueOf(selectedDriverFile)));
                 ContentDialog.confirm(getContext(), message, () -> updateDriver(uri));
             } else {
                 String errorMsg = fileName != null ? getString(R.string.driver_file_mismatch, fileName, selectedDriverFile) : getString(R.string.unable_to_determine_filename);

@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="13sp"
-                android:text="Enable Pre-Configured DXVK Config" />
+                android:text="@string/enable_preconfigured_dxvk_config" />
 
             <ImageView
                 android:id="@+id/BTHelpDxvkConfig"
@@ -97,7 +97,7 @@
                 app:tint="?android:attr/textColorSecondary"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"
-                android:contentDescription="Information" />
+                android:contentDescription="@string/information" />
 
             <ToggleButton
                 android:id="@+id/SWDxvkConfig"

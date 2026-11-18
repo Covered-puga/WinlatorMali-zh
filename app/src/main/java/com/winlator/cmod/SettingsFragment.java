@@ -314,7 +314,10 @@ public class SettingsFragment extends Fragment {
             .commit());
         TextView tvLogSummary = view.findViewById(R.id.TVLogManagerSummary);
         boolean recording = com.winlator.cmod.logs.LogFiles.isOn(context, "enable_wine_debug") || com.winlator.cmod.logs.LogFiles.isOn(context, "enable_box64_logs");
-        tvLogSummary.setText((!com.winlator.cmod.logs.LogFiles.isOn(context, com.winlator.cmod.logs.LogFiles.PREF_ENABLED) ? "Logs off" : recording ? "Recording game logs" : "Game logs off") + "  ·  " + com.winlator.cmod.logs.LogFiles.root(context).getAbsolutePath());
+        int logStatus = !com.winlator.cmod.logs.LogFiles.isOn(context, com.winlator.cmod.logs.LogFiles.PREF_ENABLED)
+                ? R.string.log_status_disabled : recording ? R.string.log_status_recording_game : R.string.log_status_game_disabled;
+        tvLogSummary.setText(context.getString(R.string.log_status_and_path, context.getString(logStatus),
+                com.winlator.cmod.logs.LogFiles.root(context).getAbsolutePath()));
 
         final TextView tvCursorSpeed = view.findViewById(R.id.TVCursorSpeed);
         final SeekBar sbCursorSpeed = view.findViewById(R.id.SBCursorSpeed);
@@ -370,10 +373,10 @@ public class SettingsFragment extends Fragment {
         final Spinner sCatalogPreset = view.findViewById(R.id.SCatalogPreset);
         if (sCatalogPreset != null) {
             String[] presets = {
-                "☁️ Bannerlator (The412Banner)",
-                "☁️ WinNative (nicholasx417)",
-                "☁️ StevenMXZ Contents",
-                "🌐 Custom Catalog URL"
+                context.getString(R.string.catalog_bannerlator_preset),
+                context.getString(R.string.catalog_winnative_preset),
+                context.getString(R.string.catalog_stevenmxz_contents),
+                context.getString(R.string.catalog_custom_url_preset)
             };
             boolean isDarkMode = preferences.getBoolean("dark_mode", true);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, presets) {
@@ -629,7 +632,7 @@ public class SettingsFragment extends Fragment {
         Callback<String> onExportPreset = (String prefix) -> {
             final String presetId = Box64PresetManager.getSpinnerSelectedId(spinners.get(prefix));
             if (!presetId.startsWith(Box64Preset.CUSTOM)) {
-                AppUtils.showToast(context, "Cannot export this preset");
+                AppUtils.showToast(context, R.string.cannot_export_preset);
                 return;
             }
             getActivity().runOnUiThread(() ->  {
@@ -691,7 +694,7 @@ public class SettingsFragment extends Fragment {
         Callback<String> onExportPreset = (String prefix) -> {
             final String presetId = FEXCorePresetManager.getSpinnerSelectedId(sFEXCorePreset);
             if (!presetId.startsWith(FEXCorePreset.CUSTOM)) {
-                AppUtils.showToast(context, "Cannot export this preset");
+                AppUtils.showToast(context, R.string.cannot_export_preset);
                 return;
             }
             getActivity().runOnUiThread(() ->  {
@@ -759,7 +762,7 @@ public class SettingsFragment extends Fragment {
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                             );
                         } catch (SecurityException e) {
-                            AppUtils.showToast(getContext(), "Unable to take persistable permissions: " + e.getMessage());
+                            AppUtils.showToast(getContext(), getContext().getString(R.string.cannot_persist_file_permission, e.getMessage()));
                         }
 
                         // Convert the URI to an absolute path and display it
@@ -782,7 +785,7 @@ public class SettingsFragment extends Fragment {
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                             );
                         } catch (SecurityException e) {
-                            AppUtils.showToast(getContext(), "Unable to take persistable permissions: " + e.getMessage());
+                            AppUtils.showToast(getContext(), getContext().getString(R.string.cannot_persist_file_permission, e.getMessage()));
                         }
 
                         // Convert the URI to an absolute path and display it

@@ -48,7 +48,7 @@
                             android:layout_marginStart="6dp"
                             android:src="@drawable/icon_add"
                             android:padding="4dp"
-                            android:contentDescription="Add Wheel"
+                            android:contentDescription="@string/add_radial_wheel"
                             android:background="?selectableItemBackgroundBorderless"
                             app:tint="@color/colorAccent" />
 
@@ -59,7 +59,7 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/icon_remove"
                             android:padding="4dp"
-                            android:contentDescription="Remove Wheel"
+                            android:contentDescription="@string/remove_radial_wheel"
                             android:background="?selectableItemBackgroundBorderless"
                             app:tint="@color/colorAccent" />
                     </LinearLayout>
@@ -68,7 +68,7 @@
                 <TextView
                     android:id="@+id/TVWheelLabel"
                     style="@style/FieldSetLabel"
-                    android:text="Radial Wheel" />
+                    android:text="@string/radial_wheel" />
             </FrameLayout>
 
             <!-- ── Wheel Properties ── -->
@@ -85,14 +85,14 @@
                         android:id="@+id/CBEnableWheel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Enable This Radial Wheel"
+                        android:text="@string/enable_radial_wheel"
                         android:checked="true" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Wheel Name"
+                        android:text="@string/radial_wheel_name"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -103,14 +103,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:inputType="text"
-                        android:hint="e.g. Weapons, Spells, Hotkeys"
+                        android:hint="@string/radial_wheel_name_hint"
                         android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Hold Trigger Button 1"
+                        android:text="@string/radial_wheel_primary_trigger"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -126,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Combo Trigger Button 2 (Optional)"
+                        android:text="@string/radial_wheel_combo_trigger"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -147,7 +147,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Wheel Icon Scale"
+                            android:text="@string/radial_wheel_icon_scale"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                         <TextView
@@ -169,7 +169,7 @@
                 <TextView
                     android:id="@+id/TVPropertiesLabel"
                     style="@style/FieldSetLabel"
-                    android:text="Properties" />
+                    android:text="@string/properties" />
             </FrameLayout>
 
             <!-- ── Wheel Slices ── -->
@@ -185,7 +185,7 @@
                 <TextView
                     android:id="@+id/TVSlicesLabel"
                     style="@style/FieldSetLabel"
-                    android:text="Wheel Slices (Top Clockwise)" />
+                    android:text="@string/radial_wheel_slices" />
             </FrameLayout>
 
         </LinearLayout>

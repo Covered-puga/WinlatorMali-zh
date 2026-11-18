@@ -31,7 +31,7 @@
                         android:id="@+id/TVNoControllers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No physical controllers detected.\nConnect a gamepad via USB or Bluetooth."
+                        android:text="@string/no_physical_controllers"
                         android:textSize="12sp"
                         android:textColor="?android:attr/textColorSecondary"
                         android:padding="4dp"
@@ -41,7 +41,7 @@
 
                 <TextView
                     style="@style/FieldSetLabel"
-                    android:text="Connected Controllers" />
+                    android:text="@string/connected_controllers" />
             </FrameLayout>
 
             <!-- ── Per-Slot Settings ── -->
@@ -56,7 +56,7 @@
 
                 <TextView
                     style="@style/FieldSetLabel"
-                    android:text="Deadzone &amp; Vibration" />
+                    android:text="@string/deadzone_and_vibration" />
             </FrameLayout>
 
             <Button

@@ -60,7 +60,7 @@
             android:textStyle="bold"
             android:textSize="14sp"
             android:textColor="?attr/colorAccent"
-            android:text="Branch &amp; Architecture" />
+            android:text="@string/about_branch_architecture" />
 
         <TextView
             android:id="@+id/TVBranchFeatures"
@@ -98,7 +98,7 @@
             android:textStyle="bold"
             android:textSize="14sp"
             android:textColor="?attr/colorAccent"
-            android:text="Open Source Licenses" />
+            android:text="@string/about_open_source_licenses" />
 
         <TextView
             android:id="@+id/TVLicenses"

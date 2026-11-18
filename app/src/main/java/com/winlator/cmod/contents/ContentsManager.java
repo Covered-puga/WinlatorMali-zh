@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.core.FileUtils;
 import com.winlator.cmod.core.TarCompressorUtils;
 import com.winlator.cmod.xenvironment.ImageFs;
@@ -841,7 +842,7 @@ public class ContentsManager {
                             p.winePrefixPack = f.getAbsolutePath() + "/prefixPack.txz";
                             p.size = FileUtils.getDirectorySize(f);
                             p.sizeFormatted = Downloader.formatFileSize(p.size);
-                            p.desc = "Installed Locally on Device (" + p.sizeFormatted + ")";
+                            p.desc = context.getString(R.string.content_installed_locally_with_size, p.sizeFormatted);
                             p.releaseDate = estimateReleaseDate(p.verName, "");
                             installed.add(p);
                         }

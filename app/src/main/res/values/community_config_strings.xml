@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Community configurations -->
+    <string name="community_no_network">No internet connection.\nPlease check your network settings.</string>
+    <string name="community_no_shared_configs">No community configurations shared yet.\nBe the first to share your config from the Shortcuts menu!</string>
+    <string name="community_game_list_failed">Failed to retrieve games list.\nPlease check your connection or server status.</string>
+    <string name="community_game_search_empty">No games found matching \"%1$s\"</string>
+    <string name="community_fetching_configs">Fetching Configurations...</string>
+    <string name="community_no_game_configs">No configurations found for this game.</string>
+    <string name="community_fetch_configs_failed">Failed to fetch configurations. Please check your network connection.</string>
+    <string name="community_select_config">Select Config</string>
+    <string name="community_config_details">Configuration Details</string>
+    <string name="community_unknown_device">Unknown Device</string>
+    <string name="community_no_notes">No notes provided.</string>
+    <string name="community_ram_value">%1$s RAM</string>
+    <string name="community_storage_value">%1$s Storage</string>
+    <string name="community_just_now">just now</string>
+    <string name="community_minutes_ago">%1$dm ago</string>
+    <string name="community_hours_ago">%1$dh ago</string>
+    <string name="community_days_ago">%1$dd ago</string>
+    <string name="community_vote_helpful">👍 Helpful (%1$d)</string>
+    <string name="community_vote_helpful_selected">👍 Helpful (%1$d) ✓</string>
+    <string name="community_vote_not_helpful">👎 Didn\'t Work (%1$d)</string>
+    <string name="community_vote_not_helpful_selected">👎 Didn\'t Work (%1$d) ✓</string>
+    <string name="community_import_button">IMPORT</string>
+    <string name="community_downloading_config">Downloading Configuration...</string>
+    <string name="community_download_failed">Failed to download configuration. Please check your internet connection.</string>
+    <string name="community_wine_notice">Wine Runtime Notice</string>
+    <string name="community_download_button">DOWNLOAD</string>
+    <string name="community_use_installed">USE INSTALLED</string>
+    <string name="community_select_wine">Select Wine Runtime</string>
+    <string name="community_import_confirm"><![CDATA[Import configuration for <b>%1$s</b>?<br><br>Wine runtime: <b>%2$s</b>]]></string>
+    <string name="community_import_notes_html"><![CDATA[<br><br><b>Notes:</b><br>%1$s]]></string>
+    <string name="community_import_title">Import Configuration</string>
+    <string name="community_importing">Importing Configuration...</string>
+    <string name="community_import_minor_errors">Imported with minor errors.</string>
+    <string name="community_import_failed">Import failed.</string>
+    <string name="community_single_config">%1$d CONFIG</string>
+    <string name="community_multiple_configs">%1$d CONFIGS</string>
+    <string name="community_game_error">Error</string>
+    <string name="community_wine_required">No Wine runtimes installed. Please download one from Contents.</string>
+    <string name="community_default_runtime">Default</string>
+    <string name="community_runtime_fallback">Runtime \'%1$s\' not installed. Using %2$s</string>
+    <string name="community_wine_none_installed_html"><![CDATA[This configuration recommends:<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>No Wine or Proton runtimes are installed on your device yet.<br><br>Please download <b>%1$s</b> from Contents to use this setup.]]></string>
+    <string name="community_wine_select_installed_html"><![CDATA[This configuration recommends:<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>It is not currently installed on your device.<br><br>Would you like to download <b>%1$s</b> now, or select one of your installed runtimes?]]></string>
+    <string name="community_wine_use_installed_html"><![CDATA[This configuration recommends:<br><br><b><font color=\'#4CAF50\'>%1$s</font></b><br><br>It is not currently installed on your device.<br><br>Would you like to download <b>%1$s</b> now, or continue using your installed runtime (<b>%2$s</b>)?]]></string>
+    <string name="community_imported_html"><![CDATA[<b>Imported successfully!</b><br><br>A new container has been created with community settings.<br><br><b>Imported Setup:</b><br>• Wine: %1$s<br>• GPU Driver: %2$s<br>• DX Wrapper: %3$s<br><br><b>How to use:</b><br>1. Go to <b>Containers</b>.<br>2. Run <b>[Community] %4$s</b>.<br>3. Find your game EXE in Drive D: and play!]]></string>
+</resources>

@@ -1,8 +1,10 @@
 package com.winlator.cmod.saves;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.container.Container;
 import com.winlator.cmod.container.Shortcut;
 
@@ -202,7 +204,7 @@ public class GameSaveBackup {
      * AppID-named folders from Steam emulators/cracks, save folders next to the exe, and folders the
      * user added by hand.
      */
-    public static List<SaveLocationInfo> getSaveLocations(Shortcut shortcut) {
+    public static List<SaveLocationInfo> getSaveLocations(Context context, Shortcut shortcut) {
         List<SaveLocationInfo> result = new ArrayList<>();
         if (shortcut == null || shortcut.container == null) return result;
 
@@ -256,12 +258,12 @@ public class GameSaveBackup {
         Set<String> customKeys = new HashSet<>();
         for (File dir : getCustomSaveDirs(shortcut)) {
             customKeys.add(dir.getAbsolutePath());
-            SaveLocationInfo info = inspectFolder(dir, container, gameDir);
+            SaveLocationInfo info = inspectFolder(context, dir, container, gameDir);
             if (info == null) {
                 info = new SaveLocationInfo();
                 info.directory = dir;
                 info.title = dir.getName();
-                info.friendlyPath = formatFriendlyPath(dir, container, gameDir);
+                info.friendlyPath = formatFriendlyPath(context, dir, container, gameDir);
                 info.missing = true;
                 info.suggested = false;
             }
@@ -271,13 +273,13 @@ public class GameSaveBackup {
 
         for (File dir : matched.values()) {
             if (customKeys.contains(dir.getAbsolutePath())) continue;
-            SaveLocationInfo info = inspectFolder(dir, container, gameDir);
+            SaveLocationInfo info = inspectFolder(context, dir, container, gameDir);
             if (info != null && info.fileCount > 0) result.add(info);
         }
 
         for (File dir : possible.values()) {
             if (customKeys.contains(dir.getAbsolutePath()) || matched.containsKey(dir.getAbsolutePath())) continue;
-            SaveLocationInfo info = inspectFolder(dir, container, gameDir);
+            SaveLocationInfo info = inspectFolder(context, dir, container, gameDir);
             if (info != null && info.fileCount > 0) {
                 info.suggested = false;
                 result.add(info);
@@ -411,13 +413,13 @@ public class GameSaveBackup {
 
     // ---------------------------------------------------------------- display helpers
 
-    private static SaveLocationInfo inspectFolder(File dir, Container container, File gameDir) {
+    private static SaveLocationInfo inspectFolder(Context context, File dir, Container container, File gameDir) {
         if (dir == null || !dir.isDirectory()) return null;
 
         SaveLocationInfo info = new SaveLocationInfo();
         info.directory = dir;
         info.title = dir.getName();
-        info.friendlyPath = formatFriendlyPath(dir, container, gameDir);
+        info.friendlyPath = formatFriendlyPath(context, dir, container, gameDir);
 
         long[] stats = calculateFolderStats(dir);
         info.totalBytes = stats[0];
@@ -427,6 +429,10 @@ public class GameSaveBackup {
     }
 
     public static String formatFriendlyPath(File file, Container container, File gameDir) {
+        return formatFriendlyPath(null, file, container, gameDir);
+    }
+
+    private static String formatFriendlyPath(Context context, File file, Container container, File gameDir) {
         if (file == null) return "";
         String path = file.getAbsolutePath();
 
@@ -439,11 +445,17 @@ public class GameSaveBackup {
         }
 
         if (gameDir != null && isInside(path, gameDir.getAbsolutePath())) {
-            return ("Game folder ❯ " + relative(path, gameDir.getAbsolutePath()).replace("/", " ❯ ")).trim();
+            String suffix = relative(path, gameDir.getAbsolutePath()).replace("/", " ❯ ");
+            return (context != null ? context.getString(R.string.save_manager_game_folder_path, suffix)
+                    : "Game folder ❯ " + suffix).trim();
         }
 
         String storage = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if (isInside(path, storage)) return ("Storage ❯ " + relative(path, storage).replace("/", " ❯ ")).trim();
+        if (isInside(path, storage)) {
+            String suffix = relative(path, storage).replace("/", " ❯ ");
+            return (context != null ? context.getString(R.string.save_manager_storage_path, suffix)
+                    : "Storage ❯ " + suffix).trim();
+        }
         return path;
     }
 
@@ -498,13 +510,15 @@ public class GameSaveBackup {
         return "abs" + path;
     }
 
-    public static File backupGameSaves(Shortcut shortcut, List<File> saveDirs) throws IOException {
-        if (shortcut == null || shortcut.container == null) throw new IOException("Invalid shortcut or container");
+    public static File backupGameSaves(Context context, Shortcut shortcut, List<File> saveDirs) throws IOException {
+        if (shortcut == null || shortcut.container == null) {
+            throw new IOException(context.getString(R.string.save_manager_invalid_shortcut_or_container));
+        }
 
         File driveC = getDriveC(shortcut.container);
         File gameDir = getGameDir(shortcut);
         String safeName = shortcut.name.replaceAll("[^a-zA-Z0-9_-]", "_");
-        File zipFile = newBackupFile(safeName + "_SaveBackup_");
+        File zipFile = newBackupFile(context, safeName + "_SaveBackup_");
 
         int totalFiles = 0;
         long totalBytes = 0;
@@ -528,13 +542,13 @@ public class GameSaveBackup {
         return zipFile;
     }
 
-    public static File backupContainerSaves(Container container) throws IOException {
-        if (container == null) throw new IOException("Container is null");
+    public static File backupContainerSaves(Context context, Container container) throws IOException {
+        if (container == null) throw new IOException(context.getString(R.string.save_manager_missing_container));
         File driveC = getDriveC(container);
-        if (!driveC.isDirectory()) throw new IOException("Container drive C: does not exist");
+        if (!driveC.isDirectory()) throw new IOException(context.getString(R.string.save_manager_missing_drive_c));
 
         String safeName = container.getName().replaceAll("[^a-zA-Z0-9_-]", "_");
-        File zipFile = newBackupFile("Container_" + safeName + "_AllSaves_");
+        File zipFile = newBackupFile(context, "Container_" + safeName + "_AllSaves_");
 
         int totalFiles = 0;
         long totalBytes = 0;
@@ -563,9 +577,11 @@ public class GameSaveBackup {
         return zipFile;
     }
 
-    private static File newBackupFile(String prefix) throws IOException {
+    private static File newBackupFile(Context context, String prefix) throws IOException {
         File exportDir = new File(SAVES_BACKUP_DIR);
-        if (!exportDir.exists() && !exportDir.mkdirs()) throw new IOException("Cannot create " + SAVES_BACKUP_DIR);
+        if (!exportDir.exists() && !exportDir.mkdirs()) {
+            throw new IOException(context.getString(R.string.save_manager_create_directory_failed, SAVES_BACKUP_DIR));
+        }
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         return new File(exportDir, prefix + timestamp + ".zip");
     }
@@ -623,7 +639,7 @@ public class GameSaveBackup {
 
     // ---------------------------------------------------------------- inspection
 
-    public static ArchiveInspectionResult inspectArchive(InputStream is) {
+    public static ArchiveInspectionResult inspectArchive(Context context, InputStream is) {
         ArchiveInspectionResult result = new ArchiveInspectionResult();
         int validSaveEntries = 0;
 
@@ -636,7 +652,7 @@ public class GameSaveBackup {
                     JSONObject json = readJson(zis);
                     if (json != null) {
                         result.status = ArchiveStatus.VALID_WINLATOR_MANIFEST;
-                        result.gameName = json.optString("game_name", "Game Saves");
+                        result.gameName = json.optString("game_name", context.getString(R.string.save_manager_game_saves));
                         result.createdAt = json.optString("created_at", "");
                         result.fileCount = json.optInt("file_count", 0);
                         result.totalBytes = json.optLong("total_bytes", 0);
@@ -656,7 +672,7 @@ public class GameSaveBackup {
             }
         } catch (Exception e) {
             result.status = ArchiveStatus.INVALID_NON_SAVE_ARCHIVE;
-            result.errorMessage = "Failed to read ZIP archive: " + e.getMessage();
+            result.errorMessage = context.getString(R.string.save_manager_zip_read_failed, e.getMessage());
             return result;
         }
 
@@ -666,7 +682,7 @@ public class GameSaveBackup {
             result.gameName = "Generic / External Saves";
         } else {
             result.status = ArchiveStatus.INVALID_NON_SAVE_ARCHIVE;
-            result.errorMessage = "No valid Windows/Wine save data (Documents, AppData, Saved Games) found in this archive.";
+            result.errorMessage = context.getString(R.string.save_manager_no_valid_zip_saves);
         }
         return result;
     }
@@ -818,12 +834,13 @@ public class GameSaveBackup {
         return "users/xuser" + (slash >= 0 ? rest.substring(slash) : "");
     }
 
-    public static RestoreResult executeRestore(RestorePlan plan, ConflictMode mode, String backupLabel, StreamOpener opener) throws IOException {
+    public static RestoreResult executeRestore(Context context, RestorePlan plan, ConflictMode mode,
+                                               String backupLabel, StreamOpener opener) throws IOException {
         RestoreResult result = new RestoreResult();
         result.rejected = plan.rejected;
 
         if (mode == ConflictMode.BACKUP_THEN_OVERWRITE && plan.conflicts > 0) {
-            result.preRestoreBackup = backupExistingFiles(plan, backupLabel);
+            result.preRestoreBackup = backupExistingFiles(context, plan, backupLabel);
         }
 
         for (File dir : plan.dirs.values()) {
@@ -868,9 +885,9 @@ public class GameSaveBackup {
     }
 
     /** Zips the files a restore is about to overwrite, in the same layout, so the restore can be undone. */
-    private static File backupExistingFiles(RestorePlan plan, String label) throws IOException {
+    private static File backupExistingFiles(Context context, RestorePlan plan, String label) throws IOException {
         String safeName = (label == null || label.isEmpty() ? "Saves" : label).replaceAll("[^a-zA-Z0-9_-]", "_");
-        File zipFile = newBackupFile(safeName + "_BeforeRestore_");
+        File zipFile = newBackupFile(context, safeName + "_BeforeRestore_");
 
         int count = 0;
         long bytes = 0;

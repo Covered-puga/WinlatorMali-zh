@@ -1,7 +1,10 @@
 package com.winlator.cmod.inputcontrols;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.xserver.Pointer;
 import com.winlator.cmod.xserver.XKeycode;
 
@@ -122,22 +125,44 @@ public enum Binding {
         return name().startsWith("GAMEPAD_");
     }
 
-    public static String[] mouseBindingLabels() {
-        ArrayList<String> names = new ArrayList<>();
-        for (Binding binding : values()) if (binding.isMouse()) names.add(binding.toString());
-        return names.toArray(new String[0]);
-    }
-
-    public static String[] keyboardBindingLabels() {
-        ArrayList<String> labels = new ArrayList<>();
-        for (Binding binding : values()) if (binding.isKeyboard()) labels.add(binding.toString());
-        return labels.toArray(new String[0]);
-    }
-
-    public static String[] gamepadBindingLabels() {
-        ArrayList<String> names = new ArrayList<>();
-        for (Binding binding : values()) if (binding.isGamepad()) names.add(binding.toString());
-        return names.toArray(new String[0]);
+    public String getDisplayLabel(Context context) {
+        int label = switch (this) {
+            case NONE -> R.string.option_binding_none;
+            case MOUSE_LEFT_BUTTON -> R.string.option_binding_mouse_left_button;
+            case MOUSE_MIDDLE_BUTTON -> R.string.option_binding_mouse_middle_button;
+            case MOUSE_RIGHT_BUTTON -> R.string.option_binding_mouse_right_button;
+            case MOUSE_MOVE_LEFT -> R.string.option_binding_mouse_move_left;
+            case MOUSE_MOVE_RIGHT -> R.string.option_binding_mouse_move_right;
+            case MOUSE_MOVE_UP -> R.string.option_binding_mouse_move_up;
+            case MOUSE_MOVE_DOWN -> R.string.option_binding_mouse_move_down;
+            case MOUSE_SCROLL_UP -> R.string.option_binding_mouse_scroll_up;
+            case MOUSE_SCROLL_DOWN -> R.string.option_binding_mouse_scroll_down;
+            case KEY_UP -> R.string.option_binding_key_up;
+            case KEY_RIGHT -> R.string.option_binding_key_right;
+            case KEY_DOWN -> R.string.option_binding_key_down;
+            case KEY_LEFT -> R.string.option_binding_key_left;
+            case KEY_SPACE -> R.string.option_binding_key_space;
+            case GAMEPAD_BUTTON_SELECT -> R.string.option_binding_gamepad_button_select;
+            case GAMEPAD_BUTTON_START -> R.string.option_binding_gamepad_button_start;
+            case GAMEPAD_LEFT_THUMB_UP -> R.string.option_binding_gamepad_left_thumb_up;
+            case GAMEPAD_LEFT_THUMB_RIGHT -> R.string.option_binding_gamepad_left_thumb_right;
+            case GAMEPAD_LEFT_THUMB_DOWN -> R.string.option_binding_gamepad_left_thumb_down;
+            case GAMEPAD_LEFT_THUMB_LEFT -> R.string.option_binding_gamepad_left_thumb_left;
+            case GAMEPAD_RIGHT_THUMB_UP -> R.string.option_binding_gamepad_right_thumb_up;
+            case GAMEPAD_RIGHT_THUMB_RIGHT -> R.string.option_binding_gamepad_right_thumb_right;
+            case GAMEPAD_RIGHT_THUMB_DOWN -> R.string.option_binding_gamepad_right_thumb_down;
+            case GAMEPAD_RIGHT_THUMB_LEFT -> R.string.option_binding_gamepad_right_thumb_left;
+            case GAMEPAD_DPAD_UP -> R.string.option_binding_gamepad_dpad_up;
+            case GAMEPAD_DPAD_RIGHT -> R.string.option_binding_gamepad_dpad_right;
+            case GAMEPAD_DPAD_DOWN -> R.string.option_binding_gamepad_dpad_down;
+            case GAMEPAD_DPAD_LEFT -> R.string.option_binding_gamepad_dpad_left;
+            default -> 0;
+        };
+        if (label != 0) return context.getString(label);
+        if (name().startsWith("GAMEPAD_BUTTON_")) {
+            return context.getString(R.string.option_binding_gamepad_button, name().substring("GAMEPAD_BUTTON_".length()));
+        }
+        return toString();
     }
 
     public static Binding[] mouseBindingValues() {

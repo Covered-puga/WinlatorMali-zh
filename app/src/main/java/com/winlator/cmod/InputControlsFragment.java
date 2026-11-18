@@ -106,7 +106,8 @@ public class InputControlsFragment extends Fragment {
             try {
                 Uri uri = data.getData();
                 String filename = FileUtils.getUriFileName(getContext(), uri);
-                String fallbackName = (filename != null && !filename.isEmpty()) ? FileUtils.getBasename(filename) : "Imported Profile";
+                String fallbackName = (filename != null && !filename.isEmpty())
+                        ? FileUtils.getBasename(filename) : getString(R.string.imported_controls_profile);
 
                 com.winlator.cmod.inputcontrols.CustomIconManager.ImportResult res =
                         com.winlator.cmod.inputcontrols.CustomIconManager.getInstance(getContext()).importUniversalPackage(uri, fallbackName);
@@ -114,15 +115,12 @@ public class InputControlsFragment extends Fragment {
                 if (res.profileJSON != null) {
                     ControlsProfile importedProfile = manager.importProfile(res.profileJSON);
                     if (importProfileCallback != null) importProfileCallback.call(importedProfile);
-                    String msg = "Imported profile '" + importedProfile.getName() + "'";
-                    if (res.importedIconsCount > 0) {
-                        msg += " with " + res.importedIconsCount + " custom icons!";
-                    } else {
-                        msg += " successfully!";
-                    }
+                    String msg = res.importedIconsCount > 0
+                            ? getString(R.string.profile_imported_with_icons, importedProfile.getName(), res.importedIconsCount)
+                            : getString(R.string.profile_imported, importedProfile.getName());
                     AppUtils.showToast(getContext(), msg);
                 } else if (res.importedIconsCount > 0) {
-                    AppUtils.showToast(getContext(), "Imported " + res.importedIconsCount + " custom icons from icon pack!");
+                    AppUtils.showToast(getContext(), getString(R.string.icon_pack_imported, res.importedIconsCount));
                 } else {
                     AppUtils.showToast(getContext(), R.string.unable_to_import_profile);
                 }
@@ -249,7 +247,7 @@ public class InputControlsFragment extends Fragment {
                 File exportedFile = manager.exportProfile(currentProfile);
                 if (exportedFile != null) {
                     String path = exportedFile.getPath();
-                    AppUtils.showToast(context, context.getString(R.string.profile_exported_to)+" "+path);
+                    AppUtils.showToast(context, context.getString(R.string.controls_profile_exported_to_path, path));
                 }
             }
             else AppUtils.showToast(context, R.string.no_profile_selected);
@@ -383,14 +381,14 @@ public class InputControlsFragment extends Fragment {
 
         if (!controllers.isEmpty()) {
             view.findViewById(R.id.TVEmptyText).setVisibility(View.GONE);
-            String bindingsText = context.getString(R.string.bindings);
             for (final ExternalController controller : controllers) {
                 View itemView = inflater.inflate(R.layout.external_controller_list_item, container, false);
                 ThemeManager.applyThemeToView(itemView, context);
                 ((TextView)itemView.findViewById(R.id.TVTitle)).setText(controller.getName());
 
                 int controllerBindingCount = controller.getControllerBindingCount();
-                ((TextView)itemView.findViewById(R.id.TVSubtitle)).setText(controllerBindingCount+" "+bindingsText);
+                ((TextView)itemView.findViewById(R.id.TVSubtitle))
+                        .setText(context.getString(R.string.controller_binding_count, controllerBindingCount));
 
                 ImageView imageView = itemView.findViewById(R.id.ImageView);
                 int tintColor = controller.isConnected() ? ThemeManager.getAccentColor(context) : 0xffe57373;

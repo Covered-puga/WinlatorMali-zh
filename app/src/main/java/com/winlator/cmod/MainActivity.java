@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void showAllFilesAccessDialog() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             new AlertDialog.Builder(this)
-                    .setTitle("All Files Access Required")
-                    .setMessage("In order to grant access to additional storage devices such as USB storage device, the All Files Access permission must be granted. Press Okay to grant All Files Access in your Android Settings.")
-                    .setPositiveButton("Okay", (dialog, which) -> {
+                    .setTitle(R.string.all_files_access_required)
+                    .setMessage(R.string.all_files_access_explanation)
+                    .setPositiveButton(R.string.permission_okay, (dialog, which) -> {
                         try {
                             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                             intent.setData(Uri.parse("package:" + getPackageName()));
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             startActivity(intent);
                         }
                     })
-                    .setNegativeButton("Later", (dialog, which) -> {
+                    .setNegativeButton(R.string.later, (dialog, which) -> {
                         if (!ImageFsInstaller.installIfNeeded(this)) {
                             com.winlator.cmod.contents.WineDownloader.checkFirstLaunchWineSetup(this);
                         }
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     com.winlator.cmod.contents.WineDownloader.checkFirstLaunchWineSetup(this);
                 }
             } else {
-                AppUtils.showToast(this, "Storage permission is recommended for container drives.");
+                AppUtils.showToast(this, R.string.container_drive_storage_permission_recommended);
                 if (!ImageFsInstaller.installIfNeeded(this)) {
                     com.winlator.cmod.contents.WineDownloader.checkFirstLaunchWineSetup(this);
                 }
@@ -317,13 +317,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (bar == null) return;
         boolean connected = com.winlator.cmod.core.ControllerNavigation.isControllerConnected();        if (connected && ((android.view.ViewGroup) findViewById(R.id.LLControllerHints)).getChildCount() == 0) {
             com.winlator.cmod.core.ControllerNavigation.buildHints(findViewById(R.id.LLControllerHints), new String[][]{
-                {"A", "Select", "#3DA35D"},
-                {"B", "Back", "#D9453B"},
-                {"X", "Item menu", "#2F6FD6"},
-                {"Y", "Top bar", "#C9A227"},
-                {"LB RB", "Section", "#5A6270"},
-                {"LT RT", "Page", "#5A6270"},
-                {"START", "Menu", "#5A6270"}
+                {"A", getString(R.string.controller_hint_select), "#3DA35D"},
+                {"B", getString(R.string.controller_hint_back), "#D9453B"},
+                {"X", getString(R.string.controller_hint_item_menu), "#2F6FD6"},
+                {"Y", getString(R.string.controller_hint_top_bar), "#C9A227"},
+                {"LB RB", getString(R.string.controller_hint_section), "#5A6270"},
+                {"LT RT", getString(R.string.controller_hint_page), "#5A6270"},
+                {"START", getString(R.string.controller_hint_menu), "#5A6270"}
             });
         }
         bar.setVisibility(connected ? View.VISIBLE : View.GONE);
@@ -559,49 +559,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tvWebpage.setText(Html.fromHtml("<a href=\"https://github.com/GunaCharanTeja/WinlatorMali\">github.com/GunaCharanTeja/WinlatorMali</a>", Html.FROM_HTML_MODE_LEGACY));
             tvWebpage.setMovementMethod(LinkMovementMethod.getInstance());
 
-            ((TextView) dialog.findViewById(R.id.TVAppVersion)).setText(getString(R.string.version) + " " + pInfo.versionName + " (egl-renderer)");
+            ((TextView) dialog.findViewById(R.id.TVAppVersion)).setText(getString(R.string.about_app_version, getString(R.string.version), pInfo.versionName));
 
-            String branchFeaturesHTML = String.join("<br />",
-                    "<b>• BCn Texture Emulation &amp; Disk Cache:</b> Hardware-accelerated Vulkan BCn layer with ASTC/ETC2 transcode, Native Direct toggle, and persistent disk caching for Mali GPUs.",
-                    "<b>• ZeroFG Frame Generation:</b> Custom Mali-optimized frame interpolation engine for higher perceived framerates.",
-                    "<b>• Winlator Telemetry HUD:</b> Direct Mali GPU load and clock telemetry via sysfs, real CPU usage, thermal status, battery watts, 1% and 0.1% lows, frame-time graph, and Madeira Glass styling.",
-                    "<b>• USB Gamepad &amp; Vibration:</b> True USB controller attachment, auto-grant permission persistence, rumble feedback, and full D-Pad/controller UI navigation.",
-                    "<b>• Community Configs &amp; Ratings:</b> Cloud config sync, automated Mali/Adreno badges, unbundled Wine downloader flow, and real-time community Helpful / Didn't Work ratings.",
-                    "<b>• Save Manager &amp; Hero Art:</b> 16:9 SteamGridDB hero art, fullscreen launch screens, and automatic save detection &amp; restoration for standard and cracked games."
-            );
+            String branchFeaturesHTML = getString(R.string.about_branch_features);
             TextView tvBranchFeatures = dialog.findViewById(R.id.TVBranchFeatures);
             if (tvBranchFeatures != null) {
                 tvBranchFeatures.setText(Html.fromHtml(branchFeaturesHTML, Html.FROM_HTML_MODE_LEGACY));
             }
 
-            String creditsHTML = String.join("<br />",
-                    "<b>Winlator Mali</b> by <a href=\"https://github.com/GunaCharanTeja\">GunaCharanTeja (Fcharan)</a>",
-                    "<b>Winlator &amp; Gladio</b> by <a href=\"https://github.com/brunodev85\">Bruno (brunodev85)</a>",
-                    "Fork of <b>Winlator Bionic</b> by <a href=\"https://github.com/Pipetto-crypto\">Pipetto Cripto</a>",
-                    "<b>BCN Layer &amp; Transcode</b> by <a href=\"https://github.com/leegao\">leegao</a>",
-                    "Winlator HUD &amp; File Manager from <b>Winlator Ludashi</b> by <a href=\"https://github.com/StevenMXZ\">stevenmxz</a>",
-                    "Controller fixes &amp; Navigation by <a href=\"https://github.com/Vivsi1\">vivsi1</a>",
-                    "Theme system &amp; CI contributions by <a href=\"https://github.com/Noysz\">Noysz</a>",
-                    "Original Community Configs Concept by <a href=\"https://github.com/The412Banner\">The412Banner</a>",
-                    "GLIBC Fork contributions by <a href=\"https://github.com/longjunyu2\">longjunyu2</a>"
-            );
+            String creditsHTML = getString(R.string.about_credits_html);
             TextView tvCredits = dialog.findViewById(R.id.TVCreditsAndThirdPartyApps);
             if (tvCredits != null) {
                 tvCredits.setText(Html.fromHtml(creditsHTML, Html.FROM_HTML_MODE_LEGACY));
                 tvCredits.setMovementMethod(LinkMovementMethod.getInstance());
             }
 
-            String licensesHTML = String.join("<br />",
-                    "<b>Wine / Proton:</b> LGPL v2.1+ (<a href=\"https://www.winehq.org\">winehq.org</a>)",
-                    "<b>Box64 &amp; FEX-Emu:</b> MIT (<a href=\"https://github.com/ptitSeb/box64\">ptitSeb</a> / <a href=\"https://github.com/FEX-Emu/FEX\">FEX-Emu</a>)",
-                    "<b>Mesa (Turnip / Zink / Wrapper):</b> MIT / LGPL (<a href=\"https://github.com/xMeM/mesa\">xMeM</a>)",
-                    "<b>DXVK &amp; VKD3D:</b> zlib / LGPL v2.1 (<a href=\"https://github.com/doitsujin/dxvk\">doitsujin</a> / <a href=\"https://gitlab.winehq.org/wine/vkd3d\">WineHQ</a>)",
-                    "<b>D8VK &amp; dxwrapper &amp; CNC DDraw:</b> zlib / GPL / MIT",
-                    "<b>libadrenotools:</b> GPL v3 (<a href=\"https://github.com/bylaws/libadrenotools\">bylaws</a>)",
-                    "<b>ZeroFG Frame Generation:</b> Apache 2.0 / BSD 3-Clause",
-                    "<b>Inter Font:</b> SIL Open Font License 1.1",
-                    "<b>Android Open Source Project:</b> Apache 2.0"
-            );
+            String licensesHTML = getString(R.string.about_licenses_html);
             TextView tvLicenses = dialog.findViewById(R.id.TVLicenses);
             if (tvLicenses != null) {
                 tvLicenses.setText(Html.fromHtml(licensesHTML, Html.FROM_HTML_MODE_LEGACY));

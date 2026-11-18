@@ -71,7 +71,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
                         if (currentIconListLayout != null) {
                             loadIcons(currentIconListLayout, newId);
                         }
-                        AppUtils.showToast(this, "Custom icon imported and applied!");
+                        AppUtils.showToast(this, R.string.custom_icon_imported_and_applied);
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
                 showGlobalOpacityDialog();
                 break;
             case R.id.BTReset:
-                ContentDialog.confirm(this, "Reset all buttons to original positions?", () -> {
+                ContentDialog.confirm(this, R.string.confirm_reset_controls_layout, () -> {
                     if (profile != null) {
                         boolean resetDone = profile.resetToOriginal(inputControlsView);
                         if (!resetDone && initialProfileSnapshot != null && !initialProfileSnapshot.isEmpty()) {
@@ -148,7 +148,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
                             profile.loadElements(inputControlsView);
                         }
                         inputControlsView.invalidate();
-                        AppUtils.showToast(this, "Buttons reset to original layout");
+                        AppUtils.showToast(this, R.string.controls_layout_reset);
                     }
                 });
                 break;
@@ -158,7 +158,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
     private void showGlobalOpacityDialog() {
         if (profile == null) return;
         ContentDialog dialog = new ContentDialog(this);
-        dialog.setTitle("Global Controls Opacity");
+        dialog.setTitle(R.string.global_controls_opacity_title);
         dialog.setIcon(R.drawable.icon_opacity);
 
         FrameLayout frameLayout = dialog.findViewById(R.id.FrameLayout);
@@ -172,7 +172,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
         TextView tvValue = new TextView(this);
         int currentPct = (int)(profile.getOverlayOpacity() * 100);
-        tvValue.setText("Opacity: " + currentPct + "%");
+        tvValue.setText(getString(R.string.controls_opacity_value, currentPct));
         tvValue.setTextSize(14);
         tvValue.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tvValue.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -189,7 +189,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
             @Override
             public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int val = Math.max(10, progress);
-                tvValue.setText("Opacity: " + val + "%");
+                tvValue.setText(getString(R.string.controls_opacity_value, val));
                 float opacity = val / 100.0f;
                 profile.setOverlayOpacity(opacity);
                 inputControlsView.setOverlayOpacity(opacity);
@@ -214,13 +214,13 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
     private void showStylePresetDialog() {
         if (profile == null) return;
         final com.winlator.cmod.inputcontrols.ControlStylePreset[] presets = com.winlator.cmod.inputcontrols.ControlStylePreset.values();
-        String[] presetTitles = com.winlator.cmod.inputcontrols.ControlStylePreset.titles();
+        String[] presetTitles = com.winlator.cmod.inputcontrols.ControlStylePreset.titles(this);
 
-        ContentDialog.showSingleChoiceList(this, "Control Style Presets", presetTitles, (position) -> {
+        ContentDialog.showSingleChoiceList(this, R.string.control_style_presets, presetTitles, (position) -> {
             if (position >= 0 && position < presets.length) {
                 com.winlator.cmod.inputcontrols.ControlStylePreset selected = presets[position];
                 profile.applyStylePreset(selected, inputControlsView);
-                AppUtils.showToast(this, "Applied " + selected.title);
+                AppUtils.showToast(this, getString(R.string.control_style_applied, selected.getTitle(this)));
             }
         });
     }
@@ -461,7 +461,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
     private void loadTypeSpinner(final ControlElement element, Spinner spinner, Runnable callback) {
         final boolean[] isInitializing = {true};
-        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Type.names()));
+        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Type.names(this)));
         spinner.setSelection(element.getType().ordinal(), false);
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -484,7 +484,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
     private void loadShapeSpinner(final ControlElement element, Spinner spinner) {
         final boolean[] isInitializing = {true};
-        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Shape.names()));
+        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Shape.names(this)));
         spinner.setSelection(element.getShape().ordinal(), false);
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -512,8 +512,8 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
         if (type == ControlElement.Type.BUTTON) {
             loadBindingSpinner(element, container, 0, R.string.binding);
             loadBindingSpinner(element, container, 1, R.string.binding_secondary);
-            loadBindingSpinner(element, container, 2, "Combo 3 (Optional)");
-            loadBindingSpinner(element, container, 3, "Combo 4 (Optional)");
+            loadBindingSpinner(element, container, 2, R.string.binding_combo_three);
+            loadBindingSpinner(element, container, 3, R.string.binding_combo_four);
         }
         else if (type == ControlElement.Type.D_PAD || type == ControlElement.Type.STICK || type == ControlElement.Type.TRACKPAD) {
             loadBindingSpinner(element, container, 0, R.string.binding_up);
@@ -539,21 +539,19 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
         Runnable update = () -> {
             isInitializing[0] = true;
-            String[] bindingEntries = null;
-            switch (sBindingType.getSelectedItemPosition()) {
-                case 0:
-                    bindingEntries = Binding.keyboardBindingLabels();
-                    break;
-                case 1:
-                    bindingEntries = Binding.mouseBindingLabels();
-                    break;
-                case 2:
-                    bindingEntries = Binding.gamepadBindingLabels();
-                    break;
+            int type = sBindingType.getSelectedItemPosition();
+            Binding[] values = type == 1 ? Binding.mouseBindingValues()
+                    : type == 2 ? Binding.gamepadBindingValues() : Binding.keyboardBindingValues();
+            Binding current = element.getBindingAt(index);
+            String[] bindingEntries = new String[values.length];
+            int selection = 0;
+            for (int i = 0; i < values.length; i++) {
+                bindingEntries[i] = values[i].getDisplayLabel(this);
+                if (values[i] == current) selection = i;
             }
 
             sBinding.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, bindingEntries));
-            AppUtils.setSpinnerSelectionFromValue(sBinding, element.getBindingAt(index).toString());
+            sBinding.setSelection(selection, false);
             sBinding.post(() -> isInitializing[0] = false);
         };
 
@@ -621,7 +619,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
     private void loadRangeSpinner(final ControlElement element, Spinner spinner) {
         final boolean[] isInitializing = {true};
-        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Range.names()));
+        spinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ControlElement.Range.names(this)));
         spinner.setSelection(element.getRange().ordinal(), false);
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -711,7 +709,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
 
             imageView.setOnLongClickListener((v) -> {
                 if (id > com.winlator.cmod.inputcontrols.CustomIconManager.BUILTIN_ICON_MAX) {
-                    ContentDialog.confirm(ControlsEditorActivity.this, "Delete custom icon #" + id + "?", () -> {
+                    ContentDialog.confirm(ControlsEditorActivity.this, ControlsEditorActivity.this.getString(R.string.confirm_delete_custom_icon_number, id), () -> {
                         iconManager.deleteCustomIcon(id);
                         if (element != null && element.getIconId() == id) {
                             element.setIconId(0);
@@ -719,7 +717,7 @@ public class ControlsEditorActivity extends AppCompatActivity implements View.On
                             inputControlsView.invalidate();
                         }
                         loadIcons(parent, element != null ? element.getIconId() : 0);
-                        AppUtils.showToast(ControlsEditorActivity.this, "Custom icon deleted");
+                        AppUtils.showToast(ControlsEditorActivity.this, R.string.custom_icon_deleted);
                     });
                     return true;
                 }

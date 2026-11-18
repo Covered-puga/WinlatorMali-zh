@@ -15,7 +15,7 @@
         android:src="@drawable/icon_info"
         app:tint="?android:attr/textColorSecondary"
         android:layout_marginEnd="12dp"
-        android:contentDescription="Device Icon"/>
+        android:contentDescription="@string/device_icon"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -30,7 +30,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="?android:attr/textColorPrimary"
-            android:text="Optimized for Snap8Gen3"/>
+            android:text="@string/community_config_title_example"/>
 
         <TextView
             android:id="@+id/TVDeviceModel"
@@ -64,7 +64,7 @@
             android:textSize="10sp"
             android:textColor="?android:attr/textColorSecondary"
             android:alpha="0.6"
-            android:text="2d ago"/>
+            android:text="@string/community_config_time_example"/>
 
         <LinearLayout
             android:id="@+id/LLRatingBadge"

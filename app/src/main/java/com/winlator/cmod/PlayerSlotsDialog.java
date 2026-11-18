@@ -27,7 +27,7 @@ public class PlayerSlotsDialog {
         if (winHandler == null) return;
 
         ContentDialog dialog = new ContentDialog(context, R.layout.player_slots_dialog);
-        dialog.setTitle("Player Slots (XInput 1–4)");
+        dialog.setTitle(R.string.xinput_player_slots);
         dialog.setIcon(R.drawable.icon_controller);
 
         // --- Section 1: Connected Controllers ---
@@ -43,8 +43,8 @@ public class PlayerSlotsDialog {
 
             int maxSlots = winHandler.getMaxControllers();
             String[] slotLabels = new String[maxSlots + 1];
-            slotLabels[0] = "Auto";
-            for (int i = 1; i <= maxSlots; i++) slotLabels[i] = "Player " + i;
+            slotLabels[0] = context.getString(R.string.auto_player_slot);
+            for (int i = 1; i <= maxSlots; i++) slotLabels[i] = context.getString(R.string.player_slot_number, i);
 
             for (ExternalController controller : controllers) {
                 int deviceId = controller.getDeviceId();
@@ -60,7 +60,7 @@ public class PlayerSlotsDialog {
                 // Controller name
                 TextView tvName = row.findViewById(R.id.TVControllerName);
                 String name = controller.getName();
-                tvName.setText((name != null && !name.isEmpty()) ? name : "Gamepad");
+                tvName.setText((name != null && !name.isEmpty()) ? name : context.getString(R.string.gamepad));
 
                 // Slot spinner
                 Spinner spinner = row.findViewById(R.id.SlotSpinner);
@@ -89,7 +89,6 @@ public class PlayerSlotsDialog {
         // --- Section 2: Per-Slot Settings ---
         LinearLayout slotsSection = dialog.findViewById(R.id.SlotSettingsSection);
         int maxSlots = winHandler.getMaxControllers();
-        String[] slotNames = {"Player 1", "Player 2", "Player 3", "Player 4"};
 
         for (int slot = 0; slot < maxSlots; slot++) {
             final int s = slot;
@@ -98,7 +97,7 @@ public class PlayerSlotsDialog {
 
             // Color badge
             row.findViewById(R.id.SlotBadge).setBackgroundColor(PLAYER_COLORS[slot]);
-            ((TextView) row.findViewById(R.id.TVSlotLabel)).setText(slotNames[slot]);
+            ((TextView) row.findViewById(R.id.TVSlotLabel)).setText(context.getString(R.string.player_slot_number, slot + 1));
 
             // Vibration
             CheckBox cbVib = row.findViewById(R.id.CBVibration);

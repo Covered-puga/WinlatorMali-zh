@@ -93,7 +93,7 @@
             android:padding="7dp"
             app:tint="?attr/colorAccent"
             android:src="@drawable/icon_download"
-            android:contentDescription="Download Component" />
+            android:contentDescription="@string/download_component" />
 
     </LinearLayout>
 

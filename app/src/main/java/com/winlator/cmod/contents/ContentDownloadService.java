@@ -20,7 +20,6 @@ import com.winlator.cmod.MainActivity;
 import com.winlator.cmod.R;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Keeps content downloads alive while the app is in the background (without it the system freezes the process and the
@@ -61,7 +60,7 @@ public class ContentDownloadService extends Service implements ContentDownloads.
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getSystemService(NotificationManager.class).createNotificationChannel(
-                new NotificationChannel(CHANNEL_ID, "Content Downloads", NotificationManager.IMPORTANCE_LOW));
+                new NotificationChannel(CHANNEL_ID, getString(R.string.content_download_channel), NotificationManager.IMPORTANCE_LOW));
         }
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "winlator:content_downloads");
@@ -86,7 +85,7 @@ public class ContentDownloadService extends Service implements ContentDownloads.
     public void onTaskFinished(ContentDownloads.Task task) {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_ab_gear_0011)
-            .setContentTitle(task.state == ContentDownloads.State.DONE ? "Content installed" : "Content not installed")
+            .setContentTitle(task.state == ContentDownloads.State.DONE ? getString(R.string.content_download_notification_installed) : getString(R.string.content_download_notification_not_installed))
             .setContentText(task.message)
             .setContentIntent(openAppIntent())
             .setAutoCancel(true)
@@ -95,7 +94,7 @@ public class ContentDownloadService extends Service implements ContentDownloads.
     }
 
     private Notification buildProgressNotification(List<ContentDownloads.Task> active) {
-        String title = active.size() == 1 ? active.get(0).name : active.size() + " downloads";
+        String title = active.size() == 1 ? active.get(0).name : getString(R.string.content_download_notification_count, active.size());
         long current = 0, total = 0;
         boolean installing = false, known = true;
         for (ContentDownloads.Task task : active) {
@@ -105,9 +104,9 @@ public class ContentDownloadService extends Service implements ContentDownloads.
             if (task.state == ContentDownloads.State.INSTALLING) installing = true;
         }
         int percent = known && total > 0 ? (int) (current * 100 / total) : -1;
-        String text = installing && active.size() == 1 ? "Installing..." :
-            percent >= 0 ? String.format(Locale.US, "%s / %s (%d%%)", Downloader.formatFileSize(current), Downloader.formatFileSize(total), percent) :
-            "Downloading...";
+        String text = installing && active.size() == 1 ? getString(R.string.installing_downloaded_content) :
+            percent >= 0 ? getString(R.string.content_download_progress, Downloader.formatFileSize(current), Downloader.formatFileSize(total), percent) :
+            getString(R.string.content_downloading);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_ab_gear_0011)
             .setContentTitle(title)

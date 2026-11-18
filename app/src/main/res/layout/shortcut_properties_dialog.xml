@@ -9,7 +9,7 @@
         android:id="@+id/play_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Number of times played: 0"
+        android:text="@string/shortcut_default_play_count"
         android:textSize="14sp"
         android:paddingBottom="6dp" />
 
@@ -17,7 +17,7 @@
         android:id="@+id/playtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Playtime: 0d 00h 00m 00s"
+        android:text="@string/shortcut_default_playtime"
         android:textSize="14sp"
         android:paddingBottom="12dp" />
 
@@ -34,7 +34,7 @@
         style="@style/ButtonNeutral"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="Reset Statistics"
+        android:text="@string/reset_shortcut_statistics"
         android:textSize="14sp" />
 
 </LinearLayout>

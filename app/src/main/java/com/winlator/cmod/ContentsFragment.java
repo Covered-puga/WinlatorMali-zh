@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -168,11 +169,11 @@ public class ContentsFragment extends Fragment {
         sCatalogSource = layout.findViewById(R.id.SCatalogSource);
         if (sCatalogSource != null) {
             String[] catalogs = {
-                "📁 Installed on Device",
-                "☁️ Bannerlator Nightlies",
-                "☁️ WinNative Components",
-                "☁️ StevenMXZ Contents",
-                "🌐 Custom Catalog URL..."
+                getString(R.string.catalog_installed_locally),
+                getString(R.string.catalog_bannerlator_nightlies),
+                getString(R.string.catalog_winnative_components),
+                getString(R.string.catalog_stevenmxz_contents),
+                getString(R.string.catalog_custom_url)
             };
             ArrayAdapter<String> catalogAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, catalogs) {
                 @NonNull
@@ -182,7 +183,7 @@ public class ContentsFragment extends Fragment {
                     if (v instanceof TextView) {
                         TextView tv = (TextView) v;
                         tv.setTextColor(ThemeManager.getOnSurfaceTextColor(getContext()));
-                        // The closed picker shows the short name ("Bannerlator", not "☁️ Bannerlator Nightlies"), which fits.
+                        // Show the compact catalog name in the closed picker.
                         String full = getItem(position);
                         String name = full != null ? full.replaceFirst("^\\S+\\s+", "") : "";
                         int space = name.indexOf(' ');
@@ -242,7 +243,7 @@ public class ContentsFragment extends Fragment {
         if (btRefresh != null) {
             btRefresh.setOnClickListener(v -> {
                 if (getContext() != null) {
-                    AppUtils.showToast(getContext(), "Refreshing...");
+                    AppUtils.showToast(getContext(), R.string.refreshing_catalog);
                 }
                 if (isInstalledFilter) {
                     manager.syncContents();
@@ -256,12 +257,12 @@ public class ContentsFragment extends Fragment {
         sSortBy = layout.findViewById(R.id.SSortBy);
         if (sSortBy != null) {
             String[] sortOptions = {
-                "Sort: Latest Releases (Newest)",
-                "Sort: Name (A-Z)",
-                "Sort: Name (Z-A)",
-                "Sort: Size (Largest)",
-                "Sort: Size (Smallest)",
-                "Sort: Build / Version"
+                getString(R.string.sort_contents_latest),
+                getString(R.string.sort_contents_name_ascending),
+                getString(R.string.sort_contents_name_descending),
+                getString(R.string.sort_contents_size_descending),
+                getString(R.string.sort_contents_size_ascending),
+                getString(R.string.sort_contents_version)
             };
             ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, sortOptions) {
                 @NonNull
@@ -350,8 +351,8 @@ public class ContentsFragment extends Fragment {
         input.setHint("https://.../contents.json");
 
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext(), isDarkMode ? android.R.style.Theme_DeviceDefault_Dialog_Alert : android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
-        builder.setTitle("Custom Catalog Source URL");
-        builder.setMessage("Enter the direct URL to a valid contents.json catalog:");
+        builder.setTitle(R.string.custom_catalog_source_url);
+        builder.setMessage(R.string.custom_catalog_source_url_prompt);
         builder.setView(input);
 
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
@@ -361,7 +362,7 @@ public class ContentsFragment extends Fragment {
                 currentCatalogUrl = url;
                 fetchCatalog();
             } else {
-                AppUtils.showToast(getContext(), "Invalid URL");
+                AppUtils.showToast(getContext(), R.string.invalid_url);
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
@@ -372,21 +373,21 @@ public class ContentsFragment extends Fragment {
 
     // What a Wine/Proton build needs on this phone, from its name: arm64ec runs x86 code with FEXCore
     // (WOWBox64 optional for 32-bit), x86_64 runs under Box64. NTSync builds need /dev/ntsync in the kernel.
-    private static String requirementBadge(ContentProfile profile) {
+    private String requirementBadge(ContentProfile profile) {
         String name = (profile.verName != null ? profile.verName : "").toLowerCase();
         switch (profile.type) {
             case CONTENT_TYPE_DXVK:
             case CONTENT_TYPE_VKD3D:
                 // Both work in arm64ec Wine; the arm64ec build runs natively there, the x86 one is emulated.
-                return name.contains("arm64ec") ? "arm64ec build: native on arm64ec Wine" : "x86 build: any Wine";
+                return name.contains("arm64ec") ? getString(R.string.content_native_arm64ec_build) : getString(R.string.content_x86_build);
             case CONTENT_TYPE_FEXCORE:
-                return name.contains("unix") ? "unixlib build (DLLs + native .so)" : "DLL build";
+                return name.contains("unix") ? getString(R.string.content_unixlib_build) : getString(R.string.content_dll_build);
             case CONTENT_TYPE_WOWBOX64:
-                return "arm64ec Wine: 32-bit programs (optional)";
+                return getString(R.string.content_optional_wowbox64);
             case CONTENT_TYPE_BOX64:
                 return "x86_64 Wine";
             case CONTENT_TYPE_D7VK:
-                return "DirectDraw/D3D7 games: pick it in DXVK settings → DDraw Wrapper";
+                return getString(R.string.content_d7vk_requirement);
             case CONTENT_TYPE_WINE:
             case CONTENT_TYPE_PROTON:
                 break;
@@ -395,7 +396,7 @@ public class ContentsFragment extends Fragment {
         }
         // arm64ec builds always say so in the name; the rest (wine-9.22_ref, ...) are x86_64 builds.
         String badge = name.contains("arm64ec") ? "arm64ec: FEXCore" : "x86_64: Box64";
-        if (name.contains("ntsync") && !HAS_NTSYNC) badge += (badge.isEmpty() ? "" : " • ") + "NTSync not on this phone (runs without it)";
+        if (name.contains("ntsync") && !HAS_NTSYNC) badge += (badge.isEmpty() ? "" : " • ") + getString(R.string.content_ntsync_unavailable);
         return badge;
     }
 
@@ -415,18 +416,18 @@ public class ContentsFragment extends Fragment {
     }
 
     // Second line of a row: what the build needs (the architecture is in the chip), its size, its description.
-    private static String rowSubtitle(ContentProfile profile) {
+    private String rowSubtitle(ContentProfile profile) {
         String name = (profile.verName != null ? profile.verName : "").toLowerCase();
         String need;
         switch (profile.type) {
             case CONTENT_TYPE_WINE:
             case CONTENT_TYPE_PROTON:
                 need = name.contains("arm64ec") ? "FEXCore" : "Box64";
-                if (name.contains("ntsync") && !HAS_NTSYNC) need += " • NTSync not on this phone (runs without it)";
+                if (name.contains("ntsync") && !HAS_NTSYNC) need += " • " + getString(R.string.content_ntsync_unavailable);
                 break;
             case CONTENT_TYPE_DXVK:
             case CONTENT_TYPE_VKD3D:
-                need = name.contains("arm64ec") ? "native on arm64ec Wine" : "any Wine";
+                need = name.contains("arm64ec") ? getString(R.string.content_native_arm64ec_wine) : getString(R.string.content_any_wine);
                 break;
             default:
                 need = requirementBadge(profile);
@@ -441,7 +442,7 @@ public class ContentsFragment extends Fragment {
             if (sb.length() > 0) sb.append(" • ");
             sb.append(desc);
         } else if (desc.isEmpty() && sb.length() == 0 && profile.verCode > 0) {
-            sb.append("Build ").append(profile.verCode);
+            sb.append(getString(R.string.content_build_number, profile.verCode));
         }
         return sb.toString();
     }
@@ -571,17 +572,8 @@ public class ContentsFragment extends Fragment {
                         @Override
                         public void onFailed(ContentsManager.InstallFailedReason reason, Exception e) {
                             if (!isAdded() || getContext() == null || getActivity() == null) return;
-                            String msg = switch (reason) {
-                                case ERROR_BADTAR -> "Corrupted archive file";
-                                case ERROR_NOSPACE -> "No space left on device";
-                                case ERROR_NOPROFILE -> "Profile not found in package";
-                                case ERROR_BADPROFILE -> "Profile cannot be recognized";
-                                case ERROR_EXIST -> "Content already exists";
-                                case ERROR_MISSINGFILES -> "Content is incomplete";
-                                case ERROR_UNTRUSTPROFILE -> "Content cannot be trusted";
-                                default -> "Unable to install content";
-                            };
-                            requireActivity().runOnUiThread(() -> ContentDialog.alert(getContext(), "Installation failed: " + msg, preloaderDialog::closeOnUiThread));
+                            String msg = ContentDownloads.getInstallFailureMessage(requireContext(), reason);
+                            requireActivity().runOnUiThread(() -> ContentDialog.alert(getContext(), getString(R.string.content_installation_failed, TextUtils.htmlEncode(msg)), preloaderDialog::closeOnUiThread));
                         }
 
                         @Override
@@ -730,7 +722,7 @@ public class ContentsFragment extends Fragment {
                 holder.horizontalProgressBar.setProgressTintList(android.content.res.ColorStateList.valueOf(accent));
             }
 
-            String title = (profile.verName != null && !profile.verName.isEmpty()) ? profile.verName : "Component";
+            String title = (profile.verName != null && !profile.verName.isEmpty()) ? profile.verName : getString(R.string.component_default_name);
             holder.tvVersionName.setText(title);
             if (getContext() != null) holder.tvVersionName.setTextColor(ThemeManager.getOnSurfaceTextColor(getContext()));
 
@@ -803,14 +795,14 @@ public class ContentsFragment extends Fragment {
                         // Strict container in-use validation!
                         String containerInUse = ContentsManager.getContainerUsingWine(getContext(), profile);
                         if (containerInUse != null) {
-                            ContentDialog.alert(getContext(), "Cannot remove '" + profile.verName + "' because Container '" + containerInUse + "' is currently using this Wine version.\n\nPlease switch the container to another Wine version first.", null);
+                            ContentDialog.alert(getContext(), getString(R.string.content_wine_in_use, TextUtils.htmlEncode(String.valueOf(profile.verName)), TextUtils.htmlEncode(containerInUse)), null);
                             return true;
                         }
 
                         ContentDialog.confirm(getContext(), R.string.do_you_want_to_remove_this_content, () -> {
                             manager.removeContent(profile);
                             if (getContext() != null) {
-                                AppUtils.showToast(getContext(), "Removed " + profile.verName);
+                                AppUtils.showToast(getContext(), getString(R.string.content_removed, profile.verName));
                             }
                             loadContentList();
                         });
@@ -833,7 +825,7 @@ public class ContentsFragment extends Fragment {
             holder.llDownloadProgress.setOnClickListener(v -> {
                 ContentDownloads.Task task = ContentDownloads.get(profile.remoteUrl);
                 if (getContext() == null || task == null || task.state != ContentDownloads.State.DOWNLOADING) return;
-                ContentDialog.confirm(getContext(), "Cancel downloading " + task.name + "?", () -> ContentDownloads.cancel(profile.remoteUrl));
+                ContentDialog.confirm(getContext(), getString(R.string.content_cancel_download, TextUtils.htmlEncode(String.valueOf(task.name))), () -> ContentDownloads.cancel(profile.remoteUrl));
             });
         }
 
@@ -850,16 +842,14 @@ public class ContentsFragment extends Fragment {
             holder.llDownloadProgress.setVisibility(View.VISIBLE);
             if (task.state == ContentDownloads.State.INSTALLING) {
                 holder.horizontalProgressBar.setIndeterminate(true);
-                holder.tvProgressDetails.setText("Installing...");
+                holder.tvProgressDetails.setText(R.string.installing_downloaded_content);
             } else if (task.percent >= 0) {
                 holder.horizontalProgressBar.setIndeterminate(false);
                 holder.horizontalProgressBar.setProgress(task.percent);
-                holder.tvProgressDetails.setText(String.format(java.util.Locale.US, "%s / %s (%d%%) • %.1f MB/s",
-                    Downloader.formatFileSize(task.currentBytes), Downloader.formatFileSize(task.totalBytes), task.percent, task.speedMBs));
+                holder.tvProgressDetails.setText(getString(R.string.content_download_progress_and_speed, Downloader.formatFileSize(task.currentBytes), Downloader.formatFileSize(task.totalBytes), task.percent, task.speedMBs));
             } else {
                 holder.horizontalProgressBar.setIndeterminate(true);
-                holder.tvProgressDetails.setText(task.currentBytes > 0 ? String.format(java.util.Locale.US, "%s • %.1f MB/s",
-                    Downloader.formatFileSize(task.currentBytes), task.speedMBs) : "Connecting...");
+                holder.tvProgressDetails.setText(task.currentBytes > 0 ? getString(R.string.content_download_progress_unknown_total, Downloader.formatFileSize(task.currentBytes), task.speedMBs) : getString(R.string.connecting_content_download));
             }
         }
 

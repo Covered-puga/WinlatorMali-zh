@@ -263,6 +263,16 @@ public abstract class AppUtils {
         return false;
     }
 
+    public static void setSpinnerSelectionFromValues(Spinner spinner, String[] values, String value) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equalsIgnoreCase(value)) {
+                spinner.setSelection(i, false);
+                return;
+            }
+        }
+        spinner.setSelection(0, false);
+    }
+
     public static boolean setSpinnerSelectionFromIdentifier(Spinner spinner, String identifier) {
         spinner.setSelection(0, false);
         if (identifier == null) return false;

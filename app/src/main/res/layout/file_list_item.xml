@@ -27,14 +27,14 @@
             android:id="@+id/TVFileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FolderName" />
+            android:text="@string/file_list_folder_example" />
         <TextView
             android:textSize="12.0sp"
             android:textColor="?android:textColorSecondary"
             android:id="@+id/TVFileDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 items | Drwxrwx" />
+            android:text="@string/file_list_empty_summary" />
     </LinearLayout>
     <ImageView
         android:id="@+id/BTFileMenu"

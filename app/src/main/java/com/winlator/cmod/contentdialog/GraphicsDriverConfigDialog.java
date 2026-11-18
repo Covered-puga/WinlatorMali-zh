@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import com.winlator.cmod.core.DefaultVersion;
 import com.winlator.cmod.core.FileUtils;
 import com.winlator.cmod.core.GPUInformation;
 import com.winlator.cmod.core.StringUtils;
+import com.winlator.cmod.widget.LabeledSpinnerAdapter;
 import com.winlator.cmod.widget.MultiSelectionComboBox;
 
 import org.json.JSONArray;
@@ -70,8 +70,8 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
                 String gpuName = jobj.getString("name");
                 entries.add(gpuName);
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, entries);
-            spinner.setAdapter(adapter);
+            spinner.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                    entries, name -> "Device".equals(name) ? context.getString(R.string.option_current_device) : name));
         }
         catch (JSONException e) {
         }
@@ -107,6 +107,10 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
         return config.get("version");
     }
 
+    public static String getVersionLabel(Context context, String version) {
+        return "System".equals(version) ? context.getString(R.string.system) : version;
+    }
+
     public static String getExtensionsBlacklist(String graphicsDriverConfig) {
         HashMap<String, String> config = parseGraphicsDriverConfig(graphicsDriverConfig);
         return config.get("blacklistedExtensions");
@@ -139,8 +143,9 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
     }
 
     private void initializeDialog(View anchor, String graphicsDriver, TextView graphicsDriverVersionView) {
+        Context context = anchor.getContext();
         setIcon(R.drawable.icon_settings);
-        setTitle(anchor.getContext().getString(R.string.graphics_driver_configuration));
+        setTitle(context.getString(R.string.graphics_driver_configuration));
 
         String graphicsDriverConfig = anchor.getTag().toString();
 
@@ -153,6 +158,26 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
         sResourceType = findViewById(R.id.SGraphicsDriverResourceType);
         cbSyncFrame = findViewById(R.id.CBSyncFrame);
         cbDisablePresentWait = findViewById(R.id.CBDisablePresentWait);
+
+        sMaxDeviceMemory.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_item,
+                Arrays.asList(context.getResources().getStringArray(R.array.device_memory_entries)),
+                value -> value.equals("0 (Default)") ? context.getString(R.string.option_default_device_memory) : value));
+        sPresentMode.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_item,
+                Arrays.asList(context.getResources().getStringArray(R.array.present_mode_entries)),
+                value -> switch (value) {
+                    case "mailbox" -> context.getString(R.string.option_present_mailbox);
+                    case "fifo" -> context.getString(R.string.option_present_fifo);
+                    case "immediate" -> context.getString(R.string.option_present_immediate);
+                    case "relaxed" -> context.getString(R.string.option_present_relaxed);
+                    default -> value;
+                }));
+        sResourceType.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_item,
+                Arrays.asList(context.getResources().getStringArray(R.array.resource_type_entries)),
+                value -> switch (value) {
+                    case "auto" -> context.getString(R.string.option_resource_auto);
+                    case "opaque" -> context.getString(R.string.option_resource_opaque);
+                    default -> value;
+                }));
 
         HashMap<String, String> config = parseGraphicsDriverConfig(graphicsDriverConfig);
         this.config.putAll(config);
@@ -175,7 +200,7 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
                 String[] availableExtensions = queryAvailableExtensions(selectedVersion, anchor.getContext());
                 String blacklistedExtensions = "";
 
-                mscAvailableExtensions.setItems(availableExtensions, "Extensions");
+                mscAvailableExtensions.setItems(availableExtensions, context.getString(R.string.graphics_driver_extensions));
                 mscAvailableExtensions.setSelectedItems(availableExtensions);
 
                 if(selectedVersion.equals(initialVersion))
@@ -278,7 +303,7 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
             blacklistedExtensions = mscAvailableExtensions.getUnSelectedItemsAsString();
 
             if (graphicsDriverVersionView != null)
-                graphicsDriverVersionView.setText(selectedVersion);
+                graphicsDriverVersionView.setText(getVersionLabel(context, selectedVersion));
 
             anchor.setTag(writeGraphicsDriverConfig());
         });
@@ -298,9 +323,8 @@ public class GraphicsDriverConfigDialog extends ContentDialog {
         wrapperVersions.addAll(adrenotoolsManager.enumarateInstalledDrivers());
 
         // Set the adapter and select the initial version
-        ArrayAdapter<String> wrapperAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, wrapperVersions);
-        
-        sVersion.setAdapter(wrapperAdapter);
+        sVersion.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                wrapperVersions, version -> getVersionLabel(context, version)));
         
         // We can start logging selected graphics driver and initial version
         Log.d(TAG, "Graphics driver: " + graphicsDriver);

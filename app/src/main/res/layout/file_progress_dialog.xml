@@ -24,7 +24,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="?attr/colorAccent"
-            android:text="Copying files..."
+            android:text="@string/copying_files"
             android:layout_marginBottom="10dp" />
 
         <TextView

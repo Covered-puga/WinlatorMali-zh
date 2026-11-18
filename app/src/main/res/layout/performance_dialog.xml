@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Non-Root Performance Boosts"
+            android:text="@string/non_root_performance_boosts"
             android:textStyle="bold"
             android:textSize="14sp"
             android:textColor="?attr/colorAccent"
@@ -35,14 +35,14 @@
                 android:id="@+id/CBDialogGameModeSignal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Game Mode Signal (API 33+)"
+                android:text="@string/performance_game_mode_signal"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alerts OEM Game Boosters (HyperBoost, Game Turbo, Samsung Game Booster, Pixel)."
+                android:text="@string/performance_game_mode_summary"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginStart="32dp"
@@ -53,14 +53,14 @@
                 android:id="@+id/CBDialogThreadPriority"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Thread Priority Boost"
+                android:text="@string/performance_thread_priority_boost"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Promotes Box64/Wine workers to urgent display priority (-8/-4/-2)."
+                android:text="@string/performance_thread_priority_summary"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginStart="32dp"
@@ -71,14 +71,14 @@
                 android:id="@+id/CBDialogBigCores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Prefer Big CPU Cores"
+                android:text="@string/prefer_big_cpu_cores"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pins emulation &amp; game threads to Prime/Big CPU cluster via taskset."
+                android:text="@string/performance_big_cores_summary"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginStart="32dp"
@@ -89,14 +89,14 @@
                 android:id="@+id/CBDialogSustainedPerf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sustained Performance Mode"
+                android:text="@string/performance_sustained_mode"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Prevents sudden thermal throttling for consistent frame pacing."
+                android:text="@string/performance_sustained_summary"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginStart="32dp"
@@ -113,14 +113,14 @@
                     android:id="@+id/CBDialogSamsungBoost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Samsung Galaxy Game Turbo"
+                    android:text="@string/samsung_galaxy_game_turbo"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Activates Samsung SPerf SDK hardware clock boost."
+                    android:text="@string/performance_samsung_boost_summary"
                     android:textSize="11sp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="32dp" />

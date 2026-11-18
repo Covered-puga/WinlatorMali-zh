@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Running session and control editor options -->
+    <string name="control_type_button">按钮</string>
+    <string name="control_type_d_pad">方向键</string>
+    <string name="control_type_range_button">范围按钮</string>
+    <string name="control_type_stick">摇杆</string>
+    <string name="control_type_trackpad">触摸板</string>
+    <string name="control_type_dynamic_stick">动态摇杆</string>
+    <string name="control_type_mouse_area">鼠标操作区</string>
+    <string name="control_type_button_grid">按钮网格</string>
+    <string name="control_type_expandable_button">可展开按钮</string>
+    <string name="control_shape_circle">圆形</string>
+    <string name="control_shape_capsule">胶囊形</string>
+    <string name="control_shape_oval">椭圆形</string>
+    <string name="control_shape_round_rect">圆角矩形</string>
+    <string name="control_shape_rect">矩形</string>
+    <string name="control_shape_square">正方形</string>
+    <string name="control_shape_hexagon">六边形</string>
+    <string name="control_shape_diamond">菱形</string>
+    <string name="control_shape_octagon">八边形</string>
+    <string name="control_range_letters">A 至 Z</string>
+    <string name="control_range_digits">0 至 9</string>
+    <string name="control_range_function_keys">F1 至 F12</string>
+    <string name="control_range_numpad">数字小键盘 0 至 9</string>
+    <string name="control_style_glass">WinMali 默认</string>
+    <string name="control_style_xbox">Xbox 版</string>
+    <string name="control_style_playstation">PlayStation 版</string>
+    <string name="frame_generation_fixed_mode">2 倍（固定）</string>
+    <string name="frame_generation_target_mode">自动（目标 %1$d FPS）</string>
+    <!-- Theme preset labels -->
+    <string name="theme_preset_midnight_ocean">午夜海洋</string>
+    <string name="theme_preset_obsidian_oled">黑曜石 OLED</string>
+    <string name="theme_preset_cyberpunk">赛博霓虹</string>
+    <string name="theme_preset_crimson_dusk">绯红暮色</string>
+    <string name="theme_preset_dark_glass">经典（深色玻璃）</string>
+    <string name="theme_preset_emerald_depth">深翡翠</string>
+    <string name="theme_preset_grape_sunset">葡萄暮霞</string>
+    <string name="theme_preset_violet_dream">紫罗兰梦境</string>
+    <string name="theme_preset_custom_palette">自定义配色…</string>
+    <string name="theme_preset_custom">自定义</string>
+</resources>

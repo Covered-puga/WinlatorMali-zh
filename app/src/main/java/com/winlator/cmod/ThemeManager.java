@@ -33,15 +33,15 @@ public final class ThemeManager {
     // CURATED THEME PRESETS (Midnight Ocean is default at index 0)
     // =========================================================================
     public static final List<ThemePreset> DARK_PRESETS = Arrays.asList(
-        new ThemePreset("Midnight Ocean",       0xFF021024, 0xFF052659, 0xFF1D4274, 0xFF5483B3),
-        new ThemePreset("Obsidian OLED",        0xFF000000, 0xFF101010, 0xFF1A1A1A, 0xFF3D5AFE),
-        new ThemePreset("Cyberpunk Neon",       0xFF0D0221, 0xFF190933, 0xFF261447, 0xFFFF0055),
-        new ThemePreset("Crimson Dusk",         0xFF181A2F, 0xFF242E49, 0xFF37415C, 0xFFB4182D),
-        new ThemePreset("Classic (Dark Glass)", 0xFF121212, 0xFF1E1E1E, 0xFF2A2A2A, 0xFF0288D1),
-        new ThemePreset("Emerald Depth",        0xFF051F20, 0xFF0B2B26, 0xFF163832, 0xFF00E676),
-        new ThemePreset("Grape Sunset",         0xFF1D1A39, 0xFF451952, 0xFF662549, 0xFFF39F5A),
-        new ThemePreset("Violet Dream",         0xFF190019, 0xFF2B124C, 0xFF522B5B, 0xFF854F6C),
-        new ThemePreset("Custom Palette...",    0xFF021024, 0xFF052659, 0xFF1D4274, 0xFF5483B3)
+        new ThemePreset(R.string.theme_preset_midnight_ocean,       0xFF021024, 0xFF052659, 0xFF1D4274, 0xFF5483B3),
+        new ThemePreset(R.string.theme_preset_obsidian_oled,        0xFF000000, 0xFF101010, 0xFF1A1A1A, 0xFF3D5AFE),
+        new ThemePreset(R.string.theme_preset_cyberpunk,       0xFF0D0221, 0xFF190933, 0xFF261447, 0xFFFF0055),
+        new ThemePreset(R.string.theme_preset_crimson_dusk,         0xFF181A2F, 0xFF242E49, 0xFF37415C, 0xFFB4182D),
+        new ThemePreset(R.string.theme_preset_dark_glass, 0xFF121212, 0xFF1E1E1E, 0xFF2A2A2A, 0xFF0288D1),
+        new ThemePreset(R.string.theme_preset_emerald_depth,        0xFF051F20, 0xFF0B2B26, 0xFF163832, 0xFF00E676),
+        new ThemePreset(R.string.theme_preset_grape_sunset,         0xFF1D1A39, 0xFF451952, 0xFF662549, 0xFFF39F5A),
+        new ThemePreset(R.string.theme_preset_violet_dream,         0xFF190019, 0xFF2B124C, 0xFF522B5B, 0xFF854F6C),
+        new ThemePreset(R.string.theme_preset_custom_palette,    0xFF021024, 0xFF052659, 0xFF1D4274, 0xFF5483B3)
     );
 
     @StyleRes
@@ -71,7 +71,7 @@ public final class ThemeManager {
         List<ThemePreset> presets = getPresets(context);
         String[] names = new String[presets.size()];
         for (int i = 0; i < presets.size(); i++) {
-            names[i] = presets.get(i).name;
+            names[i] = context.getString(presets.get(i).nameRes);
         }
         return names;
     }
@@ -125,7 +125,7 @@ public final class ThemeManager {
             int bg = getCustomBackgroundColor(context);
             int surface = ThemePreset.lerp(bg, 0xFFFFFFFF, 0.08f);
             int surfaceVariant = ThemePreset.lerp(bg, 0xFFFFFFFF, 0.14f);
-            return new ThemePreset("Custom", bg, surface, surfaceVariant, accent);
+            return new ThemePreset(R.string.theme_preset_custom, bg, surface, surfaceVariant, accent);
         }
         int index = getSelectedPresetIndex(context);
         return DARK_PRESETS.get(index);
@@ -343,18 +343,14 @@ public final class ThemeManager {
     public static void styleButton(android.widget.Button btn, boolean isDarkMode, int onSurface, int onSurfaceVariant, int accent, int surface, int divider) {
         if (btn == null) return;
         int id = btn.getId();
-        CharSequence text = btn.getText();
-        String textStr = text != null ? text.toString().trim().toLowerCase(java.util.Locale.ROOT) : "";
+        boolean isConfirmOrPrimary = id == R.id.BTConfirm || id == R.id.BTRun
+                || id == R.id.BTInstallContent || id == R.id.BTInstallDriver || id == R.id.BTReInstallImagefs
+                || id == R.id.BTSaveForGame || id == R.id.BTSaveAsDefault || id == R.id.confirmButton
+                || (id == R.id.BTWineItemAction && !btn.isEnabled());
 
-        boolean isConfirmOrPrimary = (id == R.id.BTConfirm || id == R.id.BTRun ||
-                id == R.id.BTInstallContent || id == R.id.BTInstallDriver || id == R.id.BTReInstallImagefs ||
-                textStr.contains("install") || textStr.contains("confirm") || textStr.contains("run") ||
-                textStr.contains("save") || textStr.contains("apply") || textStr.contains("download") ||
-                "ok".equals(textStr) || textStr.contains("continue") || textStr.contains("done"));
-
-        boolean isCancelOrSecondary = (id == R.id.BTCancel || id == R.id.BTReset ||
-                textStr.contains("cancel") || textStr.contains("reset") || textStr.contains("close") ||
-                textStr.contains("clear") || textStr.contains("no,") || "no".equals(textStr));
+        boolean isCancelOrSecondary = id == R.id.BTCancel || id == R.id.BTReset
+                || id == R.id.BTGyroReset || id == R.id.BTHudReset || id == R.id.BTResetEnhancements
+                || id == R.id.reset_properties;
 
         float cornerRadius = com.winlator.cmod.core.UnitUtils.dpToPx(8);
         int strokeWidth = (int) Math.max(1, com.winlator.cmod.core.UnitUtils.dpToPx(1));

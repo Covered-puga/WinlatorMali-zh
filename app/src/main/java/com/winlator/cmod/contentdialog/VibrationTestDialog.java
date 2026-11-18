@@ -89,21 +89,21 @@ public class VibrationTestDialog {
 
         // --- Setup Spinners ---
         String[] motorModes = {
-            "Both motors",
-            "Strong motor (left)",
-            "Light motor (right)",
-            "Pulse: left, right, both"
+            context.getString(R.string.vibration_both_motors),
+            context.getString(R.string.vibration_strong_left_motor),
+            context.getString(R.string.vibration_light_right_motor),
+            context.getString(R.string.vibration_pulse_motors)
         };
         ArrayAdapter<String> motorAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, motorModes);
         motorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sMotorMode.setAdapter(motorAdapter);
 
         String[] durationOptions = {
-            "0.5 seconds",
-            "1 second",
-            "2 seconds",
-            "3 seconds",
-            "Until I press Stop"
+            context.getString(R.string.vibration_duration_half_second),
+            context.getString(R.string.vibration_duration_one_second),
+            context.getString(R.string.vibration_duration_two_seconds),
+            context.getString(R.string.vibration_duration_three_seconds),
+            context.getString(R.string.vibration_duration_until_stop)
         };
         ArrayAdapter<String> durAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, durationOptions);
         durAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -115,7 +115,7 @@ public class VibrationTestDialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int val = Math.max(10, progress);
-                tvIntensityPercent.setText(val + "%");
+                tvIntensityPercent.setText(context.getString(R.string.progress_percentage, val));
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -134,9 +134,9 @@ public class VibrationTestDialog {
             for (UsbDeviceInfo info : usbList) {
                 sb.append("🎮 ").append(info.name).append("\n    USB • ");
                 if (info.hasPermission) {
-                    sb.append("ready\n");
+                    sb.append(context.getString(R.string.vibration_device_ready));
                 } else {
-                    sb.append("needs permission\n");
+                    sb.append(context.getString(R.string.vibration_device_needs_permission));
                     pendingPermissionDevice[0] = info;
                 }
             }
@@ -153,41 +153,41 @@ public class VibrationTestDialog {
                 Vibrator v = dev.getVibrator();
                 boolean hasVib = v != null && v.hasVibrator();
                 sb.append("🎮 ").append(dev.getName()).append("\n    ")
-                  .append(hasVib ? "can vibrate" : "no vibration support reported").append("\n");
+                  .append(hasVib ? context.getString(R.string.vibration_device_supported) : context.getString(R.string.vibration_device_not_reported)).append("\n");
             }
 
             if (sb.length() == 0) {
-                sb.append("No controller found.\nPlug one in over USB (OTG) or pair it over Bluetooth, then tap Rescan.");
+                sb.append(context.getString(R.string.vibration_no_controller_found));
             }
 
             tvDeviceStatus.setText(sb.toString().trim());
 
             if (pendingPermissionDevice[0] != null) {
                 btGrantUsb.setVisibility(View.VISIBLE);
-                btGrantUsb.setText("Grant Permission for " + pendingPermissionDevice[0].name);
+                btGrantUsb.setText(context.getString(R.string.vibration_grant_device_permission, pendingPermissionDevice[0].name));
             } else {
                 btGrantUsb.setVisibility(View.GONE);
             }
         };
 
         refreshDevices.run();
-        appendLog.accept("Vibration Test initialized.");
+        appendLog.accept(context.getString(R.string.vibration_test_initialized));
 
         // --- Permission Request Button ---
         btGrantUsb.setOnClickListener((v) -> {
             if (pendingPermissionDevice[0] != null) {
-                appendLog.accept("Requesting USB Host Permission for: " + pendingPermissionDevice[0].name);
+                appendLog.accept(context.getString(R.string.vibration_request_usb_permission, pendingPermissionDevice[0].name));
                 usbRumble.requestPermission(pendingPermissionDevice[0].device, () -> {
-                    appendLog.accept("USB Host Permission GRANTED for: " + pendingPermissionDevice[0].name);
+                    appendLog.accept(context.getString(R.string.vibration_usb_permission_granted, pendingPermissionDevice[0].name));
                     refreshDevices.run();
                 });
             }
         });
 
         btRescan.setOnClickListener((v) -> {
-            appendLog.accept("Re-scanning USB and connected input devices...");
+            appendLog.accept(context.getString(R.string.vibration_rescanning));
             refreshDevices.run();
-            appendLog.accept("Re-scan complete. " + usbRumble.getActiveSessionCount() + " active USB rumble session(s).");
+            appendLog.accept(context.getString(R.string.vibration_rescan_finished, usbRumble.getActiveSessionCount()));
         });
 
         // --- Stop Action ---
@@ -223,7 +223,7 @@ public class VibrationTestDialog {
 
         btStopTest.setOnClickListener((v) -> {
             stopAllVibrations.run();
-            appendLog.accept("STOP: All vibration motors cancelled.");
+            appendLog.accept(context.getString(R.string.vibration_stopped));
         });
 
         // --- Helper for safe InputDevice / phone vibrate ---
@@ -293,29 +293,29 @@ public class VibrationTestDialog {
 
             if (modePos == 3) {
                 // Pulse Pattern Mode
-                appendLog.accept("Starting Pulse Pattern Test (" + intensityPct + "% intensity)...");
+                appendLog.accept(context.getString(R.string.vibration_pulse_starting, intensityPct));
 
                 Runnable pulseStep1 = () -> {
-                    appendLog.accept("Pulse 1/3: Left Heavy Motor (300ms)");
+                    appendLog.accept(context.getString(R.string.vibration_left_pulse));
                     if (cbUsbDirect.isChecked()) usbRumble.sendRumble(finalStrong, 0, 300);
                     if (cbPhoneFallback.isChecked()) safeVibrateDevice.accept(phoneVibrator, 300);
                 };
 
                 Runnable pulseStep2 = () -> {
-                    appendLog.accept("Pulse 2/3: Right Light Motor (300ms)");
+                    appendLog.accept(context.getString(R.string.vibration_right_pulse));
                     if (cbUsbDirect.isChecked()) usbRumble.sendRumble(0, finalWeak, 300);
                     if (cbPhoneFallback.isChecked()) safeVibrateDevice.accept(phoneVibrator, 300);
                 };
 
                 Runnable pulseStep3 = () -> {
-                    appendLog.accept("Pulse 3/3: Dual Motors Full Rumble (500ms)");
+                    appendLog.accept(context.getString(R.string.vibration_dual_pulse));
                     if (cbUsbDirect.isChecked()) usbRumble.sendRumble(finalStrong, finalWeak, 500);
                     if (cbPhoneFallback.isChecked()) safeVibrateDevice.accept(phoneVibrator, 500);
                 };
 
                 Runnable pulseEnd = () -> {
                     stopAllVibrations.run();
-                    appendLog.accept("Pulse Pattern Test Completed.");
+                    appendLog.accept(context.getString(R.string.vibration_pulse_finished));
                 };
 
                 pulseStep1.run();
@@ -326,13 +326,14 @@ public class VibrationTestDialog {
             }
 
             // Standard Test
-            appendLog.accept(String.format(Locale.US, "TEST: Motors: Strong=%d, Weak=%d, Intensity=%d%%, Duration=%s",
-                finalStrong, finalWeak, intensityPct, isContinuous ? "Continuous" : (finalDur + "ms")));
+            appendLog.accept(context.getString(R.string.vibration_test_values, finalStrong, finalWeak, intensityPct,
+                isContinuous ? context.getString(R.string.vibration_continuous)
+                        : context.getString(R.string.duration_milliseconds, finalDur)));
 
             boolean usbOk = false;
             if (cbUsbDirect.isChecked()) {
                 usbOk = usbRumble.sendRumble(finalStrong, finalWeak, isContinuous ? 0 : finalDur);
-                appendLog.accept("USB Direct Engine: Dispatched (" + (usbOk ? "SUCCESS - Packet Sent to Controller" : "No active USB session") + ")");
+                appendLog.accept(context.getString(R.string.vibration_usb_direct_dispatched, context.getString(usbOk ? R.string.vibration_packet_sent : R.string.vibration_no_usb_session)));
             }
 
             if (cbAndroidInputDevice.isChecked()) {
@@ -347,18 +348,18 @@ public class VibrationTestDialog {
                         }
                     }
                 }
-                appendLog.accept("Android Framework Vibrator: Dispatched to " + dispatchedCount + " gamepad vibrator(s).");
+                appendLog.accept(context.getString(R.string.vibration_android_framework_dispatched, dispatchedCount));
             }
 
             if (cbPhoneFallback.isChecked()) {
                 safeVibrateDevice.accept(phoneVibrator, finalDur);
-                appendLog.accept("Phone Internal Vibrator: Triggered (" + finalDur + "ms).");
+                appendLog.accept(context.getString(R.string.vibration_phone_triggered, finalDur));
             }
 
             if (!isContinuous) {
                 activeTestTask[0] = () -> {
                     stopAllVibrations.run();
-                    appendLog.accept("Test duration elapsed. Motors stopped.");
+                    appendLog.accept(context.getString(R.string.vibration_test_duration_elapsed));
                 };
                 handler.postDelayed(activeTestTask[0], finalDur);
             }
@@ -368,7 +369,7 @@ public class VibrationTestDialog {
         View btCancel = dialog.findViewById(R.id.BTCancel);
         if (btCancel != null) btCancel.setVisibility(View.GONE);
         TextView btConfirm = dialog.findViewById(R.id.BTConfirm);
-        if (btConfirm != null) btConfirm.setText("Close");
+        if (btConfirm != null) btConfirm.setText(R.string.close_action);
 
         dialog.setOnDismissListener((d) -> {
             stopAllVibrations.run();

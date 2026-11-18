@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Catalog / Filter"
+                android:text="@string/catalog_filter"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary" />
 
@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sort Order"
+                android:text="@string/sort_order"
                 android:textSize="11sp"
                 android:textColor="?android:attr/textColorSecondary" />
 
@@ -96,7 +96,7 @@
             android:layout_height="38dp"
             android:padding="8dp"
             android:src="@drawable/ic_refresh"
-            android:contentDescription="Refresh Catalog" />
+            android:contentDescription="@string/refresh_catalog" />
 
     </LinearLayout>
 
@@ -141,7 +141,7 @@
             style="@style/ButtonNeutral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Install File" />
+            android:text="@string/install_file" />
 
     </LinearLayout>
 

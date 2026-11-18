@@ -146,7 +146,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
         } else if (id == R.id.BTOpacity) {
             showGlobalOpacityDialog();
         } else if (id == R.id.BTReset) {
-            ContentDialog.confirm(activity, "Reset all buttons to original positions?", () -> {
+            ContentDialog.confirm(activity, R.string.confirm_reset_controls_layout, () -> {
                 if (profile != null) {
                     boolean resetDone = profile.resetToOriginal(inputControlsView);
                     if (!resetDone && initialProfileSnapshot != null && !initialProfileSnapshot.isEmpty()) {
@@ -155,7 +155,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
                         profile.loadElements(inputControlsView);
                     }
                     inputControlsView.invalidate();
-                    AppUtils.showToast(activity, "Buttons reset to original layout");
+                    AppUtils.showToast(activity, R.string.controls_layout_reset);
                 }
             });
         } else if (id == R.id.BTRadialWheel) {
@@ -173,7 +173,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
     private void showGlobalOpacityDialog() {
         if (profile == null) return;
         ContentDialog dialog = new ContentDialog(activity);
-        dialog.setTitle("Global Controls Opacity");
+        dialog.setTitle(R.string.global_controls_opacity_title);
         dialog.setIcon(R.drawable.icon_opacity);
 
         FrameLayout frameLayout = dialog.findViewById(R.id.FrameLayout);
@@ -187,7 +187,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
 
         TextView tvValue = new TextView(activity);
         int currentPct = (int)(profile.getOverlayOpacity() * 100);
-        tvValue.setText("Opacity: " + currentPct + "%");
+        tvValue.setText(activity.getString(R.string.controls_opacity_value, currentPct));
         tvValue.setTextSize(14);
         tvValue.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tvValue.setTextColor(activity.getResources().getColor(R.color.colorAccent));
@@ -204,7 +204,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
             @Override
             public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int val = Math.max(10, progress);
-                tvValue.setText("Opacity: " + val + "%");
+                tvValue.setText(activity.getString(R.string.controls_opacity_value, val));
                 float opacity = val / 100.0f;
                 profile.setOverlayOpacity(opacity);
                 inputControlsView.setOverlayOpacity(opacity);
@@ -229,13 +229,13 @@ public final class InGameControlsEditor implements View.OnClickListener {
     private void showStylePresetDialog() {
         if (profile == null) return;
         final com.winlator.cmod.inputcontrols.ControlStylePreset[] presets = com.winlator.cmod.inputcontrols.ControlStylePreset.values();
-        String[] presetTitles = com.winlator.cmod.inputcontrols.ControlStylePreset.titles();
+        String[] presetTitles = com.winlator.cmod.inputcontrols.ControlStylePreset.titles(activity);
 
-        ContentDialog.showSingleChoiceList(activity, "Control Style Presets", presetTitles, (position) -> {
+        ContentDialog.showSingleChoiceList(activity, R.string.control_style_presets, presetTitles, (position) -> {
             if (position >= 0 && position < presets.length) {
                 com.winlator.cmod.inputcontrols.ControlStylePreset selected = presets[position];
                 profile.applyStylePreset(selected, inputControlsView);
-                AppUtils.showToast(activity, "Applied " + selected.title);
+                AppUtils.showToast(activity, activity.getString(R.string.control_style_applied, selected.getTitle(activity)));
             }
         });
     }
@@ -476,7 +476,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
     private void loadTypeSpinner(final ControlElement element, Spinner spinner, final Runnable callback) {
         final boolean[] isInitializing = {true};
         spinner.setPopupBackgroundResource(R.drawable.content_dialog_background_dark);
-        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Type.names()));
+        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Type.names(activity)));
         spinner.setSelection(element.getType().ordinal());
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -500,7 +500,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
     private void loadShapeSpinner(final ControlElement element, Spinner spinner) {
         final boolean[] isInitializing = {true};
         spinner.setPopupBackgroundResource(R.drawable.content_dialog_background_dark);
-        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Shape.names()));
+        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Shape.names(activity)));
         spinner.setSelection(element.getShape().ordinal());
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -522,7 +522,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
     private void loadRangeSpinner(final ControlElement element, Spinner spinner) {
         final boolean[] isInitializing = {true};
         spinner.setPopupBackgroundResource(R.drawable.content_dialog_background_dark);
-        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Range.names()));
+        spinner.setAdapter(createThemedAdapter(activity, ControlElement.Range.names(activity)));
         spinner.setSelection(element.getRange().ordinal(), false);
         spinner.post(() -> isInitializing[0] = false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -552,7 +552,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
                 if (currentIconListLayout != null) {
                     loadIcons(currentIconListLayout, newId);
                 }
-                AppUtils.showToast(activity, "Custom icon imported and applied!");
+                AppUtils.showToast(activity, R.string.custom_icon_imported_and_applied);
             }
         }
     }
@@ -627,7 +627,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
 
             imageView.setOnLongClickListener((v) -> {
                 if (id > com.winlator.cmod.inputcontrols.CustomIconManager.BUILTIN_ICON_MAX) {
-                    ContentDialog.confirm(activity, "Delete custom icon #" + id + "?", () -> {
+                    ContentDialog.confirm(activity, activity.getString(R.string.confirm_delete_custom_icon_number, id), () -> {
                         iconManager.deleteCustomIcon(id);
                         if (element != null && element.getIconId() == id) {
                             element.setIconId(0);
@@ -635,7 +635,7 @@ public final class InGameControlsEditor implements View.OnClickListener {
                             inputControlsView.invalidate();
                         }
                         loadIcons(parent, element != null ? element.getIconId() : 0);
-                        AppUtils.showToast(activity, "Custom icon deleted");
+                        AppUtils.showToast(activity, R.string.custom_icon_deleted);
                     });
                     return true;
                 }
@@ -657,8 +657,8 @@ public final class InGameControlsEditor implements View.OnClickListener {
         if (type == ControlElement.Type.BUTTON) {
             loadBindingSpinner(element, container, 0, R.string.binding);
             loadBindingSpinner(element, container, 1, R.string.binding_secondary);
-            loadBindingSpinner(element, container, 2, "Combo 3 (Optional)");
-            loadBindingSpinner(element, container, 3, "Combo 4 (Optional)");
+            loadBindingSpinner(element, container, 2, R.string.binding_combo_three);
+            loadBindingSpinner(element, container, 3, R.string.binding_combo_four);
         } else if (type == ControlElement.Type.D_PAD || type == ControlElement.Type.STICK || type == ControlElement.Type.TRACKPAD) {
             loadBindingSpinner(element, container, 0, R.string.binding_up);
             loadBindingSpinner(element, container, 1, R.string.binding_right);
@@ -683,27 +683,25 @@ public final class InGameControlsEditor implements View.OnClickListener {
 
         Runnable update = () -> {
             isInitializing[0] = true;
-            String[] bindingEntries = null;
-            switch (sBindingType.getSelectedItemPosition()) {
-                case 0:
-                    bindingEntries = Binding.keyboardBindingLabels();
-                    break;
-                case 1:
-                    bindingEntries = Binding.mouseBindingLabels();
-                    break;
-                case 2:
-                    bindingEntries = Binding.gamepadBindingLabels();
-                    break;
+            int type = sBindingType.getSelectedItemPosition();
+            Binding[] values = type == 1 ? Binding.mouseBindingValues()
+                    : type == 2 ? Binding.gamepadBindingValues() : Binding.keyboardBindingValues();
+            Binding current = element.getBindingAt(index);
+            String[] bindingEntries = new String[values.length];
+            int selection = 0;
+            for (int i = 0; i < values.length; i++) {
+                bindingEntries[i] = values[i].getDisplayLabel(activity);
+                if (values[i] == current) selection = i;
             }
 
             sBinding.setPopupBackgroundResource(R.drawable.content_dialog_background_dark);
             sBinding.setAdapter(createThemedAdapter(activity, bindingEntries));
-            AppUtils.setSpinnerSelectionFromValue(sBinding, element.getBindingAt(index).toString());
+            sBinding.setSelection(selection, false);
             sBinding.post(() -> isInitializing[0] = false);
         };
 
         sBindingType.setPopupBackgroundResource(R.drawable.content_dialog_background_dark);
-        sBindingType.setAdapter(createThemedAdapter(activity, new String[]{"Keyboard", "Mouse", "Gamepad"}));
+        sBindingType.setAdapter(createThemedAdapter(activity, activity.getResources().getStringArray(R.array.binding_type_entries)));
 
         Binding selectedBinding = element.getBindingAt(index);
         int typeIndex = selectedBinding.isGamepad() ? 2 : (selectedBinding.isMouse() ? 1 : 0);

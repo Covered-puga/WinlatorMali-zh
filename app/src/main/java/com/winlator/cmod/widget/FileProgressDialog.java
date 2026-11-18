@@ -67,7 +67,7 @@ public class FileProgressDialog {
             if (dialog == null) create();
             tvTitle.setText(titleResId);
             tvFileName.setText("");
-            tvProgressPercentage.setText("0%");
+            tvProgressPercentage.setText(activity.getString(R.string.progress_percentage, 0));
             tvProgressSize.setText("");
             progressBar.setProgress(0);
             if (!dialog.isShowing()) dialog.show();
@@ -77,16 +77,21 @@ public class FileProgressDialog {
     public void update(String fileName, long currentBytes, long totalBytes) {
         String currentStr = Formatter.formatFileSize(activity, currentBytes);
         String totalStr = Formatter.formatFileSize(activity, totalBytes);
-        update(fileName, currentBytes, totalBytes, currentStr + " / " + totalStr);
+        update(fileName, currentBytes, totalBytes,
+                activity.getString(R.string.file_manager_progress_ratio, currentStr, totalStr));
     }
 
-    public void update(String fileName, long current, long total, String customProgressText) {
+    public void updateItems(String fileName, long current, long total) {
+        update(fileName, current, total, activity.getString(R.string.file_manager_progress_items, current, total));
+    }
+
+    private void update(String fileName, long current, long total, String customProgressText) {
         activity.runOnUiThread(() -> {
             if (dialog == null || !dialog.isShowing()) return;
             tvFileName.setText(fileName);
             int progress = total > 0 ? (int) ((current * 100) / total) : 0;
             progressBar.setProgress(progress);
-            tvProgressPercentage.setText(progress + "%");
+            tvProgressPercentage.setText(activity.getString(R.string.progress_percentage, progress));
             tvProgressSize.setText(customProgressText);
         });
     }

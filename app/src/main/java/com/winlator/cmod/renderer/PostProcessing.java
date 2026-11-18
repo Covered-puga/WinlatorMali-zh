@@ -23,19 +23,7 @@ public class PostProcessing {
     public static final int SHARPEN_CAS_LITE = 2;
     public static final int SHARPEN_ADAPTIVE = 3;
 
-    /** Upscaler names, indexed by the UPSCALER_* constants. */
-    public static final String[] UPSCALERS = {"Off (Default)", "Nearest (Pixel Perfect)", "Lanczos2", "SGSR", "FSR"};
-
-    /** Sharpen mode names, indexed by SHARPEN_* + 1. */
-    public static final String[] SHARPEN_MODES = {"Off", "RCAS", "RCAS + Vibrance", "CAS Lite", "Adaptive Sharpen"};
-
-    /** Color presets shown in the UI: display name and native effect id. */
-    public static final String[] PRESET_NAMES = {
-        "Off",
-        "Vivid", "Cinematic", "Game Clarity", "Competitive", "Filmic", "Arcade", "Color Boost",
-        "Retro CRT", "Anime Edge", "Upscale Sharp", "Pixel Clean",
-        "Natural", "Vibrance", "Curves", "Technicolor", "Levels", "DLS"
-    };
+    /** Native color effect IDs in the order of color_preset_entries. */
     public static final int[] PRESET_IDS = {
         0,
         12, 11, 10, 13, 15, 16, 21,
@@ -73,7 +61,7 @@ public class PostProcessing {
     public PostProcessing(String config) {
         if (config == null || config.isEmpty()) return;
         KeyValueSet kv = new KeyValueSet(config);
-        upscaler = clamp(Math.round(kv.getFloat("upscaler", upscaler)), 0, UPSCALERS.length - 1);
+        upscaler = clamp(Math.round(kv.getFloat("upscaler", upscaler)), 0, UPSCALER_FSR);
         upscalerSharpness = clamp(kv.getFloat("upscalerSharpness", upscalerSharpness), 0, 1);
         preset = Math.round(kv.getFloat("preset", preset));
         presetStrength = clamp(kv.getFloat("presetStrength", presetStrength), 0, 1);

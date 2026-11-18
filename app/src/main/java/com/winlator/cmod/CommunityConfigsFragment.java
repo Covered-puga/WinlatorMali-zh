@@ -19,7 +19,7 @@ import com.winlator.cmod.contentdialog.ContentDialog;
 import com.winlator.cmod.core.CommunityConfigManager;
 import com.winlator.cmod.core.CommunityConfigUtils;
 import com.winlator.cmod.contents.WineDownloader;
-import android.text.Html;
+import android.text.TextUtils;
 import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +60,7 @@ public class CommunityConfigsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         
         if (getActivity() != null) {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Community Configs");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.community_configs);
         }
         
         ThemeManager.applyThemeToView(view, getContext());
@@ -70,9 +70,9 @@ public class CommunityConfigsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.add(0, 1, 0, "Refresh").setIcon(R.drawable.ic_nav_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(0, 1, 0, R.string.refresh).setIcon(R.drawable.ic_nav_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         
-        MenuItem searchItem = menu.add(0, 2, 0, "Search");
+        MenuItem searchItem = menu.add(0, 2, 0, R.string.search);
         searchItem.setIcon(R.drawable.ic_nav_search);
         searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         
@@ -116,12 +116,12 @@ public class CommunityConfigsFragment extends Fragment {
     private void loadGames() {
         if (!isNetworkAvailable()) {
             progressBar.setVisibility(View.GONE);
-            tvEmptyText.setText("No internet connection.\nPlease check your network settings.");
+            tvEmptyText.setText(R.string.community_no_network);
             llEmptyState.setVisibility(View.VISIBLE);
             return;
         }
 
-        tvEmptyText.setText("Loading games...");
+        tvEmptyText.setText(R.string.loading_games);
         llEmptyState.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         CommunityConfigManager.fetchGameList((games, maintenance) -> {
@@ -141,12 +141,12 @@ public class CommunityConfigsFragment extends Fragment {
                 } else if (games != null && games.length() == 0) {
                     fullGameList = games;
                     recyclerView.setAdapter(null);
-                    tvEmptyText.setText("No community configurations shared yet.\nBe the first to share your config from the Shortcuts menu!");
+                    tvEmptyText.setText(R.string.community_no_shared_configs);
                     llEmptyState.setVisibility(View.VISIBLE);
                 } else {
                     fullGameList = null;
                     recyclerView.setAdapter(null);
-                    tvEmptyText.setText("Failed to retrieve games list.\nPlease check your connection or server status.");
+                    tvEmptyText.setText(R.string.community_game_list_failed);
                     llEmptyState.setVisibility(View.VISIBLE);
                 }
             });
@@ -175,7 +175,7 @@ public class CommunityConfigsFragment extends Fragment {
         }
 
         if (filtered.length() == 0) {
-            tvEmptyText.setText("No games found matching \"" + query + "\"");
+            tvEmptyText.setText(getString(R.string.community_game_search_empty, query));
             llEmptyState.setVisibility(View.VISIBLE);
         } else {
             llEmptyState.setVisibility(View.GONE);
@@ -217,7 +217,7 @@ public class CommunityConfigsFragment extends Fragment {
             return;
         }
         final MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) activity.preloaderDialog.show("Fetching Configurations...");
+        if (activity != null) activity.preloaderDialog.show(R.string.community_fetching_configs);
         JSONArray all = new JSONArray();
         java.util.concurrent.atomic.AtomicInteger pending = new java.util.concurrent.atomic.AtomicInteger(ids.size());
         for (String id : ids) {
@@ -229,7 +229,7 @@ public class CommunityConfigsFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     activity.preloaderDialog.close();
                     if (all.length() > 0) showConfigSelectionDialog(ids.get(0), all);
-                    else Toast.makeText(getContext(), "No configurations found for this game.", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(getContext(), R.string.community_no_game_configs, Toast.LENGTH_SHORT).show();
                 });
             });
         }
@@ -237,7 +237,7 @@ public class CommunityConfigsFragment extends Fragment {
 
     private void showConfigsForGame(String gameName) {
         final MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) activity.preloaderDialog.show("Fetching Configurations...");
+        if (activity != null) activity.preloaderDialog.show(R.string.community_fetching_configs);
         CommunityConfigManager.fetchConfigsForGame(gameName, (configs, maintenance) -> {
             if (activity == null) return;
             activity.runOnUiThread(() -> {
@@ -248,10 +248,10 @@ public class CommunityConfigsFragment extends Fragment {
                     if (configs.length() > 0) {
                         showConfigSelectionDialog(gameName, configs);
                     } else {
-                        Toast.makeText(getContext(), "No configurations found for this game.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.community_no_game_configs, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    ContentDialog.alert(getContext(), "Failed to fetch configurations. Please check your network connection.", null);
+                    ContentDialog.alert(getContext(), R.string.community_fetch_configs_failed, null);
                 }
             });
         });
@@ -260,7 +260,7 @@ public class CommunityConfigsFragment extends Fragment {
     private void showConfigSelectionDialog(String gameName, JSONArray configs) {
         ContentDialog dialog = new ContentDialog(getContext());
         dialog.getContentView().findViewById(R.id.BTConfirm).setVisibility(View.GONE);
-        dialog.setTitle("Select Config");
+        dialog.setTitle(R.string.community_select_config);
 
         ListView listView = dialog.findViewById(R.id.ListView);
         listView.getLayoutParams().width = com.winlator.cmod.core.AppUtils.getPreferredDialogWidth(getContext());
@@ -291,15 +291,15 @@ public class CommunityConfigsFragment extends Fragment {
 
     private void showConfigDetailsDialog(String gameName, JSONObject configRef) {
         ContentDialog dialog = new ContentDialog(getContext(), R.layout.community_config_details_dialog);
-        dialog.setTitle("Configuration Details");
+        dialog.setTitle(R.string.community_config_details);
         
         try {
             String title = configRef.optString("config_title", "");
-            String model = configRef.optString("device_model", "Unknown Device");
+            String model = configRef.optString("device_model", getString(R.string.community_unknown_device));
             String gpu = configRef.optString("gpu", "");
             String ram = configRef.optString("ram", "");
             String storage = configRef.optString("storage", "");
-            String notes = configRef.optString("notes", "No notes provided.");
+            String notes = configRef.optString("notes", getString(R.string.community_no_notes));
             long ts = configRef.optLong("timestamp", 0);
 
             TextView tvTitle = dialog.findViewById(R.id.TVDetailTitle);
@@ -311,14 +311,15 @@ public class CommunityConfigsFragment extends Fragment {
             
             StringBuilder hwInfo = new StringBuilder(model);
             if (!gpu.isEmpty()) hwInfo.append(" • ").append(gpu);
-            if (!ram.isEmpty()) hwInfo.append(" • ").append(ram).append(" RAM");
-            if (!storage.isEmpty()) hwInfo.append(" • ").append(storage).append(" Storage");
+            if (!ram.isEmpty()) hwInfo.append(" • ").append(getString(R.string.community_ram_value, ram));
+            if (!storage.isEmpty()) hwInfo.append(" • ").append(getString(R.string.community_storage_value, storage));
             tvHardware.setText(hwInfo.toString());
             
             if (ts > 0) {
                 long now = System.currentTimeMillis() / 1000;
                 long diff = now - ts;
-                String timeText = diff < 86400 ? (diff / 3600) + "h ago" : (diff / 86400) + "d ago";
+                String timeText = diff < 86400 ? getString(R.string.community_hours_ago, diff / 3600)
+                        : getString(R.string.community_days_ago, diff / 86400);
                 tvTime.setText(timeText);
             }
 
@@ -345,22 +346,14 @@ public class CommunityConfigsFragment extends Fragment {
             int colorDislike = android.graphics.Color.parseColor("#F44336");
 
             Runnable updateVoteUi = () -> {
-                if (userVote[0] == 1) {
-                    btLike.setText("👍 Helpful (" + counts[0] + ") ✓");
-                    btLike.setTextColor(colorLike);
-                    btDislike.setText("👎 Didn't Work (" + counts[1] + ")");
-                    btDislike.setTextColor(defaultTextColor);
-                } else if (userVote[0] == -1) {
-                    btLike.setText("👍 Helpful (" + counts[0] + ")");
-                    btLike.setTextColor(defaultTextColor);
-                    btDislike.setText("👎 Didn't Work (" + counts[1] + ") ✓");
-                    btDislike.setTextColor(colorDislike);
-                } else {
-                    btLike.setText("👍 Helpful (" + counts[0] + ")");
-                    btLike.setTextColor(defaultTextColor);
-                    btDislike.setText("👎 Didn't Work (" + counts[1] + ")");
-                    btDislike.setTextColor(defaultTextColor);
-                }
+                boolean liked = userVote[0] == 1;
+                boolean disliked = userVote[0] == -1;
+                int likeLabel = liked ? R.string.community_vote_helpful_selected : R.string.community_vote_helpful;
+                int dislikeLabel = disliked ? R.string.community_vote_not_helpful_selected : R.string.community_vote_not_helpful;
+                btLike.setText(getString(likeLabel, counts[0]));
+                btDislike.setText(getString(dislikeLabel, counts[1]));
+                btLike.setTextColor(liked ? colorLike : defaultTextColor);
+                btDislike.setTextColor(disliked ? colorDislike : defaultTextColor);
             };
             updateVoteUi.run();
 
@@ -436,7 +429,7 @@ public class CommunityConfigsFragment extends Fragment {
                 } catch (JSONException e) {}
             });
             
-            ((TextView)dialog.findViewById(R.id.BTConfirm)).setText("IMPORT");
+            ((TextView)dialog.findViewById(R.id.BTConfirm)).setText(R.string.community_import_button);
             dialog.show();
             
         } catch (Exception e) {}
@@ -470,7 +463,7 @@ public class CommunityConfigsFragment extends Fragment {
                 ImageView ivIcon = convertView.findViewById(R.id.IVDeviceIcon);
 
                 String title = item.optString("config_title", "");
-                String model = item.optString("device_model", "Unknown Device");
+                String model = item.optString("device_model", context.getString(R.string.community_unknown_device));
                 String gpu = item.optString("gpu", "");
                 long timestamp = item.optLong("timestamp", 0);
 
@@ -529,16 +522,16 @@ public class CommunityConfigsFragment extends Fragment {
         private String getRelativeTime(long timestampSeconds) {
             long now = System.currentTimeMillis() / 1000;
             long diff = now - timestampSeconds;
-            if (diff < 60) return "just now";
-            if (diff < 3600) return (diff / 60) + "m ago";
-            if (diff < 86400) return (diff / 3600) + "h ago";
-            return (diff / 86400) + "d ago";
+            if (diff < 60) return context.getString(R.string.community_just_now);
+            if (diff < 3600) return context.getString(R.string.community_minutes_ago, diff / 60);
+            if (diff < 86400) return context.getString(R.string.community_hours_ago, diff / 3600);
+            return context.getString(R.string.community_days_ago, diff / 86400);
         }
     }
 
     private void downloadAndImportConfig(String gameName, String filename, String notes) {
         final MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) activity.preloaderDialog.show("Downloading Configuration...");
+        if (activity != null) activity.preloaderDialog.show(R.string.community_downloading_config);
         CommunityConfigManager.downloadConfig(gameName, filename, (root, maintenance) -> {
             if (activity == null) return;
             activity.runOnUiThread(() -> {
@@ -548,7 +541,7 @@ public class CommunityConfigsFragment extends Fragment {
                 } else if (root != null) {
                     checkWineAndConfirmImport(activity, root, notes);
                 } else {
-                    ContentDialog.alert(getContext(), "Failed to download configuration. Please check your internet connection.", null);
+                    ContentDialog.alert(getContext(), R.string.community_download_failed, null);
                 }
             });
         });
@@ -559,6 +552,7 @@ public class CommunityConfigsFragment extends Fragment {
             JSONObject container = root.getJSONObject("container");
             String gameName = root.getJSONObject("meta").getString("game_name");
             String requiredWine = container.optString("wineVersion", "Default");
+            String requiredWineLabel = TextUtils.htmlEncode(requiredWine);
 
             List<String> installed = WineDownloader.getInstalledWineVersions(activity);
             boolean isInstalled = false;
@@ -572,19 +566,16 @@ public class CommunityConfigsFragment extends Fragment {
             if (!isInstalled) {
                 // The recommended runtime is not installed!
                 ContentDialog dialog = new ContentDialog(activity);
-                dialog.setTitle("Wine Runtime Notice");
+                dialog.setTitle(R.string.community_wine_notice);
 
                 dialog.getContentView().setMinimumWidth((int) com.winlator.cmod.core.UnitUtils.dpToPx(330));
                 dialog.setCanceledOnTouchOutside(true);
 
                 if (installed.isEmpty()) {
-                    String msg = "This configuration recommends:<br><br>" +
-                            "<b><font color='#4CAF50'>" + requiredWine + "</font></b><br><br>" +
-                            "No Wine or Proton runtimes are installed on your device yet.<br><br>" +
-                            "Please download <b>" + requiredWine + "</b> from Contents to use this setup.";
+                    String msg = activity.getString(R.string.community_wine_none_installed_html, requiredWineLabel);
                     dialog.setMessage(msg);
                     TextView btConfirm = dialog.findViewById(R.id.BTConfirm);
-                    btConfirm.setText("DOWNLOAD");
+                    btConfirm.setText(R.string.community_download_button);
                     dialog.setOnConfirmCallback(() -> {
                         WineDownloader.showDownloadDialog(activity, () -> {
                             checkWineAndConfirmImport(activity, root, notes);
@@ -603,21 +594,19 @@ public class CommunityConfigsFragment extends Fragment {
                         }
                     }
                     final String chosenFallback = fallbackWine;
-                    String msg = "This configuration recommends:<br><br>" +
-                            "<b><font color='#4CAF50'>" + requiredWine + "</font></b><br><br>" +
-                            "It is not currently installed on your device.<br><br>" +
-                            (installed.size() > 1
-                                    ? "Would you like to download <b>" + requiredWine + "</b> now, or select one of your installed runtimes?"
-                                    : "Would you like to download <b>" + requiredWine + "</b> now, or continue using your installed runtime (<b>" + chosenFallback + "</b>)?");
+                    String msg = installed.size() > 1
+                            ? activity.getString(R.string.community_wine_select_installed_html, requiredWineLabel)
+                            : activity.getString(R.string.community_wine_use_installed_html, requiredWineLabel,
+                                    TextUtils.htmlEncode(chosenFallback));
                     dialog.setMessage(msg);
 
                     int padH = (int) com.winlator.cmod.core.UnitUtils.dpToPx(12);
                     TextView btConfirm = dialog.findViewById(R.id.BTConfirm);
-                    btConfirm.setText("DOWNLOAD");
+                    btConfirm.setText(R.string.community_download_button);
                     btConfirm.setPadding(padH, 0, padH, 0);
 
                     TextView btCancel = dialog.findViewById(R.id.BTCancel);
-                    btCancel.setText("USE INSTALLED");
+                    btCancel.setText(R.string.community_use_installed);
                     btCancel.setPadding(padH, 0, padH, 0);
 
                     dialog.setOnConfirmCallback(() -> {
@@ -627,7 +616,7 @@ public class CommunityConfigsFragment extends Fragment {
                     });
                     dialog.setOnCancelCallback(() -> {
                         if (installed.size() > 1) {
-                            ContentDialog.showSingleChoiceList(activity, "Select Wine Runtime", installed.toArray(new String[0]), position -> {
+                            ContentDialog.showSingleChoiceList(activity, R.string.community_select_wine, installed.toArray(new String[0]), position -> {
                                 try {
                                     String selectedWine = installed.get(position);
                                     root.getJSONObject("container").put("wineVersion", selectedWine);
@@ -647,14 +636,13 @@ public class CommunityConfigsFragment extends Fragment {
                 dialog.show();
             } else {
                 // Wine is installed! Show standard confirmation
-                String confirmMsg = "Import configuration for <b>" + gameName + "</b>?<br><br>" +
-                        "Wine runtime: <b>" + requiredWine + "</b>";
+                String confirmMsg = activity.getString(R.string.community_import_confirm, TextUtils.htmlEncode(gameName), requiredWineLabel);
                 if (notes != null && !notes.isEmpty()) {
-                    confirmMsg += "<br><br><b>Notes:</b><br>" + notes.replace("\n", "<br>");
+                    confirmMsg += activity.getString(R.string.community_import_notes_html, TextUtils.htmlEncode(notes).replace("\n", "<br>"));
                 }
 
                 ContentDialog dialog = new ContentDialog(activity);
-                dialog.setTitle("Import Configuration");
+                dialog.setTitle(R.string.community_import_title);
                 dialog.setMessage(confirmMsg);
                 dialog.setOnConfirmCallback(() -> executeImport(activity, root));
                 dialog.show();
@@ -665,7 +653,7 @@ public class CommunityConfigsFragment extends Fragment {
     }
 
     private void executeImport(MainActivity activity, JSONObject root) {
-        activity.preloaderDialog.show("Importing Configuration...");
+        activity.preloaderDialog.show(R.string.community_importing);
         CommunityConfigUtils.importConfig(getContext(), root, activity.getContainerManager(), success -> {
             activity.runOnUiThread(() -> {
                 activity.preloaderDialog.close();
@@ -676,22 +664,15 @@ public class CommunityConfigsFragment extends Fragment {
                         String driver = container.optString("graphicsDriver", "Default");
                         String dx = container.optString("dxwrapper", "Default");
 
-                        String message = "<b>Imported successfully!</b><br><br>" +
-                                "A new container has been created with community settings.<br><br>" +
-                                "<b>Imported Setup:</b><br>" +
-                                "• Wine: " + wine + "<br>" +
-                                "• GPU Driver: " + driver + "<br>" +
-                                "• DX Wrapper: " + dx + "<br><br>" +
-                                "<b>How to use:</b><br>" +
-                                "1. Go to <b>Containers</b>.<br>" +
-                                "2. Run <b>[Community] " + root.getJSONObject("meta").getString("game_name") + "</b>.<br>" +
-                                "3. Find your game EXE in Drive D: and play!";
+                        String message = activity.getString(R.string.community_imported_html, TextUtils.htmlEncode(wine),
+                                TextUtils.htmlEncode(driver), TextUtils.htmlEncode(dx),
+                                TextUtils.htmlEncode(root.getJSONObject("meta").getString("game_name")));
                         ContentDialog.alert(getContext(), message, null);
                     } catch (Exception e) {
-                        Toast.makeText(getContext(), "Imported with minor errors.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.community_import_minor_errors, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Import failed.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.community_import_failed, Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -743,7 +724,8 @@ public class CommunityConfigsFragment extends Fragment {
                 }
 
                 if (configCount > 0) {
-                    holder.tvConfigCount.setText(configCount + (configCount == 1 ? " CONFIG" : " CONFIGS"));
+                    int countLabel = configCount == 1 ? R.string.community_single_config : R.string.community_multiple_configs;
+                    holder.tvConfigCount.setText(holder.itemView.getContext().getString(countLabel, configCount));
                     holder.tvConfigCount.setVisibility(View.VISIBLE);
                     
                     int adrenoCount = item instanceof JSONObject ? ((JSONObject)item).optInt("adreno_count", 0) : 0;
@@ -794,7 +776,7 @@ public class CommunityConfigsFragment extends Fragment {
                 if (idArray != null) for (int i = 0; i < idArray.length(); i++) ids.add(idArray.optString(i));
                 if (ids.isEmpty()) ids.add(gameId);
                 holder.itemView.setOnClickListener(v -> showConfigsForGames(displayName, ids));
-            } catch (JSONException e) { holder.tvGameName.setText("Error"); }
+            } catch (JSONException e) { holder.tvGameName.setText(R.string.community_game_error); }
         }
 
         @Override public int getItemCount() { return games.length(); }

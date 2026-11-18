@@ -12,17 +12,17 @@ import com.winlator.cmod.core.EnvVars;
 import com.winlator.cmod.core.FileUtils;
 import com.winlator.cmod.core.KeyValueSet;
 import com.winlator.cmod.core.StringUtils;
+import com.winlator.cmod.widget.LabeledSpinnerAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class WineD3DConfigDialog extends ContentDialog {
     public static String DEFAULT_CONFIG = Container.DEFAULT_DXWRAPPERCONFIG;
-    public static String[] csmtValues = { "Enabled", "Disabled" };
-    public static String[] strictShaderMathValues = { "Enabled", "Disabled" };
     public static String[] offscreenRenderingModeValues = { "fbo", "backbuffer" };
     public static String[] rendererValues = { "gl", "vulkan", "gdi" };
     private Context context;
@@ -31,7 +31,7 @@ public class WineD3DConfigDialog extends ContentDialog {
         super(anchor.getContext(), R.layout.wined3d_config_dialog);
         context = anchor.getContext();
         setIcon(R.drawable.icon_settings);
-        setTitle("WineD3D " + context.getString(R.string.configuration));
+        setTitle(context.getString(R.string.component_configuration, "WineD3D"));
 
         final Spinner sCSMT = findViewById(R.id.SCSMT);
         final Spinner sGPUName = findViewById(R.id.SGPUName);
@@ -40,14 +40,14 @@ public class WineD3DConfigDialog extends ContentDialog {
         final Spinner sOffscreenRenderingMode = findViewById(R.id.SOffscreenRenderingMode);
         final Spinner sRenderer = findViewById(R.id.SRenderer);
 
-        ArrayAdapter<String> csmtAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, csmtValues);
-        sCSMT.setAdapter(csmtAdapter);
+        ArrayAdapter<CharSequence> toggleAdapter = ArrayAdapter.createFromResource(
+                context, R.array.enabled_disabled_entries, android.R.layout.simple_spinner_dropdown_item);
+        sCSMT.setAdapter(toggleAdapter);
+        sStrictShaderMath.setAdapter(toggleAdapter);
 
-        ArrayAdapter<String> ssmAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, strictShaderMathValues);
-        sStrictShaderMath.setAdapter(ssmAdapter);
-
-        ArrayAdapter<String> ormAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, offscreenRenderingModeValues);
-        sOffscreenRenderingMode.setAdapter(ormAdapter);
+        sOffscreenRenderingMode.setAdapter(new LabeledSpinnerAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                Arrays.asList(offscreenRenderingModeValues),
+                value -> value.equals("backbuffer") ? context.getString(R.string.option_backbuffer) : value));
 
         ArrayAdapter<String> rendererAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, rendererValues);
         sRenderer.setAdapter(rendererAdapter);
@@ -64,8 +64,8 @@ public class WineD3DConfigDialog extends ContentDialog {
         AppUtils.setSpinnerSelectionFromNumber(sVideoMemorySize, config.get("videoMemorySize"));
 
         setOnConfirmCallback(() -> {
-            config.put("csmt", sCSMT.getSelectedItem().toString().equals("Enabled") ? "3": "0");
-            config.put("strict_shader_math", sStrictShaderMath.getSelectedItem().toString().equals("Enabled") ? "1" : "0");
+            config.put("csmt", sCSMT.getSelectedItemPosition() == 0 ? "3" : "0");
+            config.put("strict_shader_math", sStrictShaderMath.getSelectedItemPosition() == 0 ? "1" : "0");
             config.put("OffscreenRenderingMode", sOffscreenRenderingMode.getSelectedItem().toString());
             config.put("gpuName", sGPUName.getSelectedItem().toString());
             config.put("videoMemorySize", StringUtils.parseNumber(sVideoMemorySize.getSelectedItem().toString()));

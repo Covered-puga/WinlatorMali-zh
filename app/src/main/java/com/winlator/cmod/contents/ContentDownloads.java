@@ -8,6 +8,7 @@ import android.os.Looper;
 
 import androidx.core.content.ContextCompat;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.core.FileUtils;
 
 import java.io.File;
@@ -127,11 +128,11 @@ public final class ContentDownloads {
                 }
             });
             if (task.cancelled) {
-                finish(task, State.FAILED, "Cancelled " + task.name);
+                finish(task, State.FAILED, context.getString(R.string.content_download_cancelled, task.name));
                 return;
             }
             if (!downloaded) {
-                finish(task, State.FAILED, "Download failed. Please check network connection.");
+                finish(task, State.FAILED, context.getString(R.string.content_download_network_error));
                 return;
             }
 
@@ -142,7 +143,7 @@ public final class ContentDownloads {
             ContentsManager.OnInstallFinishedCallback finished = new ContentsManager.OnInstallFinishedCallback() {
                 @Override
                 public void onFailed(ContentsManager.InstallFailedReason reason, Exception e) {
-                    error[0] = failureMessage(reason);
+                    error[0] = getInstallFailureMessage(context, reason);
                 }
 
                 @Override
@@ -153,7 +154,7 @@ public final class ContentDownloads {
             manager.extraContentFile(Uri.parse(archive.getAbsolutePath()), stagingDir, new ContentsManager.OnInstallFinishedCallback() {
                 @Override
                 public void onFailed(ContentsManager.InstallFailedReason reason, Exception e) {
-                    error[0] = failureMessage(reason);
+                    error[0] = getInstallFailureMessage(context, reason);
                 }
 
                 @Override
@@ -166,27 +167,28 @@ public final class ContentDownloads {
             });
 
             if (installed[0])
-                finish(task, State.DONE, "Installed " + task.name);
+                finish(task, State.DONE, context.getString(R.string.content_download_installed, task.name));
             else
-                finish(task, State.FAILED, "Installation failed: " + (error[0] != null ? error[0] : "Unable to install content"));
+                finish(task, State.FAILED, context.getString(R.string.content_installation_failed, error[0] != null ? error[0] : context.getString(R.string.cannot_install_content)));
         } catch (Exception e) {
-            finish(task, State.FAILED, "Installation failed: " + e.getMessage());
+            finish(task, State.FAILED, context.getString(R.string.content_installation_failed, e.getMessage()));
         } finally {
             FileUtils.delete(workDir);
         }
     }
 
-    private static String failureMessage(ContentsManager.InstallFailedReason reason) {
-        return switch (reason) {
-            case ERROR_BADTAR -> "Corrupted archive file";
-            case ERROR_NOSPACE -> "No space left on device";
-            case ERROR_NOPROFILE -> "Profile not found in package";
-            case ERROR_BADPROFILE -> "Profile cannot be recognized";
-            case ERROR_EXIST -> "Content already exists";
-            case ERROR_MISSINGFILES -> "Content is incomplete";
-            case ERROR_UNTRUSTPROFILE -> "Content cannot be trusted";
-            default -> "Unable to install content";
+    public static String getInstallFailureMessage(Context context, ContentsManager.InstallFailedReason reason) {
+        int reasonRes = switch (reason) {
+            case ERROR_BADTAR -> R.string.content_archive_corrupted;
+            case ERROR_NOSPACE -> R.string.content_storage_full;
+            case ERROR_NOPROFILE -> R.string.profile_not_found_in_package;
+            case ERROR_BADPROFILE -> R.string.profile_cannot_be_recognized;
+            case ERROR_EXIST -> R.string.content_is_already_installed;
+            case ERROR_MISSINGFILES -> R.string.content_incomplete;
+            case ERROR_UNTRUSTPROFILE -> R.string.content_untrusted;
+            default -> R.string.cannot_install_content;
         };
+        return context.getString(reasonRes);
     }
 
     private static void finish(Task task, State state, String message) {

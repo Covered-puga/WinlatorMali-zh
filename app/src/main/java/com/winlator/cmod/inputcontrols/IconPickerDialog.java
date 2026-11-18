@@ -33,7 +33,7 @@ public class IconPickerDialog {
 
     public static void show(Context context, int currentIconId, OnIconSelectedCallback callback) {
         ContentDialog dialog = new ContentDialog(context);
-        dialog.setTitle("Select Icon");
+        dialog.setTitle(R.string.select_icon);
         dialog.setIcon(R.drawable.icon_radial_wheel);
 
         FrameLayout frameLayout = dialog.findViewById(R.id.FrameLayout);
@@ -58,7 +58,7 @@ public class IconPickerDialog {
         boolean isDarkMode = preferences.getBoolean("dark_mode", true);
 
         Button btNoIcon = new Button(context);
-        btNoIcon.setText("None (Text Only)");
+        btNoIcon.setText(R.string.text_only_icon);
         btNoIcon.setTextSize(11);
         btNoIcon.setTextColor(isDarkMode ? android.graphics.Color.WHITE : android.graphics.Color.BLACK);
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
@@ -89,7 +89,7 @@ public class IconPickerDialog {
             List<Integer> customIds = iconManager.getCustomIconIds();
             if (!customIds.isEmpty()) {
                 TextView tvCustomHeader = new TextView(context);
-                tvCustomHeader.setText("Custom Imported Icons (" + customIds.size() + ")");
+                tvCustomHeader.setText(context.getString(R.string.custom_imported_icon_count, customIds.size()));
                 tvCustomHeader.setTextSize(13);
                 tvCustomHeader.setPadding(4, 8, 4, 4);
                 tvCustomHeader.setTextColor(context.getResources().getColor(R.color.colorAccent));
@@ -116,9 +116,9 @@ public class IconPickerDialog {
                     });
 
                     iv.setOnLongClickListener(v -> {
-                        ContentDialog.confirm(context, "Delete custom icon?", () -> {
+                        ContentDialog.confirm(context, R.string.confirm_delete_custom_icon, () -> {
                             iconManager.deleteCustomIcon(id);
-                            AppUtils.showToast(context, "Icon deleted");
+                            AppUtils.showToast(context, R.string.icon_deleted);
                             dialog.dismiss();
                             show(context, 0, callback);
                         });
@@ -140,7 +140,7 @@ public class IconPickerDialog {
 
             // ── Section 2: Built-in Icons ──
             TextView tvBuiltinHeader = new TextView(context);
-            tvBuiltinHeader.setText("Built-in Icons");
+            tvBuiltinHeader.setText(R.string.builtin_icons);
             tvBuiltinHeader.setTextSize(13);
             tvBuiltinHeader.setPadding(4, 12, 4, 4);
             tvBuiltinHeader.setTextColor(context.getResources().getColor(R.color.colorAccent));

@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.ThemeManager;
 import com.winlator.cmod.ThemePreset;
 
@@ -111,8 +112,15 @@ public class WinlatorHUD extends View {
 
     private boolean layoutDirty = true;
 
-    private String strGpu = "N/A", strCpu = "N/A", strRam = "N/A";
-    private String strPwr = "N/A", strTmp = "", strCTmp = "", strFps = "0", strPct = "";
+    private final String unavailableValue = getResources().getString(R.string.hud_value_unavailable);
+    private final String chargingLabel = getResources().getString(R.string.hud_battery_charging);
+    private static final int[] THERMAL_LEVEL_LABELS = {
+            R.string.thermal_status_normal, R.string.thermal_status_light, R.string.thermal_status_moderate,
+            R.string.thermal_status_severe, R.string.thermal_status_critical, R.string.thermal_status_emergency,
+            R.string.thermal_status_shutdown
+    };
+    private String strGpu = unavailableValue, strCpu = unavailableValue, strRam = unavailableValue;
+    private String strPwr = unavailableValue, strTmp = "", strCTmp = "", strFps = "0", strPct = "";
     private String strRend = "EGL", strWrapper = "WineD3D", strRamBooster = "";
     private boolean snapCharging = false;
 
@@ -371,17 +379,17 @@ public class WinlatorHUD extends View {
             if (gpu != snapGpu || gpuMhz != snapGpuMhz) {
                 snapGpu = gpu;
                 snapGpuMhz = gpuMhz;
-                strGpu = (gpu >= 0) ? gpu + "%" + (gpuMhz > 0 ? " · " + gpuMhz + "MHz" : "") : "N/A";
+                strGpu = (gpu >= 0) ? gpu + "%" + (gpuMhz > 0 ? " · " + gpuMhz + "MHz" : "") : unavailableValue;
             }
             int cpu = dataSource.cpuLoad.get();
             if (cpu != snapCpu) {
                 snapCpu = cpu;
-                strCpu = (cpu >= 0) ? cpu + "%" : "N/A";
+                strCpu = (cpu >= 0) ? cpu + "%" : unavailableValue;
             }
             int ram = dataSource.ramUsagePct.get();
             if (ram != snapRam) {
                 snapRam = ram;
-                strRam = (ram >= 0) ? ram + "%" : "N/A";
+                strRam = (ram >= 0) ? ram + "%" : unavailableValue;
             }
             int tmp = dataSource.batteryTempC.get();
             if (tmp != snapTmp) {
@@ -394,9 +402,9 @@ public class WinlatorHUD extends View {
                 snapCTmp = ctmp;
                 snapThermal = thermal;
                 // Where the CPU temperature is blocked for apps, Android's thermal status still says how hot it runs.
-                String[] levels = {"Normal", "Light", "Moderate", "Severe", "Critical", "Emergency", "Shutdown"};
                 if (ctmp > 0) strCTmp = ctmp + "°C";
-                else if (thermal >= 0 && thermal < levels.length) strCTmp = levels[thermal];
+                else if (thermal >= 0 && thermal < THERMAL_LEVEL_LABELS.length)
+                    strCTmp = getResources().getString(THERMAL_LEVEL_LABELS[thermal]);
                 else strCTmp = "";
             }
             int pct = dataSource.batteryPct.get();
@@ -411,8 +419,8 @@ public class WinlatorHUD extends View {
                 snapCharging = charging;
                 // Charging shows the power going in (+), on battery the power the phone draws.
                 if (mw > 0)         strPwr = String.format(Locale.US, charging ? "+%.1fW" : "%.1fW", mw / 1000f);
-                else if (charging)  strPwr = "CHG";
-                else                strPwr = "N/A";
+                else if (charging)  strPwr = chargingLabel;
+                else                strPwr = unavailableValue;
             }
         }
     }

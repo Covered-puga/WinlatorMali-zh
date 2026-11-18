@@ -54,7 +54,7 @@
         android:padding="6dp"
         app:tint="?attr/colorAccent"
         android:src="@drawable/icon_remove"
-        android:contentDescription="Remove"
+        android:contentDescription="@string/remove_controller_binding"
         android:visibility="gone" />
 
 </LinearLayout>

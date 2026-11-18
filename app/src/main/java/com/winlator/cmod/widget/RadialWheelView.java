@@ -221,7 +221,7 @@ public class RadialWheelView extends View {
             }
 
             String label = (slice.label != null && !slice.label.isEmpty())
-                    ? slice.label : (slice.binding != null && slice.binding != Binding.NONE ? slice.binding.toString() : "");
+                    ? slice.label : (slice.binding != null && slice.binding != Binding.NONE ? slice.binding.getDisplayLabel(getContext()) : "");
             if (label.isEmpty()) continue;
 
             paint.setColor(i == selectedSlice ? 0xFFFFFFFF : COLOR_LABEL);

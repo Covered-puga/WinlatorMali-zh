@@ -66,7 +66,7 @@
                     android:scaleType="fitCenter"
                     app:tint="?attr/colorAccent"
                     android:src="@drawable/icon_add"
-                    android:contentDescription="New profile" />
+                    android:contentDescription="@string/new_controls_profile" />
 
                 <ImageButton
                     style="@style/ListMenuButton"
@@ -80,7 +80,7 @@
                     android:scaleType="fitCenter"
                     app:tint="?attr/colorAccent"
                     android:src="@drawable/icon_edit"
-                    android:contentDescription="Rename profile" />
+                    android:contentDescription="@string/rename_controls_profile" />
 
                 <ImageButton
                     style="@style/ListMenuButton"
@@ -94,7 +94,7 @@
                     android:scaleType="fitCenter"
                     app:tint="?attr/colorAccent"
                     android:src="@drawable/icon_duplicate"
-                    android:contentDescription="Duplicate profile" />
+                    android:contentDescription="@string/duplicate_controls_profile" />
 
                 <ImageButton
                     style="@style/ListMenuButton"
@@ -107,7 +107,7 @@
                     android:scaleType="fitCenter"
                     app:tint="?attr/colorAccent"
                     android:src="@drawable/icon_remove"
-                    android:contentDescription="Delete profile" />
+                    android:contentDescription="@string/delete_controls_profile" />
             </LinearLayout>
 
             <!-- Overlay Opacity -->
@@ -162,7 +162,7 @@
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="10sp"
                 android:autoSizeMaxTextSize="16sp"
-                android:text="Edit On-Screen Controls" />
+                android:text="@string/edit_on_screen_controls" />
 
             <Button
                 style="@style/ButtonNeutral"
@@ -174,7 +174,7 @@
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="10sp"
                 android:autoSizeMaxTextSize="16sp"
-                android:text="Radial Wheels" />
+                android:text="@string/radial_wheels" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -240,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:gravity="center"
-                android:text="No controller connected.\nPlug in or pair a controller to set up its buttons."
+                android:text="@string/no_controller_connected"
                 android:textSize="13sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:visibility="gone" />

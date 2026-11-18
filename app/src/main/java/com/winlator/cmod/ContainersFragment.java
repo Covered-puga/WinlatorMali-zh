@@ -106,7 +106,7 @@ public class ContainersFragment extends Fragment {
         ArrayList<Container> containers = manager.getContainers();
         recyclerView.setAdapter(new ContainersAdapter(containers));
         if (containers.isEmpty()) {
-            emptyTextView.setText("No containers yet\n\nTap + above to create one");
+            emptyTextView.setText(R.string.no_containers_yet);
             emptyTextView.setTextSize(16);
             if (getContext() != null) emptyTextView.setTextColor((ThemeManager.getOnSurfaceTextColor(getContext()) & 0x00FFFFFF) | 0xB3000000);
             emptyTextView.setVisibility(View.VISIBLE);
@@ -140,9 +140,9 @@ public class ContainersFragment extends Fragment {
                 List<String> installed = com.winlator.cmod.contents.WineDownloader.getInstalledWineVersions(getContext());
                 if (installed.isEmpty()) {
                     new AlertDialog.Builder(getContext())
-                        .setTitle("Wine Runtime Required")
-                        .setMessage("No Wine or Proton runtimes are installed yet.\n\nWould you like to download Proton 10 arm64ec (Recommended) now?")
-                        .setPositiveButton("Download Runtime", (dialog, which) -> {
+                        .setTitle(R.string.wine_runtime_required)
+                        .setMessage(R.string.wine_runtime_required_download_prompt)
+                        .setPositiveButton(R.string.download_runtime, (dialog, which) -> {
                             com.winlator.cmod.contents.WineDownloader.showDownloadDialog(getActivity(), () -> {
                                 FragmentManager fm = getParentFragmentManager();
                                 fm.beginTransaction()
@@ -152,7 +152,7 @@ public class ContainersFragment extends Fragment {
                                     .commit();
                             });
                         })
-                        .setNegativeButton("Configure Manually", (dialog, which) -> {
+                        .setNegativeButton(R.string.configure_manually, (dialog, which) -> {
                             FragmentManager fm = getParentFragmentManager();
                             fm.beginTransaction()
                                 .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down, R.anim.slide_in_down, R.anim.slide_out_up)

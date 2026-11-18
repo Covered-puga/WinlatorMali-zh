@@ -98,7 +98,7 @@ public class LogManagerFragment extends Fragment {
         surface = ThemeManager.getSurfaceColor(context);
         content = view.findViewById(R.id.LLLogContent);
         if (getActivity() instanceof AppCompatActivity && ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Log Manager");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.log_manager);
         build();
 
         String game = getArguments() != null ? getArguments().getString(ARG_GAME) : null;
@@ -106,8 +106,8 @@ public class LogManagerFragment extends Fragment {
             LogFiles.Group group = LogFiles.forGame(context, game);
             if (group != null) showGroup(group);
             else toast(LogFiles.isOn(context, LogFiles.PREF_PER_GAME)
-                ? "No logs for " + game + " yet. Turn on what to record below, then play it."
-                : "\"Folder for each game\" is off, so logs aren't kept per game.");
+                ? getString(R.string.log_manager_no_game_logs, game)
+                : getString(R.string.log_manager_per_game_off));
         }
     }
 
@@ -119,47 +119,49 @@ public class LogManagerFragment extends Fragment {
         // Master switch
         LinearLayout master = card();
         master.setPadding(dp(14), dp(14), dp(14), dp(14));
-        toggle(master, "Logs", enabled ? "On — the switches below choose what is recorded" : "Off — nothing is recorded at all",
-            LogFiles.PREF_ENABLED, INFO_MASTER, null);
+        toggle(master, getString(R.string.logs), enabled ? getString(R.string.log_manager_enabled) : getString(R.string.log_manager_disabled),
+            LogFiles.PREF_ENABLED, getString(R.string.log_manager_info_master), null);
 
         // Where logs go
-        section("Where logs go");
+        section(getString(R.string.log_manager_where));
         LinearLayout where = card();
         String mode = prefs.getString(LogFiles.PREF_LOCATION, LogFiles.LOCATION_DOCUMENTS);
-        String modeLabel = LogFiles.LOCATION_DOWNLOAD.equals(mode) ? "Download" : LogFiles.LOCATION_CUSTOM.equals(mode) ? "Custom folder" : "Documents";
-        pickRow(where, "Save logs to", modeLabel, LogFiles.root(context).getAbsolutePath(), () ->
-            ContentDialog.showSingleChoiceList(context, "Save logs to", new String[]{"Documents", "Download", "Choose folder…"}, index -> {
+        int modeLabelId = LogFiles.LOCATION_DOWNLOAD.equals(mode) ? R.string.log_manager_download
+                : LogFiles.LOCATION_CUSTOM.equals(mode) ? R.string.log_manager_custom_folder : R.string.log_manager_documents;
+        String modeLabel = getString(modeLabelId);
+        pickRow(where, getString(R.string.log_manager_save_to), modeLabel, LogFiles.root(context).getAbsolutePath(), () ->
+            ContentDialog.showSingleChoiceList(context, getString(R.string.log_manager_save_to), new String[]{getString(R.string.log_manager_documents), getString(R.string.log_manager_download), getString(R.string.log_manager_choose_folder)}, index -> {
                 if (index == 2) {
                     try { startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQUEST_CUSTOM_FOLDER); }
-                    catch (Exception e) { toast("No folder picker on this device."); }
+                    catch (Exception e) { toast(getString(R.string.log_manager_missing_picker)); }
                     return;
                 }
                 prefs.edit().putString(LogFiles.PREF_LOCATION, index == 1 ? LogFiles.LOCATION_DOWNLOAD : LogFiles.LOCATION_DOCUMENTS).apply();
                 build();
             }));
-        toggle(where, "Folder for each game", "One folder per shortcut or container", LogFiles.PREF_PER_GAME, INFO_PER_GAME, null);
+        toggle(where, getString(R.string.log_manager_per_game), getString(R.string.log_manager_per_game_hint), LogFiles.PREF_PER_GAME, getString(R.string.log_manager_info_per_game), null);
 
         // What to record
-        section("What to record");
+        section(getString(R.string.log_manager_what));
         LinearLayout what = card();
         if (!enabled) what.setAlpha(0.45f);
-        toggle(what, "Wine debug", "Slows games down — for diagnosing a problem", LogFiles.PREF_WINE, INFO_WINE, null);
+        toggle(what, getString(R.string.log_manager_wine_debug), getString(R.string.log_manager_wine_hint), LogFiles.PREF_WINE, getString(R.string.log_manager_info_wine), null);
         wineChannels(what);
-        toggle(what, "Box64 / FEXCore", "Slows games down at higher verbosity", LogFiles.PREF_BOX64, INFO_BOX64, null);
-        toggle(what, "DXVK & VKD3D", "Safe to leave on — mostly written at startup", LogFiles.PREF_DXVK, INFO_DXVK, null);
-        toggle(what, "Android logcat", "Saved when a game exits — no cost while playing", LogFiles.PREF_LOGCAT, INFO_LOGCAT, null);
-        toggle(what, "Crash reports", "Saved automatically if the app crashes", LogFiles.PREF_CRASH, INFO_CRASH, null);
-        toggle(what, "Exit reasons (auto-save on launch)", "Android's record of why the app last closed", LogFiles.PREF_EXIT_AUTOSAVE, INFO_EXIT,
-            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R ? null : "Needs Android 11 or newer");
+        toggle(what, getString(R.string.log_manager_box64), getString(R.string.log_manager_box64_hint), LogFiles.PREF_BOX64, getString(R.string.log_manager_info_box64), null);
+        toggle(what, getString(R.string.log_manager_dxvk_vkd3d), getString(R.string.log_manager_dxvk_hint), LogFiles.PREF_DXVK, getString(R.string.log_manager_info_dxvk), null);
+        toggle(what, getString(R.string.log_manager_android_logcat), getString(R.string.log_manager_logcat_hint), LogFiles.PREF_LOGCAT, getString(R.string.log_manager_info_logcat), null);
+        toggle(what, getString(R.string.log_manager_crash_reports), getString(R.string.log_manager_crash_hint), LogFiles.PREF_CRASH, getString(R.string.log_manager_info_crash), null);
+        toggle(what, getString(R.string.log_manager_exit_autosave), getString(R.string.log_manager_exit_hint), LogFiles.PREF_EXIT_AUTOSAVE, getString(R.string.log_manager_info_exit),
+            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R ? null : getString(R.string.log_manager_needs_android11));
 
         // Housekeeping
-        section("Housekeeping");
+        section(getString(R.string.log_manager_housekeeping));
         LinearLayout house = card();
         int keep = LogFiles.keepRuns(context);
-        pickRow(house, "Keep last", keep == 0 ? "Latest run only" : keep + " past runs per game", "Older runs are deleted when a game starts", () -> {
+        pickRow(house, getString(R.string.log_manager_keep_last), keep == 0 ? getString(R.string.log_manager_latest_only) : getString(R.string.log_manager_per_game_runs, keep), getString(R.string.log_manager_cleanup_hint), () -> {
             String[] labels = new String[KEEP_OPTIONS.length];
-            for (int i = 0; i < KEEP_OPTIONS.length; i++) labels[i] = KEEP_OPTIONS[i] == 0 ? "Latest run only" : KEEP_OPTIONS[i] + " past runs";
-            ContentDialog.showSingleChoiceList(context, "Keep last", labels, index -> {
+            for (int i = 0; i < KEEP_OPTIONS.length; i++) labels[i] = KEEP_OPTIONS[i] == 0 ? getString(R.string.log_manager_latest_only) : getString(R.string.log_manager_past_runs, KEEP_OPTIONS[i]);
+            ContentDialog.showSingleChoiceList(context, getString(R.string.log_manager_keep_last), labels, index -> {
                 prefs.edit().putInt(LogFiles.PREF_KEEP_RUNS, KEEP_OPTIONS[index]).apply();
                 build();
             });
@@ -168,18 +170,17 @@ public class LogManagerFragment extends Fragment {
         LinearLayout actions = new LinearLayout(context);
         actions.setOrientation(LinearLayout.HORIZONTAL);
         actions.setPadding(0, dp(8), 0, 0);
-        actions.addView(action("Logcat now", () -> runInBackground("Capturing logcat…", () -> {
+        actions.addView(action(getString(R.string.log_manager_logcat_now), () -> runInBackground(getString(R.string.log_manager_capturing), () -> {
             File out = SessionLog.captureAppLogcat(context);
-            return () -> { build(); toast("Saved " + out.getName()); };
+            return () -> { build(); toast(getString(R.string.log_manager_saved_file, out.getName())); };
         })), weight());
-        actions.addView(action("Exit reasons", () -> runInBackground("Reading Android's records…", () -> {
+        actions.addView(action(getString(R.string.log_manager_exit_reasons), () -> runInBackground(getString(R.string.log_manager_reading_records), () -> {
             String text = SessionLog.exitReasons(context, true);
-            return () -> { build(); showText("Last crashes / exit reasons", text, null); };
+            return () -> { build(); showText(getString(R.string.log_manager_exits_title), text, null); };
         })), weight());
-        actions.addView(action("Clear all", () -> {
-            if (groups.isEmpty()) { toast("No logs to delete."); return; }
-            ContentDialog.confirm(context, "Delete all logs (" + LogFiles.humanBytes(LogFiles.totalBytes(groups)) + ")?\n\n"
-                + "Only files WinlatorMali wrote are removed. Anything else in your log folder is left alone.", () -> {
+        actions.addView(action(getString(R.string.log_manager_clear_all), () -> {
+            if (groups.isEmpty()) { toast(getString(R.string.log_manager_nothing_to_delete)); return; }
+            ContentDialog.confirm(context, getString(R.string.log_manager_confirm_delete_all, LogFiles.humanBytes(LogFiles.totalBytes(groups))), () -> {
                 for (LogFiles.Group g : groups) LogFiles.deleteGroup(context, g);
                 build();
             });
@@ -187,10 +188,10 @@ public class LogManagerFragment extends Fragment {
         house.addView(actions);
 
         // Logs by game
-        section("Logs by game  ·  " + LogFiles.humanBytes(LogFiles.totalBytes(groups)));
+        section(getString(R.string.log_manager_game_logs, LogFiles.humanBytes(LogFiles.totalBytes(groups))));
         if (groups.isEmpty()) {
             LinearLayout empty = card();
-            TextView tv = text("No logs yet.\n\nTurn on what to record above, then play a game: its logs appear here.", 13.5f, muted);
+            TextView tv = text(getString(R.string.log_manager_empty), 13.5f, muted);
             tv.setGravity(Gravity.CENTER);
             empty.addView(tv);
         }
@@ -199,21 +200,25 @@ public class LogManagerFragment extends Fragment {
             row.setClickable(true);
             row.setFocusable(true);
             row.setOnClickListener(v -> showGroup(g));
-            TextView title = text(g.isApp() ? "App logs (logcat, crash reports)" : g.name, 15.5f, onSurface);
+            TextView title = text(g.isApp() ? getString(R.string.log_manager_app_log_types) : g.name, 15.5f, onSurface);
             title.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             title.setSingleLine(true);
             title.setEllipsize(TextUtils.TruncateAt.END);
             row.addView(title);
-            row.addView(text((g.fileCount > 0 ? g.fileCount + (g.fileCount == 1 ? " file" : " files") : "no current files")
-                + (g.archivedRuns > 0 ? " · " + g.archivedRuns + " past run" + (g.archivedRuns == 1 ? "" : "s") : "")
+            String fileCount = g.fileCount == 0 ? getString(R.string.log_manager_no_current_files)
+                    : g.fileCount == 1 ? getString(R.string.file_count_one) : getString(R.string.file_count_many, g.fileCount);
+            String pastRuns = "";
+            if (g.archivedRuns > 0) {
+                pastRuns = " · " + (g.archivedRuns == 1 ? getString(R.string.log_manager_one_past_run) : getString(R.string.log_manager_past_runs, g.archivedRuns));
+            }
+            row.addView(text(fileCount + pastRuns
                 + " · " + LogFiles.humanBytes(g.bytes)
                 + " · " + DateUtils.getRelativeTimeSpanString(g.lastModified, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS), 12.5f, muted));
         }
 
         LinearLayout note = new LinearLayout(context);
         note.setPadding(dp(4), dp(12), dp(4), 0);
-        note.addView(text("E-mail addresses, tokens and keys are removed as logs are written. File paths are kept so the logs stay "
-            + "useful — glance over them before sharing if a folder name identifies you. Logcat holds this app's output only.", 11.5f, muted));
+        note.addView(text(getString(R.string.log_manager_privacy_note), 11.5f, muted));
         content.addView(note);
     }
 
@@ -229,7 +234,7 @@ public class LogManagerFragment extends Fragment {
         if (requestCode != REQUEST_CUSTOM_FOLDER || resultCode != Activity.RESULT_OK || data == null || data.getData() == null) return;
         String path = FileUtils.getFilePathFromUri(requireContext(), data.getData());
         if (path == null || !new File(path).canWrite()) {
-            toast("That folder can't be written to. Pick another one.");
+            toast(getString(R.string.log_manager_folder_unwritable));
             return;
         }
         prefs.edit().putString(LogFiles.PREF_LOCATION, LogFiles.LOCATION_CUSTOM).putString(LogFiles.PREF_CUSTOM_PATH, path).apply();
@@ -246,7 +251,7 @@ public class LogManagerFragment extends Fragment {
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(dp(4), 0, 0, dp(6));
-        box.addView(text("Channels", 11.5f, accent));
+        box.addView(text(getString(R.string.log_manager_channels), 11.5f, accent));
         HorizontalScrollView hs = new HorizontalScrollView(context);
         hs.setHorizontalScrollBarEnabled(false);
         LinearLayout chips = new LinearLayout(context);
@@ -260,12 +265,12 @@ public class LogManagerFragment extends Fragment {
             });
             chips.addView(chip);
         }
-        TextView add = chip("+ Add", false);
+        TextView add = chip(getString(R.string.log_manager_add), false);
         add.setOnClickListener(v -> {
             List<String> options = new ArrayList<>();
             for (String c : COMMON_WINE_CHANNELS) if (!channels.contains(c)) options.add(c);
-            options.add("All channels…");
-            ContentDialog.showSingleChoiceList(context, "Add a channel", options.toArray(new String[0]), index -> {
+            options.add(getString(R.string.log_manager_all_channels));
+            ContentDialog.showSingleChoiceList(context, getString(R.string.log_manager_add_channel), options.toArray(new String[0]), index -> {
                 if (index == options.size() - 1) {
                     String[] all;
                     try { all = ArrayUtils.toStringArray(new JSONArray(FileUtils.readString(context, "wine_debug_channels.json"))); }
@@ -283,7 +288,7 @@ public class LogManagerFragment extends Fragment {
             });
         });
         chips.addView(add);
-        TextView reset = chip("Reset", false);
+        TextView reset = chip(getString(R.string.reset), false);
         reset.setOnClickListener(v -> saveChannels(new ArrayList<>(Arrays.asList(SettingsFragment.DEFAULT_WINE_DEBUG_CHANNELS.split(",")))));
         chips.addView(reset);
         hs.addView(chips);
@@ -307,29 +312,31 @@ public class LogManagerFragment extends Fragment {
         List<String> labels = new ArrayList<>();
         List<Runnable> actions = new ArrayList<>();
         for (LogFiles.Run run : LogFiles.runs(group.dir)) {
-            String when = run.current ? "Latest run" : DateUtils.formatDateTime(context, run.millis,
+            String when = run.current ? getString(R.string.log_manager_latest_run) : DateUtils.formatDateTime(context, run.millis,
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_ABBREV_MONTH);
             for (File f : LogFiles.filesIn(run.dir)) {
-                labels.add(when + "  ·  " + f.getName() + "  (" + LogFiles.humanBytes(f.length()) + ")");
+                labels.add(getString(R.string.log_manager_file_label, when, f.getName(), LogFiles.humanBytes(f.length())));
                 actions.add(() -> viewFile(f));
             }
         }
-        String what = group.isApp() ? "the app logs" : group.name;
-        labels.add("Share all of " + what + " (.zip)");
+        String what = group.isApp() ? getString(R.string.log_manager_app_logs_object) : group.name;
+        labels.add(getString(R.string.log_manager_share_group, what));
         actions.add(() -> shareZip(group.name, group.dir));
-        labels.add("Delete all of " + what);
-        actions.add(() -> ContentDialog.confirm(context, "Delete " + LogFiles.humanBytes(group.bytes) + " of logs of " + what + "?\n\nOnly files WinlatorMali wrote are removed.", () -> {
+        labels.add(getString(R.string.log_manager_delete_group, what));
+        actions.add(() -> ContentDialog.confirm(context, getString(R.string.log_manager_confirm_delete_group,
+                LogFiles.humanBytes(group.bytes), TextUtils.htmlEncode(what)), () -> {
             LogFiles.deleteGroup(context, group);
             build();
         }));
-        ContentDialog.showSingleChoiceList(context, group.isApp() ? "App logs" : group.name, labels.toArray(new String[0]), index -> {
+        ContentDialog.showSingleChoiceList(context, group.isApp() ? getString(R.string.log_manager_app_logs) : group.name, labels.toArray(new String[0]), index -> {
             if (index >= 0 && index < actions.size()) actions.get(index).run();
         });
     }
 
     /** The end of a log (the last 512 KB, where a crash is) in the viewer. */
     private void viewFile(File file) {
-        runInBackground("Opening " + file.getName() + "…", () -> {
+        Context context = requireContext();
+        runInBackground(getString(R.string.log_manager_opening, file.getName()), () -> {
             String text;
             try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
                 long length = raf.length();
@@ -337,11 +344,11 @@ public class LogManagerFragment extends Fragment {
                 byte[] data = new byte[(int) (length - start)];
                 raf.seek(start);
                 raf.readFully(data);
-                text = (start > 0 ? "… showing the last " + LogFiles.humanBytes(VIEW_TAIL_BYTES) + " of " + LogFiles.humanBytes(length) + "\n\n" : "")
+                text = (start > 0 ? context.getString(R.string.log_manager_tail, LogFiles.humanBytes(VIEW_TAIL_BYTES), LogFiles.humanBytes(length)) : "")
                     + new String(data, java.nio.charset.StandardCharsets.UTF_8);
             }
             catch (Exception e) {
-                text = "Could not read " + file.getName() + ": " + e.getMessage();
+                text = context.getString(R.string.log_manager_read_file_failed, file.getName(), e.getMessage());
             }
             final String body = text;
             return () -> showText(file.getName(), body, file);
@@ -364,21 +371,21 @@ public class LogManagerFragment extends Fragment {
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER_VERTICAL);
         EditText find = new EditText(context);
-        find.setHint("Find");
+        find.setHint(R.string.log_manager_find);
         find.setSingleLine(true);
         find.setTextSize(13);
         find.setTextColor(onSurface);
         find.setHintTextColor(muted);
         bar.addView(find, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         final int[] from = {0};
-        TextView next = chip("Next", false);
+        TextView next = chip(getString(R.string.log_manager_next), false);
         next.setOnClickListener(v -> {
             String query = find.getText().toString();
             if (query.isEmpty()) return;
             String lower = body.toLowerCase(Locale.ROOT);
             int at = lower.indexOf(query.toLowerCase(Locale.ROOT), from[0]);
             if (at < 0) at = lower.indexOf(query.toLowerCase(Locale.ROOT));
-            if (at < 0) { toast("Not found"); return; }
+            if (at < 0) { toast(getString(R.string.item_not_found)); return; }
             from[0] = at + query.length();
             SpannableString span = new SpannableString(body);
             span.setSpan(new BackgroundColorSpan((accent & 0x00FFFFFF) | 0x99000000), at, at + query.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -393,21 +400,21 @@ public class LogManagerFragment extends Fragment {
         });
         bar.addView(next);
         final boolean[] wrapped = {false};
-        TextView wrap = chip("Wrap", false);
+        TextView wrap = chip(getString(R.string.log_manager_wrap), false);
         wrap.setOnClickListener(v -> {
             wrapped[0] = !wrapped[0];
             if (tv.getParent() instanceof ViewGroup) ((ViewGroup) tv.getParent()).removeView(tv);
             sv.removeAllViews();
             if (wrapped[0]) sv.addView(tv);
             else { hs.addView(tv); sv.addView(hs); }
-            wrap.setText(wrapped[0] ? "No wrap" : "Wrap");
+            wrap.setText(wrapped[0] ? getString(R.string.log_manager_no_wrap) : getString(R.string.log_manager_wrap));
         });
         bar.addView(wrap);
-        TextView copy = chip("Copy", false);
+        TextView copy = chip(getString(R.string.copy), false);
         copy.setOnClickListener(v -> {
             ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(ClipData.newPlainText(title, body));
-            toast("Copied");
+            toast(getString(R.string.log_manager_copied));
         });
         bar.addView(copy);
 
@@ -425,7 +432,7 @@ public class LogManagerFragment extends Fragment {
         dialog.show();
         TextView confirm = dialog.findViewById(R.id.BTConfirm);
         if (confirm != null) {
-            if (file != null) confirm.setText("Share");
+            if (file != null) confirm.setText(R.string.share);
             else confirm.setVisibility(View.GONE);
         }
     }
@@ -436,7 +443,7 @@ public class LogManagerFragment extends Fragment {
     /** Zip a game's (or the app's) logs, all kept runs, and share the zip. */
     private void shareZip(String name, File dir) {
         Context context = requireContext();
-        runInBackground("Packing the logs…", () -> {
+        runInBackground(getString(R.string.log_manager_packing), () -> {
             File zip = new File(context.getCacheDir(), "logs/" + LogFiles.folderName(name) + "_logs_" + LogFiles.timestamp(System.currentTimeMillis()) + ".zip");
             zip.getParentFile().mkdirs();
             try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zip))) {
@@ -454,7 +461,7 @@ public class LogManagerFragment extends Fragment {
                 }
             }
             catch (Exception e) {
-                return () -> toast("Could not pack the logs: " + e.getMessage());
+                return () -> toast(getString(R.string.log_manager_pack_failed, e.getMessage()));
             }
             return () -> share(zip, "application/zip");
         });
@@ -466,12 +473,12 @@ public class LogManagerFragment extends Fragment {
         try {
             Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".tileprovider", file);
             Intent send = new Intent(Intent.ACTION_SEND).setType(mime).putExtra(Intent.EXTRA_STREAM, uri)
-                .putExtra(Intent.EXTRA_SUBJECT, "WinlatorMali log: " + file.getName())
+                .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.log_manager_share_subject, file.getName()))
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(Intent.createChooser(send, "Share log"));
+            startActivity(Intent.createChooser(send, getString(R.string.log_manager_share_log)));
         }
         catch (Exception e) {
-            toast("Could not share: " + e.getMessage());
+            toast(getString(R.string.log_manager_share_failed, e.getMessage()));
         }
     }
 
@@ -619,39 +626,4 @@ public class LogManagerFragment extends Fragment {
         if (getContext() != null) Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // What each switch does (after Bannerlator's LogCopy)
-
-    private static final String INFO_MASTER = "One switch for all logging.\n\nOff, nothing at all is recorded: no Wine or "
-        + "Box64 / FEXCore output, no DXVK or VKD3D logs (they are kept silent), no logcat, no crash reports and no exit reasons, "
-        + "and no folders are created. Your choices below are kept and come back when you turn it on again.\n\nLogs already "
-        + "on disk stay listed here, so you can still read, share or delete them.";
-    private static final String INFO_PER_GAME ="No performance cost.\n\nGives each game its own folder inside your log location, named "
-        + "after the shortcut (or the container, when you start one without a shortcut), so one game's logs don't get mixed up with "
-        + "another's. Each folder keeps the last runs under \"previous\".\n\nTurn it off to keep everything in one folder; past runs "
-        + "are then not kept. Logs already written are left where they are.";
-    private static final String INFO_WINE = "⚠️ SLOWS GAMES DOWN. Only turn this on to diagnose a problem, then turn it back off.\n\n"
-        + "Records what Wine itself is doing, as wine_debug.log in the game's folder. Every message is written as the game runs, and "
-        + "Wine produces a lot of them — the \"seh\" channel alone logs an entry every time the game raises an exception. Heavier "
-        + "channels such as \"relay\" can make a game many times slower.\n\nThis is the log to enable when a game won't start, crashes, "
-        + "or dies at launch. The channels below choose what Wine reports.";
-    private static final String INFO_BOX64 = "⚠️ SLOWS GAMES DOWN at higher verbosity.\n\nRecords what the x86 translator (Box64 for "
-        + "x86_64 Wine, FEXCore or WOWBox64 for arm64ec) is doing while it runs the game's PC code, into the same wine_debug.log. Useful "
-        + "for a game that crashes in a way Wine's own log doesn't explain, or misbehaves under only one translator.\n\nLeave off for "
-        + "normal play.";
-    private static final String INFO_DXVK = "Little to no performance cost.\n\nRecords what the graphics layers report — DXVK for "
-        + "DirectX 8/9/10/11 (<game>_d3d11.log, <game>_dxgi.log…), VKD3D for DirectX 12 (vkd3d-proton.log). Almost everything is "
-        + "written while the game starts: which GPU and driver were picked, which features are missing, why a shader failed.\n\nThe "
-        + "log to check for black screens, missing textures or a refused graphics feature. Safe to leave on. Off, DXVK and VKD3D are "
-        + "kept silent.";
-    private static final String INFO_LOGCAT = "No performance cost.\n\nAndroid's own log, as it relates to WinlatorMali: the renderer, "
-        + "the X server, input and audio. It is saved once, when a game exits (logcat.log in its folder), or when you tap \"Capture "
-        + "logcat\" — never continuously, so it costs no frames.\n\nIt contains THIS APP'S OUTPUT ONLY: Android doesn't let an app read "
-        + "other apps' logs, and nothing system-wide is captured, so other apps' data never ends up in a file you share.";
-    private static final String INFO_CRASH = "No performance cost.\n\nIf the app itself crashes, the error and the moments before it are "
-        + "saved as crash_<time>.txt in the app logs, before Android closes it. Send that file when you report a crash.";
-    private static final String INFO_EXIT = "No performance cost.\n\nAndroid keeps a short record of why the app's last processes ended: "
-        + "a crash, a native crash, \"not responding\", killed for low memory, or closed normally. With this on, a new record is saved "
-        + "to the app logs each time the app starts — useful when a game closes with no error at all, which is usually Android "
-        + "killing it for memory. \"Exit reasons\" below shows the records any time.";
 }

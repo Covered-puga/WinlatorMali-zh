@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Log;
 
+import com.winlator.cmod.R;
 import com.winlator.cmod.container.Container;
 import com.winlator.cmod.container.Shortcut;
 import com.winlator.cmod.core.RamBooster;
@@ -410,12 +411,12 @@ public class RamBoosterComponent extends EnvironmentComponent {
 
     private void triggerBoost(double percentage, int holdMsOverride) {
         if (isBoosting.compareAndSet(false, true)) {
-            if (hud != null && hud.isUserEnabled()) hud.setRamBoosterStatus("Boosting...");
+            if (hud != null && hud.isUserEnabled()) hud.setRamBoosterStatus(environment.getContext().getString(R.string.ram_booster_hud_active));
             if (isToastEnabled()) {
                 String profile = getProfile();
-                String msg = "RAM Booster: Boosting...";
+                String msg = environment.getContext().getString(R.string.ram_booster_toast_active);
                 if (profile.equals("manual")) {
-                    msg = String.format(java.util.Locale.US, "RAM Booster: Manual Pulse (%.0f%% Intensity)", percentage);
+                    msg = environment.getContext().getString(R.string.ram_booster_manual_pulse, percentage);
                 }
                 com.winlator.cmod.core.AppUtils.showToast(environment.getContext(), msg);
             }
@@ -479,7 +480,7 @@ public class RamBoosterComponent extends EnvironmentComponent {
                             }, 5000);
                         }
                         if (isToastEnabled()) {
-                            com.winlator.cmod.core.AppUtils.showToast(environment.getContext(), "RAM Booster: " + gainStr);
+                            com.winlator.cmod.core.AppUtils.showToast(environment.getContext(), context.getString(R.string.ram_booster_memory_gain, gainStr));
                         }
                     } else {
                         saturatedCounter++;
@@ -487,7 +488,7 @@ public class RamBoosterComponent extends EnvironmentComponent {
                         if (saturatedCounter >= 4 || (currentUsage >= 88 && saturatedCounter >= 2)) {
                             saturationBackoff = System.currentTimeMillis() + 300000;
                             if (isToastEnabled()) {
-                                com.winlator.cmod.core.AppUtils.showToast(environment.getContext(), "RAM Booster: Max Reached (Saturated)");
+                                com.winlator.cmod.core.AppUtils.showToast(environment.getContext(), R.string.ram_booster_saturated);
                             }
                         }
                         if (hud != null) hud.setRamBoosterStatus("");

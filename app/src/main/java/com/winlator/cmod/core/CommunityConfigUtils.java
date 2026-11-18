@@ -193,7 +193,7 @@ public class CommunityConfigUtils {
             String wineVersion = containerJson.optString("wineVersion", "");
             java.util.List<String> installedWine = WineDownloader.getInstalledWineVersions(context);
             if (installedWine.isEmpty()) {
-                AppUtils.showToast(context, "No Wine runtimes installed. Please download one from Contents.");
+                AppUtils.showToast(context, R.string.community_wine_required);
                 callback.call(false);
                 return;
             }
@@ -210,8 +210,8 @@ public class CommunityConfigUtils {
                         break;
                     }
                 }
-                String missingName = wineVersion.isEmpty() ? "Default" : wineVersion;
-                AppUtils.showToast(context, "Runtime '" + missingName + "' not installed. Using " + fallbackWine);
+                String missingName = wineVersion.isEmpty() ? context.getString(R.string.community_default_runtime) : wineVersion;
+                AppUtils.showToast(context, context.getString(R.string.community_runtime_fallback, missingName, fallbackWine));
                 wineVersion = fallbackWine;
             }
             containerJson.put("wineVersion", wineVersion);

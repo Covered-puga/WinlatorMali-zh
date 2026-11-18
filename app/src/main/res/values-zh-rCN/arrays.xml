@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="binding_type_entries">
+        <item>@string/keyboard</item>
+        <item>鼠标</item>
+        <item>@string/gamepad</item>
+    </string-array>
+    <string-array name="fullscreen_mode_entries">
+        <item>适应（保持宽高比）</item>
+        <item>拉伸</item>
+        <item>填满（裁剪）</item>
+        <item>整数缩放（像素对齐）</item>
+    </string-array>
+    <string-array name="screen_alignment_entries">
+        <item>居中</item>
+        <item>上半部分</item>
+        <item>下半部分</item>
+    </string-array>
+    <string-array name="dxvk_max_device_memory_entries">
+        <item>@string/option_default_device_memory</item>
+        <item>512 MB</item>
+        <item>1024 MB</item>
+        <item>2048 MB</item>
+        <item>3072 MB</item>
+        <item>4096 MB</item>
+    </string-array>
+    <string-array name="wincomponent_entries">
+        <item>内置（Wine）</item>
+        <item>原生（Windows）</item>
+    </string-array>
+    <string-array name="desktop_theme_entries">
+        <item>浅色</item>
+        <item>深色</item>
+    </string-array>
+    <string-array name="desktop_background_type_entries">
+        <item>图像</item>
+        <item>纯色</item>
+    </string-array>
+    <string-array name="startup_selection_entries">
+        <item>普通（加载所有服务）</item>
+        <item>精简（仅加载必要服务）</item>
+        <item>激进（启动时停止服务）</item>
+    </string-array>
+    <string-array name="ram_booster_profile_entries">
+        <item>智能自动</item>
+        <item>低</item>
+        <item>中</item>
+        <item>高</item>
+        <item>激进</item>
+        <item>最大</item>
+        <item>手动</item>
+    </string-array>
+    <string-array name="button_options">
+        <item>A</item>
+        <item>B</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>R1（右肩键）</item>
+        <item>R2（右扳机）</item>
+        <item>L1（左肩键）</item>
+        <item>L2（左扳机）</item>
+        <item>开始键</item>
+        <item>选择键</item>
+        <item>R3（按下右摇杆）</item>
+        <item>L3（按下左摇杆）</item>
+    </string-array>
+    <string-array name="touchscreenInputModesEntries">
+        <item>触控板</item>
+        <item>模拟触摸屏</item>
+        <item>直接触摸</item>
+    </string-array>
+    <string-array name="transformCapturedPointerEntries">
+        <item>不旋转</item>
+        <item>顺时针旋转</item>
+        <item>逆时针旋转</item>
+        <item>上下颠倒</item>
+        <item>自动（适用于触控板）</item>
+    </string-array>
+    <string-array name="controller_emulation_entries">
+        <item>@string/game_controller</item>
+    </string-array>
+    <string-array name="fps_limit_entries">
+        <item>无限制</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>自定义…</item>
+    </string-array>
+    <string-array name="bcn_emulation_entries">
+        <item>自动</item>
+        <item>完整</item>
+        <item>部分</item>
+        <item>@string/none</item>
+    </string-array>
+    <string-array name="bcn_version_entries">
+        <item>当前版（原生，速度更快）</item>
+        <item>旧版（ASTC / ETC2）</item>
+    </string-array>
+    <string-array name="bcn_quality_entries">
+        <item>自动</item>
+        <item>快速</item>
+        <item>均衡</item>
+        <item>高</item>
+    </string-array>
+    <string-array name="displayResolutionEntries">
+        <item>原生</item>
+        <item>缩放</item>
+        <item>指定分辨率</item>
+        <item>@string/custom_option</item>
+    </string-array>
+    <string-array name="forceOrientationEntries">
+        <item>自动</item>
+        <item>竖屏</item>
+        <item>横屏</item>
+        <item>反向竖屏</item>
+        <item>反向横屏</item>
+    </string-array>
+    <string-array name="userActionsEntries">
+        <item>无操作</item>
+        <item>切换软键盘</item>
+        <item>切换附加按键栏</item>
+        <item>打开偏好设置</item>
+        <item>解除指针和键盘捕获</item>
+        <item>切换全屏</item>
+        <item>重启界面</item>
+        <item>退出</item>
+    </string-array>
+    <string-array name="userActionsVolumeDownEntries">
+        <item>@array/userActionsEntries</item>
+        <item>发送音量减小键</item>
+    </string-array>
+    <string-array name="userActionsVolumeUpEntries">
+        <item>@array/userActionsEntries</item>
+        <item>发送音量增大键</item>
+    </string-array>
+    <string-array name="userActionsMediaKeyEntries">
+        <item>@array/userActionsEntries</item>
+        <item>发送媒体键操作</item>
+    </string-array>
+</resources>
