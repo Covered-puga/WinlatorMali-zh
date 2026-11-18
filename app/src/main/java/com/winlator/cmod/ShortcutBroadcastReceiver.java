@@ -19,7 +19,7 @@ public class ShortcutBroadcastReceiver extends BroadcastReceiver {
         if (action != null && action.equals("com.winlator.SHORTCUT_ADDED")) {
             boolean success = intent.getBooleanExtra("shortcut_added", false);
             if (success) {
-                Log.d(LOG_TAG, R.string.shortcut_added_successfully);
+                Log.d(LOG_TAG, "Shortcut added successfully!");
                 Toast.makeText(context, R.string.shortcut_added_successfully, Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(LOG_TAG, "Shortcut addition failed or needing manual intervention.");
